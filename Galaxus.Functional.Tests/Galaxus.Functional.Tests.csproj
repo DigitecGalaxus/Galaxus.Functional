@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Galaxus.Functional\Galaxus.Functional.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="(Either)" />
+  </ItemGroup>
+
 </Project>
