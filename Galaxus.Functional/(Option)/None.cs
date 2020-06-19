@@ -11,7 +11,7 @@ namespace Galaxus.Functional
         /// <summary>
         /// The <b>None</b> value.
         /// </summary>
-        public static readonly None Value;
+        public static readonly None Value = default;
 
         public override bool Equals(object other)
             => other is None;

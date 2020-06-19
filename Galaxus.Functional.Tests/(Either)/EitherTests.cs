@@ -1,7 +1,7 @@
-using Galaxus.Functional;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Galaxus.Functional.Tests
@@ -10,6 +10,7 @@ namespace Galaxus.Functional.Tests
     public class EitherTests
     {
         [Test]
+        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "The 'new' throws anyways - at least it should")]
         public void CtorThrowsWhenNull()
         {
             Assert.Throws<ArgumentNullException>(() => new Either<string, object>(default(string)));
@@ -107,7 +108,7 @@ namespace Galaxus.Functional.Tests
         private static IEnumerable<object[]> IEitherReturnsCorrectObjectTestCases()
         {
             return IEitherReturnsCorrectObjectTestCasesExplicit()
-                .Select(testObj => new object[] {testObj.GivenInterface, testObj.ExpectedObject});
+                .Select(testObj => new [] {testObj.GivenInterface, testObj.ExpectedObject});
         }
 
         private static IEnumerable<(IEither GivenInterface, object ExpectedObject)>

@@ -170,8 +170,8 @@ namespace Galaxus.Functional.Tests
             Assert.Throws<ArgumentNullException>(() => { "hello".ToErr<int, string>().IfErr(null); });
 
             // OK and ERR with return value
-            Assert.Throws<ArgumentNullException>(() => { var x = 0.ToOk<int, string>().Match(null, err => 0); });
-            Assert.Throws<ArgumentNullException>(() => { var x = "hello".ToErr<int, string>().Match(v => v, null); });
+            Assert.Throws<ArgumentNullException>(() => { _ = 0.ToOk<int, string>().Match(null, err => 0); });
+            Assert.Throws<ArgumentNullException>(() => { _ = "hello".ToErr<int, string>().Match(v => v, null); });
         }
 
         [Test]
@@ -639,7 +639,7 @@ namespace Galaxus.Functional.Tests
         {
             const string initialResult = "a";
             Func<string, Task<string>> continuationOk = s => Task.FromException<string>(new ArgumentException());
-            Func<string, Task<string>> continuationErr = s => Task.FromResult<string>("b");
+            Func<string, Task<string>> continuationErr = s => Task.FromResult("b");
 
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {

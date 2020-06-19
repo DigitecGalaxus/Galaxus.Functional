@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using System;
-using System.Linq;
 
 namespace Galaxus.Functional.Tests
 {
@@ -138,8 +137,8 @@ namespace Galaxus.Functional.Tests
             Assert.Throws<ArgumentNullException>(() => { Option<int>.None.Match(v => { }, null); });
 
             // SOME and NONE with return value
-            Assert.Throws<ArgumentNullException>(() => { var x = 0.ToOption().Match(null, () => 0); });
-            Assert.Throws<ArgumentNullException>(() => { var x = Option<int>.None.Match(v => v, null); });
+            Assert.Throws<ArgumentNullException>(() => { _ = 0.ToOption().Match(null, () => 0); });
+            Assert.Throws<ArgumentNullException>(() => { _ = Option<int>.None.Match(v => v, null); });
         }
 
         [Test]

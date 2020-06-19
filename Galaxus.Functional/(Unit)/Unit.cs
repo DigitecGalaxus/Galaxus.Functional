@@ -11,7 +11,7 @@ namespace Galaxus.Functional
         /// <summary>
         /// The unit value.
         /// </summary>
-        public static readonly Unit Value;
+        public static readonly Unit Value = default;
 
         /// <inheritdoc />
         public override bool Equals(object other)
