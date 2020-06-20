@@ -13,7 +13,7 @@ namespace Galaxus.Functional
     /// 5) Optional function arguments,
     /// 6) Nullable References.
     /// </summary>
-    public struct Option<T> : IOption, IEquatable<Option<T>>
+    public readonly partial struct Option<T> : IOption, IEquatable<Option<T>>
     {
         #region Type Initializer
 
@@ -82,116 +82,6 @@ namespace Galaxus.Functional
 
         #endregion
 
-        #region Match
-
-        /// <summary>
-        /// Provides access to <b>self</b>'s content by calling <paramref name="onSome"/> and passing in <b>Some</b>
-        /// or calling <paramref name="onNone"/>.
-        /// </summary>
-        /// <param name="onSome">Called when <b>self</b> contains <b>Some</b>. The argument to this action is never the <b>null</b> reference.</param>
-        /// <param name="onNone">Called when <b>self</b> contains <b>None</b>.</param>
-        public void Match(Action<T> onSome, Action onNone)
-        {
-            if (IsSome)
-            {
-                if (onSome is null)
-                    throw new ArgumentNullException(nameof(onSome));
-
-                onSome(_some);
-            }
-            else
-            {
-                if (onNone is null)
-                    throw new ArgumentNullException(nameof(onNone));
-
-                onNone();
-            }
-        }
-
-        /// <summary>
-        /// Provides access to <b>self</b>'s content by calling <paramref name="onSome"/> and passing in <b>Some</b>
-        /// or calling <paramref name="onNone"/>.
-        /// </summary>
-        /// <param name="onSome">Called when <b>self</b> contains <b>Some</b>. The argument to this action is never the <b>null</b> reference.</param>
-        /// <param name="onNone">Called when <b>self</b> contains <b>None</b>.</param>
-        public U Match<U>(Func<T, U> onSome, Func<U> onNone)
-        {
-            if (IsSome)
-            {
-                if (onSome is null)
-                    throw new ArgumentNullException(nameof(onSome));
-
-                return onSome(_some);
-            }
-
-            if (onNone is null)
-                throw new ArgumentNullException(nameof(onNone));
-
-            return onNone();
-        }
-
-        #endregion
-
-        #region If
-
-        /// <summary>
-        /// Provides access to <b>self</b>'s <b>Some</b> value by calling <paramref name="onSome"/> if <b>self</b> contains <b>Some</b>.
-        /// </summary>
-        /// <param name="onSome">Called if <b>self</b> contains <b>Some</b>. The argument to this action is never the <b>null</b> reference.</param>
-        public void IfSome(Action<T> onSome)
-        {
-            if (IsSome)
-            {
-                if (onSome is null)
-                    throw new ArgumentNullException(nameof(onSome));
-
-                onSome(_some);
-            }
-        }
-
-        // "IfNone" is not implemented because it can just as easly be written like this:
-        // if(option.IsNone) { }
-
-        #endregion
-
-        #region And
-
-        /// <summary>
-        /// Returns <b>None</b> if <b>self</b> contains <b>None</b>, otherwise returns <paramref name="fallback"/>.
-        /// </summary>
-        /// <param name="fallback">The value to return if <b>self</b> contains <b>Some</b>.</param>
-        public Option<U> And<U>(Option<U> fallback)
-            => IsNone ? Option<U>.None : fallback;
-
-        /// <summary>
-        /// Returns <b>None</b> if <b>self</b> contains <b>None</b>, otherwise calls <paramref name="continuation"/> with the wrapped value and returns the result.
-        /// Some languages call this operation flatmap.
-        /// </summary>
-        /// <param name="continuation">The function to call if <b>self</b> contains <b>Some</b>.</param>
-        public Option<U> AndThen<U>(Func<T, Option<U>> continuation)
-        {
-            if (IsNone)
-                return Option<U>.None;
-
-            if (continuation is null)
-                throw new ArgumentNullException(nameof(continuation));
-
-            return continuation(_some);
-        }
-
-        /// <summary>
-        /// Returns <b>None</b> if <b>self</b> contains <b>None</b>, otherwise calls <paramref name="continuation"/> with the wrapped value.
-        /// Some languages call this operation flatmap.
-        /// </summary>
-        /// <param name="continuation">The function to call if <b>self</b> contains <b>Some</b>.</param>
-        public Option<T> AndThen(Action<T> continuation)
-        {
-            IfSome(continuation);
-            return this;
-        }
-
-        #endregion
-
         #region Ok
 
         /// <summary>
@@ -218,48 +108,6 @@ namespace Galaxus.Functional
                 throw new ArgumentNullException(nameof(fallback));
 
             return Result<T, TErr>.FromErr(fallback());
-        }
-
-        #endregion
-
-        #region Or
-
-        /// <summary>
-        /// Returns <b>self</b> if it contains <b>Some</b>, otherwise returns <paramref name="fallback"/>.
-        /// </summary>
-        /// <param name="fallback">
-        /// The value to return if <b>self</b> contains <b>None</b>.
-        /// This argument is eagerly evaluated; if you are passing the result of a function call,
-        /// it is recommended to use <see cref="OrElse(Func{Option{T}})"/>, which is lazily evaluated.
-        /// </param>
-        public Option<T> Or(Option<T> fallback)
-            => IsSome ? this : fallback;
-
-        /// <summary>
-        /// Returns <b>self</b> if it contains <b>Some</b>, otherwise calls <paramref name="fallback"/> and returns the result.
-        /// </summary>
-        /// <param name="fallback">The function to call if <b>self</b> contains <b>None</b>.</param>
-        public Option<T> OrElse(Func<Option<T>> fallback)
-        {
-            if (IsSome)
-                return this;
-
-            if (fallback is null)
-                throw new ArgumentNullException(nameof(fallback));
-
-            return fallback();
-        }
-
-        /// <summary>
-        /// Returns <b>Some</b> if exactly one of <b>self</b> and <paramref name="fallback"/> is <b>Some</b>, otherwise returns <b>None</b>.
-        /// </summary>
-        /// <param name="fallback">The <see cref="Option{T}"/> to compare against.</param>
-        public Option<T> Xor(Option<T> fallback)
-        {
-            if (IsSome == fallback.IsSome)
-                return None;
-
-            return IsSome ? this : fallback;
         }
 
         #endregion
@@ -337,49 +185,6 @@ namespace Galaxus.Functional
         /// </summary>
         public T UnwrapOrDefault()
             => IsSome ? _some : default;
-
-        #endregion
-
-        #region Map
-
-        /// <summary>
-        /// Maps a <see cref="Option{T}"/> to <see cref="Option{U}"/> by applying a function to a contained <b>Some</b> value.
-        /// </summary>
-        /// <typeparam name="TTo">The type to map to.</typeparam>
-        /// <param name="map">The mapping function.</param>
-        public Option<TTo> Map<TTo>(Func<T, TTo> map)
-        {
-            return Match(
-                some =>
-                {
-                    if (map == null)
-                        throw new ArgumentNullException(nameof(map));
-
-                    return map(some).ToOption();
-                },
-                () => Option<TTo>.None
-            );
-        }
-
-        /// <summary>
-        /// Applies a function to the contained <b>Some</b> value (if any). Returns <paramref name="fallback"/> otherwise.
-        /// </summary>
-        /// <typeparam name="TTo">The type to map to.</typeparam>
-        /// <param name="fallback">The value to return if <b>self</b> contains <b>None</b>.</param>
-        /// <param name="map">The mapping function.</param>
-        public TTo MapOr<TTo>(Func<T, TTo> map, TTo fallback)
-        {
-            return Match(
-                some =>
-                {
-                    if (map == null)
-                        throw new ArgumentNullException(nameof(map));
-
-                    return map(some);
-                },
-                () => fallback
-            );
-        }
 
         #endregion
 
