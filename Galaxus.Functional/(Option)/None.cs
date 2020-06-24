@@ -13,15 +13,19 @@ namespace Galaxus.Functional
         /// </summary>
         public static readonly None Value = default;
 
+        /// <inheritdoc />
         public override bool Equals(object other)
             => other is None;
 
+        /// <inheritdoc />
         public bool Equals(None obj)
             => true;
 
+        /// <inheritdoc />
         public override int GetHashCode()
             => -1;
 
+        /// <inheritdoc />
         public override string ToString()
             => "None";
     }

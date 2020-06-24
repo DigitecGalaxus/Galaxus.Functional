@@ -12,21 +12,6 @@ namespace Galaxus.Functional
     /// <typeparam name="C">The third type this union can contain.</typeparam>
     public class Either<A, B, C> : IEquatable<Either<A, B, C>>, IEither
     {
-        #region Type Initializer
-
-        private static readonly bool _tAIsValueType;
-        private static readonly bool _tBIsValueType;
-        private static readonly bool _tCIsValueType;
-
-        static Either()
-        {
-            _tAIsValueType = typeof(A).IsValueType;
-            _tBIsValueType = typeof(B).IsValueType;
-            _tCIsValueType = typeof(C).IsValueType;
-        }
-
-        #endregion
-
         #region Instance Initializer
 
         /// <summary>
@@ -34,7 +19,7 @@ namespace Galaxus.Functional
         /// </summary>
         public Either(A a)
         {
-            if (_tAIsValueType == false && a == null)
+            if (typeof(A).IsValueType == false && a == null)
                 throw new ArgumentNullException(nameof(a));
 
             Discriminant = Discriminant3.A;
@@ -46,7 +31,7 @@ namespace Galaxus.Functional
         /// </summary>
         public Either(B b)
         {
-            if (_tBIsValueType == false && b == null)
+            if (typeof(B).IsValueType == false && b == null)
                 throw new ArgumentNullException(nameof(b));
 
             Discriminant = Discriminant3.B;
@@ -58,7 +43,7 @@ namespace Galaxus.Functional
         /// </summary>
         public Either(C c)
         {
-            if (_tCIsValueType == false && c == null)
+            if (typeof(C).IsValueType == false && c == null)
                 throw new ArgumentNullException(nameof(c));
 
             Discriminant = Discriminant3.C;
@@ -67,12 +52,27 @@ namespace Galaxus.Functional
 
         // Usages of implicit operators will only compile if A, B and C are different types.
 
+        /// <summary>
+        /// Implicitly cast a value of type <see cref="A"/> to an <see cref="Either{A,B,C}"/> containing A.
+        /// </summary>
+        /// <param name="value">The value to cast.</param>
+        /// <returns>An either containing that value as A.</returns>
         public static implicit operator Either<A, B, C>(A value)
             => new Either<A, B, C>(value);
 
+        /// <summary>
+        /// Implicitly cast a value of type <see cref="B"/> to an <see cref="Either{A,B,C}"/> containing B.
+        /// </summary>
+        /// <param name="value">The value to cast.</param>
+        /// <returns>An either containing that value as B.</returns>
         public static implicit operator Either<A, B, C>(B value)
             => new Either<A, B, C>(value);
 
+        /// <summary>
+        /// Implicitly cast a value of type <see cref="C"/> to an <see cref="Either{A,B,C}"/> containing C.
+        /// </summary>
+        /// <param name="value">The value to cast.</param>
+        /// <returns>An either containing that value as C.</returns>
         public static implicit operator Either<A, B, C>(C value)
             => new Either<A, B, C>(value);
 
@@ -169,9 +169,11 @@ namespace Galaxus.Functional
 
         #region Equals, GetHashCode & ToString
 
+        /// <inheritdoc />
         public sealed override bool Equals(object other)
             => Equals(other as Either<A, B, C>);
 
+        /// <inheritdoc />
         public bool Equals(Either<A, B, C> other)
         {
             if (other is null)
@@ -196,6 +198,12 @@ namespace Galaxus.Functional
             }
         }
 
+        /// <summary>
+        /// Checks whether two eithers are equal.
+        /// </summary>
+        /// <param name="lhs">The either to check against.</param>
+        /// <param name="rhs">The either to check.</param>
+        /// <returns><c>True</c> if the eithers are equal, <c>false</c> otherwise.</returns>
         public static bool operator ==(Either<A, B, C> lhs, Either<A, B, C> rhs)
         {
             if (lhs is null)
@@ -204,12 +212,20 @@ namespace Galaxus.Functional
             return lhs.Equals(rhs);
         }
 
+        /// <summary>
+        /// Checks whether two eithers are not equal.
+        /// </summary>
+        /// <param name="lhs">The either to check against.</param>
+        /// <param name="rhs">The either to check.</param>
+        /// <returns><c>False</c> if the eithers are equal, <c>true</c> otherwise.</returns>
         public static bool operator !=(Either<A, B, C> lhs, Either<A, B, C> rhs)
             => (lhs == rhs) == false;
 
+        /// <inheritdoc />
         public override int GetHashCode()
             => (Discriminant, _a, _b, _c).GetHashCode();
 
+        /// <inheritdoc />
         public override string ToString()
             => Match(a => a.ToString(), b => b.ToString(), c => c.ToString());
 

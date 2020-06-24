@@ -11,19 +11,6 @@ namespace Galaxus.Functional
     /// </summary>
     public sealed partial class Result<TOk, TErr> : IEquatable<Result<TOk, TErr>>
     {
-        #region Type Initializer
-
-        private static readonly bool _tOkIsValueType;
-        private static readonly bool _tErrIsValueType;
-
-        static Result()
-        {
-            _tOkIsValueType = typeof(TOk).IsValueType;
-            _tErrIsValueType = typeof(TErr).IsValueType;
-        }
-
-        #endregion
-
         #region Instance Initializer
 
         /// <summary>
@@ -51,7 +38,7 @@ namespace Galaxus.Functional
 
         private Result(TOk ok)
         {
-            if (_tOkIsValueType == false && ok == null)
+            if (typeof(TOk).IsValueType == false && ok == null)
                 throw new ArgumentNullException(nameof(ok));
 
             _ok = ok;
@@ -60,15 +47,25 @@ namespace Galaxus.Functional
 
         private Result(TErr err)
         {
-            if (_tErrIsValueType == false && err == null)
+            if (typeof(TErr).IsValueType == false && err == null)
                 throw new ArgumentNullException(nameof(err));
 
             _err = err;
         }
 
+        /// <summary>
+        /// Cast a value to a <see cref="Result{TOk,TErr}"/> containing Ok.
+        /// </summary>
+        /// <param name="ok">The value to be contained.</param>
+        /// <returns>The result.</returns>
         public static implicit operator Result<TOk, TErr>(TOk ok)
             => new Result<TOk, TErr>(ok);
 
+        /// <summary>
+        /// Cast a value to a <see cref="Result{TOk,TErr}"/> containing Err.
+        /// </summary>
+        /// <param name="err">The value to be contained.</param>
+        /// <returns>The result.</returns>
         public static implicit operator Result<TOk, TErr>(TErr err)
             => new Result<TOk, TErr>(err);
 
@@ -223,9 +220,11 @@ namespace Galaxus.Functional
 
         #region Equals, GetHashCode & ToString
 
-        public sealed override bool Equals(object other)
+        /// <inheritdoc />
+        public override bool Equals(object other)
             => Equals(other as Result<TOk, TErr>);
 
+        /// <inheritdoc />
         public bool Equals(Result<TOk, TErr> other)
         {
             if (other is null)
@@ -236,18 +235,18 @@ namespace Galaxus.Functional
 
             if (IsOk)
             {
-                return
-                    other.IsOk
-                    ? _ok.Equals(other._ok)
-                    : false;
+                return other.IsOk && _ok.Equals(other._ok);
             }
 
-            return
-                other.IsOk
-                ? false
-                : _err.Equals(other._err);
+            return !other.IsOk && _err.Equals(other._err);
         }
 
+        /// <summary>
+        /// Check that two results are equal.
+        /// </summary>
+        /// <param name="lhs">Result to check against.</param>
+        /// <param name="rhs">Result to check.</param>
+        /// <returns><c>True</c> if the results are equal, <c>true</c> otherwise.</returns>
         public static bool operator ==(Result<TOk, TErr> lhs, Result<TOk, TErr> rhs)
         {
             if (lhs is null)
@@ -256,12 +255,20 @@ namespace Galaxus.Functional
             return lhs.Equals(rhs);
         }
 
+        /// <summary>
+        /// Check that two results are not equal.
+        /// </summary>
+        /// <param name="lhs">Result to check against.</param>
+        /// <param name="rhs">Result to check.</param>
+        /// <returns><c>False</c> if the results are equal, <c>true</c> otherwise.</returns>
         public static bool operator !=(Result<TOk, TErr> lhs, Result<TOk, TErr> rhs)
             => (lhs == rhs) == false;
 
+        /// <inheritdoc />
         public override int GetHashCode()
             => (IsOk, _ok, _err).GetHashCode();
 
+        /// <inheritdoc />
         public override string ToString()
             => Match(ok => $"Ok: {ok.ToString()}", err => $"Err: {err.ToString()}");
 

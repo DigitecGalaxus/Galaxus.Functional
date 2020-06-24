@@ -1,5 +1,8 @@
 namespace Galaxus.Functional
 {
+    /// <summary>
+    /// General interface for objects that represent an optional value.
+    /// </summary>
     public interface IOption
     {
         /// <summary>

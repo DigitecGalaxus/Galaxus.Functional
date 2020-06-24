@@ -1,5 +1,8 @@
 namespace Galaxus.Functional
 {
+    /// <summary>
+    /// General interface for objects that roughly represent a discriminated union.
+    /// </summary>
     public interface IEither
     {
         /// <summary>

@@ -11,7 +11,7 @@ namespace Galaxus.Functional
         /// <param name="fallback">
         /// The result to return if <b>self</b> contains <b>Err</b>.
         /// This argument is eagerly evaluated; if you are passing the result of a function call,
-        /// it is recommended to use <see cref="OrElse{TContinuationErr}(Func{TResult})"/>, which is lazily evaluated.
+        /// it is recommended to use <see cref="OrElse{TContinuationErr}"/>, which is lazily evaluated.
         /// </param>
         public Result<TOk, TContinuationErr> Or<TContinuationErr>(Result<TOk, TContinuationErr> fallback)
             => IsOk ? _ok : fallback;

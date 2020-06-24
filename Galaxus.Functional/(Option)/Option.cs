@@ -15,17 +15,6 @@ namespace Galaxus.Functional
     /// </summary>
     public readonly partial struct Option<T> : IOption, IEquatable<Option<T>>
     {
-        #region Type Initializer
-
-        private static readonly bool _tIsValueType;
-
-        static Option()
-        {
-            _tIsValueType = typeof(T).IsValueType;
-        }
-
-        #endregion
-
         #region Instance Initializer
 
         // Note:
@@ -38,7 +27,7 @@ namespace Galaxus.Functional
         private Option(T some)
         {
             _some = some;
-            IsSome = _tIsValueType || some != null;
+            IsSome = typeof(T).IsValueType || some != null;
         }
 
         /// <summary>
@@ -55,6 +44,11 @@ namespace Galaxus.Functional
         public static Option<T> Some(T some)
             => new Option<T>(some);
 
+        /// <summary>
+        /// Implicitly cast a <see cref="None"/> to an option containing none.
+        /// </summary>
+        /// <param name="none">The <see cref="None"/> to implicitly cast.</param>
+        /// <returns>An option containing none.</returns>
         public static implicit operator Option<T>(None none)
             => None;
 
@@ -223,9 +217,11 @@ namespace Galaxus.Functional
 
         #region Equals, GetHashCode & ToString
 
+        /// <inheritdoc />
         public override bool Equals(object other)
             => other is Option<T> option && Equals(option);
 
+        /// <inheritdoc />
         public bool Equals(Option<T> other)
         {
             return
@@ -235,15 +231,29 @@ namespace Galaxus.Functional
                 ;
         }
 
+        /// <summary>
+        /// Check whether two options are equal.
+        /// </summary>
+        /// <param name="a">The option to check against.</param>
+        /// <param name="b">The option to check.</param>
+        /// <returns><c>True</c> if the options are equal, <c>false</c> otherwise.</returns>
         public static bool operator ==(Option<T> a, Option<T> b)
             => a.Equals(b);
 
+        /// <summary>
+        /// Check whether two options are equal.
+        /// </summary>
+        /// <param name="a">The option to check against.</param>
+        /// <param name="b">The option to check.</param>
+        /// <returns><c>True</c> if the options are equal, <c>false</c> otherwise.</returns>
         public static bool operator !=(Option<T> a, Option<T> b)
             => a.Equals(b) == false;
 
+        /// <inheritdoc />
         public override int GetHashCode()
             => (IsSome, _some).GetHashCode();
 
+        /// <inheritdoc />
         public override string ToString()
             => Match(some => some.ToString(), () => Functional.None.Value.ToString());
 
