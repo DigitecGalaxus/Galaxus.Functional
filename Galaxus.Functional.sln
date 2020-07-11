@@ -6,9 +6,9 @@ MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{C0E5CF1C-E913-4E43-8A1E-08873584A669}"
 ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
-	LICENSE.txt = LICENSE.txt
-	CONTRIBUTORS.txt = CONTRIBUTORS.txt
 	Readme.md = Readme.md
+	CONTRIBUTORS = CONTRIBUTORS
+	LICENSE = LICENSE
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaxus.Functional", "Galaxus.Functional\Galaxus.Functional.csproj", "{5CD53145-49E8-4391-8EBE-BB2A2172097C}"
