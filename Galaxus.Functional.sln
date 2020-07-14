@@ -9,6 +9,7 @@ ProjectSection(SolutionItems) = preProject
 	README.md = README.md
 	CONTRIBUTORS = CONTRIBUTORS
 	LICENSE = LICENSE
+	Galaxus.Functional.nuspec = Galaxus.Functional.nuspec
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaxus.Functional", "Galaxus.Functional\Galaxus.Functional.csproj", "{5CD53145-49E8-4391-8EBE-BB2A2172097C}"
