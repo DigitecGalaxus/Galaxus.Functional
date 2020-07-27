@@ -1,4 +1,4 @@
-name: Build and Test 
+name: Run Tests 
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -20,4 +21,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --configuration Release --no-restore --no-build
+      run: dotnet test --configuration Release --no-build
