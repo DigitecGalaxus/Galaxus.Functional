@@ -5,7 +5,7 @@ using System.Linq;
 namespace Galaxus.Functional
 {
     /// <summary>
-    /// Extensions on top of LINQ using <see cref="Option{T}"/>.
+    ///     Extensions on top of LINQ using <see cref="Option{T}" />.
     /// </summary>
     public static class OptionLinqExtensions
     {
@@ -54,7 +54,8 @@ namespace Galaxus.Functional
         ///     <c>predicate</c>; otherwise, the first element in <c>source</c> that passes the test specified by <c>predicate</c>.
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
-        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source,
+            Func<TSource, bool> predicate)
         {
             var value = source.FirstOrDefault(predicate);
             return value == null || value.Equals(default) ? Option<TSource>.None : Option<TSource>.Some(value);
@@ -126,7 +127,8 @@ namespace Galaxus.Functional
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
         /// <exception cref="InvalidOperationException">More than one element satisfies the condition in <c>source</c>.</exception>
-        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source,
+            Func<TSource, bool> predicate)
         {
             var value = source.SingleOrDefault(predicate);
             return value == null ? Option<TSource>.None : Option<TSource>.Some(value);
