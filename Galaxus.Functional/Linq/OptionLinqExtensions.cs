@@ -1,0 +1,146 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Galaxus.Functional.Linq
+{
+    /// <summary>
+    ///     Extensions on top of LINQ using <see cref="Option{T}" />.
+    /// </summary>
+    public static class OptionLinqExtensions
+    {
+        /// <summary>
+        ///     Returns the element at a specified index in a sequence or <see cref="Option{T}.None" /> if the index is out of
+        ///     range.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}" /> to return an element from.</param>
+        /// <param name="index">The zero-based index of the element to retrieve.</param>
+        /// <returns>
+        ///     <c><see cref="Option{T}" />.None</c> if the index is outside the bounds of the source sequence; otherwise, the
+        ///     element at the specified position in the source sequence.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
+        public static Option<TSource> ElementAtOrNone<TSource>(this IEnumerable<TSource> source, int index)
+        {
+            var value = source.ToList();
+            return index >= value.Count || index < 0 ? Option<TSource>.None : Option<TSource>.Some(value[index]);
+        }
+
+        /// <summary>
+        ///     Returns the first element of the sequence that satisfies a condition or <see cref="Option{T}.None" /> if the
+        ///     sequence contains no elements.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}" /> to return an element from.</param>
+        /// <returns>
+        ///     <c><see cref="Option{T}" />.None</c> if <c>source</c> is empty; otherwise, the first element in <c>source</c>.
+        /// </returns>
+        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source)
+        {
+            var value = source.ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[0]);
+        }
+
+        /// <summary>
+        ///     Returns the first element of the sequence that satisfies a condition or <see cref="Option{T}.None" /> if the
+        ///     sequence contains no elements.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}" /> to return an element from.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>
+        ///     <c><see cref="Option{T}" />.None</c> if <c>source</c> is empty or if no element passes the test specified by
+        ///     <c>predicate</c>; otherwise, the first element in <c>source</c> that passes the test specified by <c>predicate</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
+        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            var value = source.Where(predicate).ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[0]);
+        }
+
+        /// <summary>
+        ///     Returns the last element of a sequence, or <see cref="Option{T}.None" /> if the sequence contains no elements.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}" /> to return the last element of.</param>
+        /// <returns>
+        ///     <c><see cref="Option{T}" />.None</c> if the source sequence is empty; otherwise, the last element in the
+        ///     <see cref="IEnumerable{T}" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
+        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source)
+        {
+            var value = source.ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[value.Count - 1]);
+        }
+
+        /// <summary>
+        ///     Returns the last element of a sequence that satisfies a condition or <see cref="Option{T}.None" /> if no such
+        ///     element is found.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}" /> to return an element from.</param>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>
+        ///     <c><see cref="Option{T}" />.None</c> if the sequence is empty or if no elements pass the test in the predicate
+        ///     function; otherwise, the last element that passes the test in the predicate function.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
+        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            var value = source.Where(predicate).ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[value.Count - 1]);
+        }
+
+        /// <summary>
+        ///     Returns the only element of a sequence, or <see cref="Option{T}.None" /> if the sequence is empty; this method
+        ///     throws an exception if there is more than one element in the sequence.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}" /> to return the single element of.</param>
+        /// <returns>
+        ///     The single element of the input sequence, or
+        ///     <c>
+        ///         <see cref="Option{T}.None" />
+        ///     </c>
+        ///     if the sequence contains no elements.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException">The input sequence contains more than one element.</exception>
+        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
+        {
+            var value = source.ToList();
+            if (value.Count == 0)
+                return Option<TSource>.None;
+
+            if (value.Count > 1)
+                throw new InvalidOperationException("Sequence contains more than one element");
+
+            return Option<TSource>.Some(value[0]);
+        }
+
+        /// <summary>
+        ///     Returns the only element of a sequence that satisfies a specified condition or <see cref="Option{T}.None" /> if no
+        ///     such element exists; this method throws an exception if more than one element satisfies the condition.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}" /> to return a single element from.</param>
+        /// <param name="predicate">A function to test an element for a condition.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException">More than one element satisfies the condition in <c>source</c>.</exception>
+        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            var value = source.Where(predicate).ToList();
+            if (value.Count == 0)
+                return Option<TSource>.None;
+
+            if (value.Count > 1)
+                throw new InvalidOperationException("Sequence contains more than one element");
+
+            return Option<TSource>.Some(value[0]);
+        }
+    }
+}
