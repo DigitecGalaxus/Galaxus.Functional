@@ -23,8 +23,8 @@ namespace Galaxus.Functional
         /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
         public static Option<TSource> ElementAtOrNone<TSource>(this IEnumerable<TSource> source, int index)
         {
-            var value = source.ElementAtOrDefault(index);
-            return value == null || value.Equals(default) ? Option<TSource>.None : Option<TSource>.Some(value);
+            var value = source.ToList();
+            return index >= value.Count || index < 0 ? Option<TSource>.None : Option<TSource>.Some(value[index]);
         }
 
         /// <summary>
@@ -38,8 +38,8 @@ namespace Galaxus.Functional
         /// </returns>
         public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source)
         {
-            var value = source.FirstOrDefault();
-            return value == null || value.Equals(default) ? Option<TSource>.None : Option<TSource>.Some(value);
+            var value = source.ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[0]);
         }
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace Galaxus.Functional
         public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
         {
-            var value = source.FirstOrDefault(predicate);
-            return value == null || value.Equals(default) ? Option<TSource>.None : Option<TSource>.Some(value);
+            var value = source.Where(predicate).ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[0]);
         }
 
         /// <summary>
@@ -73,8 +73,8 @@ namespace Galaxus.Functional
         /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
         public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source)
         {
-            var value = source.LastOrDefault();
-            return value == null ? Option<TSource>.None : Option<TSource>.Some(value);
+            var value = source.ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[value.Count - 1]);
         }
 
         /// <summary>
@@ -92,8 +92,10 @@ namespace Galaxus.Functional
         public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
         {
-            var value = source.LastOrDefault(predicate);
-            return value == null ? Option<TSource>.None : Option<TSource>.Some(value);
+            var value = source.Where(predicate).ToList();
+            return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[value.Count - 1]);
+            //var value = source.LastOrDefault(predicate);
+            //return value == null ? Option<TSource>.None : Option<TSource>.Some(value);
         }
 
         /// <summary>
@@ -113,8 +115,10 @@ namespace Galaxus.Functional
         /// <exception cref="InvalidOperationException">The input sequence contains more than one element.</exception>
         public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
         {
-            var value = source.SingleOrDefault();
-            return value == null ? Option<TSource>.None : Option<TSource>.Some(value);
+            var value = source.ToList();
+            return value.Count == 0 ? Option<TSource>.None :
+                value.Count > 1 ? throw new InvalidOperationException("Sequence contains more than one element") :
+                Option<TSource>.Some(value[0]);
         }
 
         /// <summary>
@@ -130,8 +134,10 @@ namespace Galaxus.Functional
         public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
         {
-            var value = source.SingleOrDefault(predicate);
-            return value == null ? Option<TSource>.None : Option<TSource>.Some(value);
+            var value = source.Where(predicate).ToList();
+            return value.Count == 0 ? Option<TSource>.None :
+                value.Count > 1 ? throw new InvalidOperationException("Sequence contains more than one element") :
+                Option<TSource>.Some(value[0]);
         }
     }
 }
