@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Galaxus.Functional
+namespace Galaxus.Functional.Linq
 {
     /// <summary>
     ///     Extensions on top of LINQ using <see cref="Option{T}" />.
@@ -54,8 +54,7 @@ namespace Galaxus.Functional
         ///     <c>predicate</c>; otherwise, the first element in <c>source</c> that passes the test specified by <c>predicate</c>.
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
-        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate)
+        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
             var value = source.Where(predicate).ToList();
             return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[0]);
@@ -89,13 +88,10 @@ namespace Galaxus.Functional
         ///     function; otherwise, the last element that passes the test in the predicate function.
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
-        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate)
+        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
             var value = source.Where(predicate).ToList();
             return value.Count == 0 ? Option<TSource>.None : Option<TSource>.Some(value[value.Count - 1]);
-            //var value = source.LastOrDefault(predicate);
-            //return value == null ? Option<TSource>.None : Option<TSource>.Some(value);
         }
 
         /// <summary>
@@ -116,9 +112,13 @@ namespace Galaxus.Functional
         public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
         {
             var value = source.ToList();
-            return value.Count == 0 ? Option<TSource>.None :
-                value.Count > 1 ? throw new InvalidOperationException("Sequence contains more than one element") :
-                Option<TSource>.Some(value[0]);
+            if (value.Count == 0)
+                return Option<TSource>.None;
+
+            if (value.Count > 1)
+                throw new InvalidOperationException("Sequence contains more than one element");
+
+            return Option<TSource>.Some(value[0]);
         }
 
         /// <summary>
@@ -131,13 +131,16 @@ namespace Galaxus.Functional
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
         /// <exception cref="InvalidOperationException">More than one element satisfies the condition in <c>source</c>.</exception>
-        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate)
+        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
             var value = source.Where(predicate).ToList();
-            return value.Count == 0 ? Option<TSource>.None :
-                value.Count > 1 ? throw new InvalidOperationException("Sequence contains more than one element") :
-                Option<TSource>.Some(value[0]);
+            if (value.Count == 0)
+                return Option<TSource>.None;
+
+            if (value.Count > 1)
+                throw new InvalidOperationException("Sequence contains more than one element");
+
+            return Option<TSource>.Some(value[0]);
         }
     }
 }

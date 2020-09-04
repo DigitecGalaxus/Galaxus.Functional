@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Galaxus.Functional.Linq;
 using NUnit.Framework;
 
 namespace Galaxus.Functional.Tests.OptionExtensions
@@ -8,111 +9,145 @@ namespace Galaxus.Functional.Tests.OptionExtensions
     public class OptionLinqExtensionsTests
     {
         [Test]
-        public void ElementAtOrNoneTest()
+        public void ElementAtOrNone_IndexIsZero_ReturnsSome()
         {
-            // Arrange
             var list = new List<int> {0, 1, 2, 3, 4};
+            
+            var some = list.ElementAtOrNone(0);
 
-            // Act
-            var some1 = list.ElementAtOrNone(0);
-            var some2 = list.ElementAtOrNone(2);
-            var none1 = list.ElementAtOrNone(5);
-            var none2 = list.ElementAtOrNone(-1);
-
-            // Assert
-            Assert.IsTrue(some1.IsSome);
-            Assert.AreEqual(0, some1.Unwrap());
-
-            Assert.IsTrue(some2.IsSome);
-            Assert.AreEqual(2, some2.Unwrap());
-
-            Assert.IsTrue(none1.IsNone);
-            Assert.IsTrue(none2.IsNone);
+            Assert.IsTrue(some.IsSome);
+            Assert.AreEqual(0, some.Unwrap());
         }
 
         [Test]
-        public void FirstOrNoneTest()
+        public void ElementAtOrNone_IndexIsCount_ReturnsNone()
         {
-            // Arrange
             var list = new List<int> {0, 1, 2, 3, 4};
 
-            // Act
-            var some1 = list.FirstOrNone();
-            var some2 = list.FirstOrNone(x => x > 2);
-            var none = list.FirstOrNone(x => x == 10);
-
-            // Assert
-            Assert.IsTrue(some1.IsSome);
-            Assert.AreEqual(0, some1.Unwrap());
-
-            Assert.IsTrue(some2.IsSome);
-            Assert.AreEqual(3, some2.Unwrap());
+            var none = list.ElementAtOrNone(5);
 
             Assert.IsTrue(none.IsNone);
         }
 
         [Test]
-        public void LastOrNoneTest()
+        public void ElementAtOrNone_IndexIsNegativeOne_ReturnsNone()
         {
-            // Arrange
             var list = new List<int> {0, 1, 2, 3, 4};
 
-            // Act
-            var some1 = list.LastOrNone();
-            var some2 = list.LastOrNone(x => x > 2);
+            var none = list.ElementAtOrNone(-1);
+
+            Assert.IsTrue(none.IsNone);
+        }
+
+        [Test]
+        public void FirstOrNone_NoPredicate_ReturnsSome()
+        {
+            var list = new List<int> {0, 1, 2, 3, 4};
+
+            var some = list.FirstOrNone();
+
+            Assert.IsTrue(some.IsSome);
+            Assert.AreEqual(0, some.Unwrap());
+        }
+
+        [Test]
+        public void FirstOrNone_WithPredicate_ReturnsSome()
+        {
+            var list = new List<int> {0, 1, 2, 3, 4};
+            var some = list.FirstOrNone(x => x > 2);
+
+            Assert.IsTrue(some.IsSome);
+            Assert.AreEqual(3, some.Unwrap());
+        }
+
+        [Test]
+        public void FirstOrNone_PredicateMatchesNone_ReturnsNone()
+        {
+            var list = new List<int> {0, 1, 2, 3, 4};
+
             var none = list.FirstOrNone(x => x == 10);
 
-            // Assert
+            Assert.IsTrue(none.IsNone);
+        }
+
+        [Test]
+        public void LastOrNone_GetLast_ReturnsSome()
+        {
+            var list = new List<int> {0, 1, 2, 3, 4};
+
+            var some1 = list.LastOrNone();
+
             Assert.IsTrue(some1.IsSome);
             Assert.AreEqual(4, some1.Unwrap());
+        }
+
+        [Test]
+        public void LastOrNone_WithPredicate_ReturnsSome()
+        {
+            var list = new List<int> {0, 1, 2, 3, 4};
+
+            var some2 = list.LastOrNone(x => x > 2);
 
             Assert.IsTrue(some2.IsSome);
             Assert.AreEqual(4, some2.Unwrap());
+        }
+
+        [Test]
+        public void LastOrNon_PredicateMatchesNon_ReturnsNone()
+        {
+            var list = new List<int> {0, 1, 2, 3, 4};
+
+            var none = list.FirstOrNone(x => x == 10);
 
             Assert.IsTrue(none.IsNone);
         }
 
         [Test]
-        public void SingleOrNone()
+        public void SingleOrNone_SingleMatchingElement_ReturnsSome()
         {
-            // Arrange
             var list1 = new List<int> {0, 1, 2, 3, 4};
-            var list2 = new List<int> {0, 1, 2, 2, 3, 4};
+
+            var some1 = list1.SingleOrNone(x => x == 2);
+
+            Assert.IsTrue(some1.IsSome);
+            Assert.AreEqual(2, some1.Unwrap());
+        }
+
+        [Test]
+        public void SingleOrNone_SingleElementInCollection_ReturnsSome()
+        {
             var list3 = new List<int> {0};
-            
+
+            var some2 = list3.SingleOrNone();
+
+            Assert.IsTrue(some2.IsSome);
+            Assert.AreEqual(0, some2.Unwrap());
+        }
+
+        [Test]
+        public void SingleOrNone_MultipleMatchingElements_ThrowsException()
+        {
+            var list2 = new List<int> {0, 1, 2, 2, 3, 4};
+
+            Assert.Throws<InvalidOperationException>(() => list2.SingleOrNone(x => x == 2));
+        }
+
+        [Test]
+        public void SingleOrNone_MultipleElements_ThrowsException()
+        {
+            var list2 = new List<int> {0, 1, 2, 2, 3, 4};
+
+            Assert.Throws<InvalidOperationException>(() => list2.SingleOrNone());
+        }
+
+        [Test]
+        public void SingleOrNone_EmptyList_ReturnsNone()
+        {
             // ReSharper disable once CollectionNeverUpdated.Local
             // This is intentional
             var list4 = new List<int>();
 
-            // Act
-            var some1 = list1.SingleOrNone(x => x == 2);
-            var some2 = list3.SingleOrNone();
             var none = list4.SingleOrNone();
-
-            try
-            {
-                // Act and assert failure
-                list2.SingleOrNone(x => x == 2);
-                Assert.Fail("Calling 'SingleOrNone' on a list with multiple instances of an element should throw an exception");
-            }
-            catch (InvalidOperationException)
-            { }
-
-            try
-            {
-                // Act and assert failure
-                list2.SingleOrNone();
-                Assert.Fail("Calling 'SingleOrNone' on a list with more than 1 element should throw an exception");
-            }
-            catch(InvalidOperationException)
-            { }
-
-            // Assert
-            Assert.IsTrue(some1.IsSome);
-            Assert.AreEqual(2, some1.Unwrap());
-
-            Assert.IsTrue(some2.IsSome);
-            Assert.AreEqual(0, some2.Unwrap());
 
             Assert.IsTrue(none.IsNone);
         }
