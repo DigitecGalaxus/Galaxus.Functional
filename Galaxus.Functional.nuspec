@@ -7,7 +7,7 @@
         <owners>DigitecGalaxus</owners>
         <license type="expression">MIT</license>
         <copyright>2018-2020 Digitec Galaxus AG</copyright>
-        <tags>functional option either result</tags>
+        <tags>functional option either result digitec galaxus digitecgalaxus</tags>
         <icon>logo.png</icon>
         <description>A package bringing popular functional abstractions (e.g. Option or Either) to C#.</description>
         <projectUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</projectUrl>
