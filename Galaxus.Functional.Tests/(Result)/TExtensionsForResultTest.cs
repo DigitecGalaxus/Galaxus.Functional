@@ -158,5 +158,67 @@ namespace Galaxus.Functional.Tests
             await resultTask;
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: resultTask.Status);
         }
+        
+        
+        [Test]
+        public async Task Result_Unwrap()
+        {
+            var ok = Task.FromResult("hello".ToOk<string, int>());
+            var err = Task.FromResult(99.ToErr<string, int>());
+
+            Assert.AreEqual("hello", await ok.UnwrapAsync());
+            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(() => err.UnwrapAsync());
+        }
+
+        [Test]
+        public async Task Result_UnwrapWithCustomError()
+        {
+            var ok = Task.FromResult("hello".ToOk<string, int>());
+            var err = Task.FromResult(99.ToErr<string, int>());
+
+            Assert.AreEqual("hello", await ok.UnwrapAsync("YOLO"));
+            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(async () => {
+                try
+                {
+                    await err.UnwrapAsync("YOLO");
+                }
+                catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+                {
+                    Assert.AreEqual("YOLO", ex.Message);
+                    throw;
+                }
+            });
+        }
+
+        [Test]
+        public async Task Result_UnwrapWithCustomInvokableError()
+        {
+
+            {
+                var ok = Task.FromResult("hello".ToOk<string, int>());
+                bool invoked = false;
+                Assert.AreEqual("hello", await ok.UnwrapAsync(err => { invoked = true; return "YOLO"; }));
+                Assert.IsFalse(invoked);
+            }
+
+            {
+                var err = Task.FromResult(0.ToErr<string, int>());
+                bool invoked = false;
+                Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(async () =>
+                {
+                    try
+                    {
+                        await err.UnwrapAsync(e => { invoked = true; return "YOLO"; });
+                    }
+                    catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+                    {
+                        Assert.AreEqual("YOLO", ex.Message);
+                        throw;
+                    }
+                });
+
+                Assert.IsTrue(invoked);
+            }
+        }
     }
 }

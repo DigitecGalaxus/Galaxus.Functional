@@ -258,6 +258,49 @@ namespace Galaxus.Functional
 
         #endregion
 
+        #region UnwrapAsync
+        
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <returns><b>self</b></returns>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self) => (await self).Unwrap();
+
+        
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <param name="error">
+        /// A custom error to use as the exception message.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="Unwrap(Func{TErr, string})"/>, which is lazily evaluated.
+        /// </param>
+        /// <returns><b>self</b></returns>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, string error) =>
+            (await self).Unwrap(error);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error">A function that returns a custom error to use as the exception message.</param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <returns></returns>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TErr, string> error) =>
+            (await self).Unwrap(error);
+
+        #endregion
+
         /// <summary>
         /// Transposes a <see cref="Result{TOk, TErr}"/> of an <see cref="Option{T}"/> into an <see cref="Option{T}"/> of a <see cref="Result{TOk, TErr}"/>.
         /// <b>Ok(None)</b> will be mapped to <b>None</b>.

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -72,6 +73,45 @@ namespace Galaxus.Functional
         /// </summary>
         public static Option<T> ToOption<T>(this T? self) where T : struct
             => self?.ToOption() ?? Option<T>.None;
+
+        #endregion
+
+        #region UnwrapAsync
+
+        
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Some</b>.
+        /// <i>Throws if <b>self</b> contains <b>None</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self) => (await self).Unwrap();
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Some</b>.
+        /// <i>Throws if <b>self</b> contains <b>None</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error">
+        /// A custom error to use as the exception message.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapAsync{T}(System.Threading.Tasks.Task{Galaxus.Functional.Option{T}})"/>, which is lazily evaluated.</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, string error) =>
+            (await self).Unwrap(error);
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<string> error) =>
+            (await self).Unwrap(error);
 
         #endregion
 
