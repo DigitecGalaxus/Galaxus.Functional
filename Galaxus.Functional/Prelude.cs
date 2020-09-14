@@ -49,5 +49,86 @@ namespace Galaxus.Functional
                 return Unit.Value;
             };
         }
+
+        /// <summary>
+        /// Compose two functions, passing the result from <c>first</c> to <c>second</c>.
+        /// </summary>
+        /// <param name="first">The first function in the chain.</param>
+        /// <param name="second">The second function in the chain.</param>
+        /// <returns>A function containing both first and second.</returns>
+        public static Func<T1, T3> Compose<T1, T2, T3>(this Func<T1, T2> first, Func<T2, T3> second)
+        {
+            return x => second(first(x));
+        }
+
+        #region Bind
+
+        /// <summary>
+        /// Bind a parameter to a function, creating a closure.
+        /// </summary>
+        /// <param name="func">The function of which to create a closure.</param>
+        /// <param name="param">The parameter to bind.</param>
+        /// <returns>A function with its first parameter bound.</returns>
+        public static Func<T2> Bind<T1, T2>(this Func<T1, T2> func, T1 param)
+        {
+            return () => func(param);
+        }
+
+        /// <summary>
+        /// Bind a parameter to a function, creating a closure.
+        /// </summary>
+        /// <param name="func">The function of which to create a closure.</param>
+        /// <param name="param">The parameter to bind.</param>
+        /// <returns>A function with its first parameter bound.</returns>
+        public static Func<T2, T3> Bind<T1, T2, T3>(this Func<T1, T2, T3> func, T1 param)
+        {
+            return y => func(param, y);
+        }
+
+        /// <summary>
+        /// Bind a parameter to a function, creating a closure.
+        /// </summary>
+        /// <param name="func">The function of which to create a closure.</param>
+        /// <param name="param">The parameter to bind.</param>
+        /// <returns>A function with its first parameter bound.</returns>
+        public static Func<T2, T3, T4> Bind<T1, T2, T3, T4>(this Func<T1, T2, T3, T4> func, T1 param)
+        {
+            return (y, z) => func(param, y, z);
+        }
+
+        /// <summary>
+        /// Bind a parameter to a function, creating a closure.
+        /// </summary>
+        /// <param name="func">The function of which to create a closure.</param>
+        /// <param name="param">The parameter to bind.</param>
+        /// <returns>A function with its first parameter bound.</returns>
+        public static Func<T2, T3, T4, T5> Bind<T1, T2, T3, T4, T5>(this Func<T1, T2, T3, T4, T5> func, T1 param)
+        {
+            return (y, z, w) => func(param, y, z, w);
+        }
+
+        /// <summary>
+        /// Bind a parameter to a function, creating a closure.
+        /// </summary>
+        /// <param name="func">The function of which to create a closure.</param>
+        /// <param name="param">The parameter to bind.</param>
+        /// <returns>A function with its first parameter bound.</returns>
+        public static Func<T2, T3, T4, T5, T6> Bind<T1, T2, T3, T4, T5, T6>(this Func<T1, T2, T3, T4, T5, T6> func, T1 param)
+        {
+            return (y, z, w, v) => func(param, y, z, w, v);
+        }
+
+        /// <summary>
+        /// Bind a parameter to a function, creating a closure.
+        /// </summary>
+        /// <param name="func">The function of which to create a closure.</param>
+        /// <param name="param">The parameter to bind.</param>
+        /// <returns>A function with its first parameter bound.</returns>
+        public static Func<T2, T3, T4, T5, T6, T7> Bind<T1, T2, T3, T4, T5, T6, T7>(this Func<T1, T2, T3, T4, T5, T6, T7> func, T1 param)
+        {
+            return (y, z, w, v, u) => func(param, y, z, w, v, u);
+        }
+
+        #endregion
     }
 }
