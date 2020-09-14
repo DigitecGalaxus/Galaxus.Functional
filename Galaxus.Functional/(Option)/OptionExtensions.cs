@@ -110,8 +110,30 @@ namespace Galaxus.Functional
         /// <param name="error"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns><b>some</b></returns>
-        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<string> error) =>
-            (await self).Unwrap(error);
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<string> error)
+            => (await self).Unwrap(error);
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<Task<string>> error)
+        {
+            var res = await self;
+            if (res.IsNone)
+            {
+                if (error is null)
+                    throw new ArgumentNullException(nameof(error));
+
+                throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(await error());
+            }
+
+            return res.Unwrap();
+        }
 
         /// <summary>
         /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns <paramref name="fallback"/> otherwise.
@@ -123,7 +145,7 @@ namespace Galaxus.Functional
         /// it is recommended to use <see cref="UnwrapOrElseAsync{T}(System.Threading.Tasks.Task{Galaxus.Functional.Option{T}},System.Func{T})"/>, which is lazily evaluated.</param>
         public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, T fallback) =>
             (await self).UnwrapOr(fallback);
-        
+
         /// <summary>
         /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns <paramref name="fallback"/> otherwise.
         /// </summary>
@@ -155,19 +177,21 @@ namespace Galaxus.Functional
             {
                 return opt.Unwrap();
             }
+
             if (fallback is null)
                 throw new ArgumentNullException(nameof(fallback));
-            
+
             return await fallback();
         }
-        
+
         /// <summary>
         /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the default value of <typeparamref name="T"/> otherwise.
         /// </summary>
         /// <param name="self"></param>
         /// <typeparam name="T"></typeparam>
-        public static async Task<T> UnwrapOrDefault<T>(this Task<Option<T>> self) => (await self).UnwrapOrDefault();
-        
+        public static async Task<T> UnwrapOrDefaultAsync<T>(this Task<Option<T>> self) =>
+            (await self).UnwrapOrDefault();
+
         #endregion
 
         /// <summary>
