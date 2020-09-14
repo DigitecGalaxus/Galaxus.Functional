@@ -18,7 +18,8 @@ namespace Galaxus.Functional
         /// <summary>
         /// Returns a subset of <paramref name="self"/> which contains all values in <paramref name="self"/> that contained "Some" and runs it through the <paramref name="selector"/>.
         /// </summary>
-        public static IEnumerable<TSelection> SelectSome<T, TSelection>(this IEnumerable<Option<T>> self, Func<T, TSelection> selector)
+        public static IEnumerable<TSelection> SelectSome<T, TSelection>(this IEnumerable<Option<T>> self,
+            Func<T, TSelection> selector)
             => self.SelectSome().Select(selector);
 
         #endregion
@@ -78,7 +79,6 @@ namespace Galaxus.Functional
 
         #region UnwrapAsync
 
-        
         /// <summary>
         /// Unwraps asynchronous <b>self</b> and returns <b>Some</b>.
         /// <i>Throws if <b>self</b> contains <b>None</b>!</i>
@@ -113,6 +113,61 @@ namespace Galaxus.Functional
         public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<string> error) =>
             (await self).Unwrap(error);
 
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">
+        /// The value to return if <b>self</b> is <b>Some</b>.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapOrElseAsync{T}(System.Threading.Tasks.Task{Galaxus.Functional.Option{T}},System.Func{T})"/>, which is lazily evaluated.</param>
+        public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, T fallback) =>
+            (await self).UnwrapOr(fallback);
+        
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">
+        /// The value to return if <b>self</b> is <b>Some</b>.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapOrElseAsync{T}(System.Threading.Tasks.Task{Galaxus.Functional.Option{T}},System.Func{System.Threading.Tasks.Task{T}})"/>, which is lazily evaluated.</param>
+        public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, Task<T> fallback) =>
+            (await self).UnwrapOr(await fallback);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the result of <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">The function to call if <b>self</b> contains <b>None</b>.</param>
+        public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<T> fallback) =>
+            (await self).UnwrapOrElse(fallback);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the result of <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">The function to call if <b>self</b> contains <b>None</b>.</param>
+        public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<Task<T>> fallback)
+        {
+            var opt = await self;
+            if (opt.IsSome)
+            {
+                return opt.Unwrap();
+            }
+            if (fallback is null)
+                throw new ArgumentNullException(nameof(fallback));
+            
+            return await fallback();
+        }
+        
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the default value of <typeparamref name="T"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <typeparam name="T"></typeparam>
+        public static async Task<T> UnwrapOrDefault<T>(this Task<Option<T>> self) => (await self).UnwrapOrDefault();
+        
         #endregion
 
         /// <summary>
