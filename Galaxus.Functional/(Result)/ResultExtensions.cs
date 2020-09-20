@@ -125,8 +125,7 @@ namespace Galaxus.Functional
         /// Returns a subset of <paramref name="self"/> which contains all <b>Ok</b> values in <paramref name="self"/>.
         /// Then runs it through the <paramref name="selector"/>.
         /// </summary>
-        public static IEnumerable<TSelection> SelectOk<TOk, TErr, TSelection>(this IEnumerable<Result<TOk, TErr>> self,
-            Func<TOk, TSelection> selector)
+        public static IEnumerable<TSelection> SelectOk<TOk, TErr, TSelection>(this IEnumerable<Result<TOk, TErr>> self, Func<TOk, TSelection> selector)
             => self.SelectOk().Select(selector);
 
         /// <summary>
@@ -139,8 +138,7 @@ namespace Galaxus.Functional
         /// Returns a subset of <paramref name="self"/> which contains all <b>Err</b> values in <paramref name="self"/>.
         /// Then runs it through the <paramref name="selector"/>.
         /// </summary>
-        public static IEnumerable<TSelection> SelectErr<TOk, TErr, TSelection>(this IEnumerable<Result<TOk, TErr>> self,
-            Func<TErr, TSelection> selector)
+        public static IEnumerable<TSelection> SelectErr<TOk, TErr, TSelection>(this IEnumerable<Result<TOk, TErr>> self, Func<TErr, TSelection> selector)
             => self.SelectErr().Select(selector);
 
         #endregion

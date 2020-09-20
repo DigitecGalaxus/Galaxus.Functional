@@ -18,8 +18,7 @@ namespace Galaxus.Functional
         /// <summary>
         /// Returns a subset of <paramref name="self"/> which contains all values in <paramref name="self"/> that contained "Some" and runs it through the <paramref name="selector"/>.
         /// </summary>
-        public static IEnumerable<TSelection> SelectSome<T, TSelection>(this IEnumerable<Option<T>> self,
-            Func<T, TSelection> selector)
+        public static IEnumerable<TSelection> SelectSome<T, TSelection>(this IEnumerable<Option<T>> self, Func<T, TSelection> selector)
             => self.SelectSome().Select(selector);
 
         #endregion
