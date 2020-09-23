@@ -31,7 +31,8 @@ namespace Galaxus.Functional
         /// <typeparam name="TOkFrom">The current type of <b>Ok</b>. This type must derive from <typeparamref name="TOkTo"/>.</typeparam>
         /// <typeparam name="TOkTo">The type to map <b>Ok</b> to.</typeparam>
         /// <typeparam name="TErr">The type of <b>Err</b> which will remain untouched.</typeparam>
-        public static Result<TOkTo, TErr> Map<TOkFrom, TOkTo, TErr>(this Result<TOkFrom, TErr> self) where TOkFrom : TOkTo
+        public static Result<TOkTo, TErr> Map<TOkFrom, TOkTo, TErr>(this Result<TOkFrom, TErr> self)
+            where TOkFrom : TOkTo
         {
             return self.Match(
                 ok => ok,
@@ -45,7 +46,8 @@ namespace Galaxus.Functional
         /// <typeparam name="TOk">The type of <b>Ok</b> which will remain untouched.</typeparam>
         /// <typeparam name="TErrFrom">The current type of <b>Err</b>. This type must derive from <typeparamref name="TErrTo"/>.</typeparam>
         /// <typeparam name="TErrTo">The type to map <b>Err</b> to.</typeparam>
-        public static Result<TOk, TErrTo> MapErr<TOk, TErrFrom, TErrTo>(this Result<TOk, TErrFrom> self) where TErrFrom : TErrTo
+        public static Result<TOk, TErrTo> MapErr<TOk, TErrFrom, TErrTo>(this Result<TOk, TErrFrom> self)
+            where TErrFrom : TErrTo
         {
             return self.Match(
                 ok => ok.ToOk<TOk, TErrTo>(),
@@ -255,6 +257,131 @@ namespace Galaxus.Functional
             return self.OrElseAsync(err => Task.FromResult(continuation(err)));
         }
 
+        #endregion
+
+        #region UnwrapAsync
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <returns><b>self</b></returns>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self) =>
+            (await self).Unwrap();
+
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <param name="error">
+        /// A custom error to use as the exception message.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="Unwrap(Func{TErr, string})"/>, which is lazily evaluated.
+        /// </param>
+        /// <returns><b>self</b></returns>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, string error) =>
+            (await self).Unwrap(error);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error">A function that returns a custom error to use as the exception message.</param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <returns></returns>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
+            Func<TErr, string> error) => (await self).Unwrap(error);
+        
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error">A function that returns a custom error to use as the exception message.</param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <returns></returns>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
+            Func<TErr, Task<string>> error)
+        {
+            var res = await self;
+            if (res.IsErr)
+            {
+                if (error is null)
+                    throw new ArgumentNullException(nameof(error));
+
+                throw new AttemptToUnwrapErrWhenResultWasOkException(await error(res.Err.Unwrap()));
+            }
+
+            return res.Unwrap();
+        }
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">
+        /// The value to return if <b>self</b> contains <b>Err</b>.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapOrElseAsync{TOk,TErr}(System.Threading.Tasks.Task{Galaxus.Functional.Result{TOk,TErr}},System.Func{TOk})"/>, which is lazily evaluated.
+        /// </param>
+        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, TOk fallback) =>
+            (await self).UnwrapOr(fallback);
+        
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">
+        /// The value to return if <b>self</b> contains <b>Err</b>.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapOrElseAsync{TOk,TErr}(System.Threading.Tasks.Task{Galaxus.Functional.Result{TOk,TErr}},System.Func{TOk})"/>, which is lazily evaluated.
+        /// </param>
+        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Task<TOk> fallback) =>
+            (await self).UnwrapOr(await fallback);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the result of <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">The function to call if <b>self</b> contains <b>Err</b>.</param>
+        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
+            Func<TOk> fallback) =>
+            (await self).UnwrapOrElse(fallback);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the result of <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">The function to call if <b>self</b> contains <b>Err</b>.</param>
+        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
+            Func<Task<TOk>> fallback)
+        {
+            var res = await self;
+            if (res.IsOk)
+                return res.Unwrap();
+
+            if (fallback is null)
+                throw new ArgumentNullException(nameof(fallback));
+
+            return await fallback();
+        }
+
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the default value of <typeparamref name="TOk"/> otherwise.
+        /// </summary>
+        public static async Task<TOk> UnwrapOrDefaultAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self)
+            => (await self).UnwrapOrDefault();
 
         #endregion
 

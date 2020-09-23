@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -72,6 +73,123 @@ namespace Galaxus.Functional
         /// </summary>
         public static Option<T> ToOption<T>(this T? self) where T : struct
             => self?.ToOption() ?? Option<T>.None;
+
+        #endregion
+
+        #region UnwrapAsync
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Some</b>.
+        /// <i>Throws if <b>self</b> contains <b>None</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self) => (await self).Unwrap();
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Some</b>.
+        /// <i>Throws if <b>self</b> contains <b>None</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error">
+        /// A custom error to use as the exception message.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapAsync{T}(System.Threading.Tasks.Task{Galaxus.Functional.Option{T}})"/>, which is lazily evaluated.</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, string error) =>
+            (await self).Unwrap(error);
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<string> error)
+            => (await self).Unwrap(error);
+
+        /// <summary>
+        /// Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
+        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="error"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns><b>some</b></returns>
+        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<Task<string>> error)
+        {
+            var res = await self;
+            if (res.IsNone)
+            {
+                if (error is null)
+                    throw new ArgumentNullException(nameof(error));
+
+                throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(await error());
+            }
+
+            return res.Unwrap();
+        }
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">
+        /// The value to return if <b>self</b> is <b>Some</b>.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapOrElseAsync{T}(System.Threading.Tasks.Task{Galaxus.Functional.Option{T}},System.Func{T})"/>, which is lazily evaluated.</param>
+        public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, T fallback) =>
+            (await self).UnwrapOr(fallback);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">
+        /// The value to return if <b>self</b> is <b>Some</b>.
+        /// This argument is eagerly evaluated; if you are passing the result of a function call,
+        /// it is recommended to use <see cref="UnwrapOrElseAsync{T}(System.Threading.Tasks.Task{Galaxus.Functional.Option{T}},System.Func{System.Threading.Tasks.Task{T}})"/>, which is lazily evaluated.</param>
+        public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, Task<T> fallback) =>
+            (await self).UnwrapOr(await fallback);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the result of <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">The function to call if <b>self</b> contains <b>None</b>.</param>
+        public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<T> fallback) =>
+            (await self).UnwrapOrElse(fallback);
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the result of <paramref name="fallback"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="fallback">The function to call if <b>self</b> contains <b>None</b>.</param>
+        public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<Task<T>> fallback)
+        {
+            var opt = await self;
+            if (opt.IsSome)
+            {
+                return opt.Unwrap();
+            }
+
+            if (fallback is null)
+                throw new ArgumentNullException(nameof(fallback));
+
+            return await fallback();
+        }
+
+        /// <summary>
+        /// Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the default value of <typeparamref name="T"/> otherwise.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <typeparam name="T"></typeparam>
+        public static async Task<T> UnwrapOrDefaultAsync<T>(this Task<Option<T>> self) =>
+            (await self).UnwrapOrDefault();
 
         #endregion
 
