@@ -36,7 +36,7 @@ namespace Galaxus.Functional.Linq
         ///     <c><see cref="Option{T}" />.None</c> if <c>source</c> is empty; otherwise, the first element in <c>source</c>.
         /// </returns>
         public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source)
-            => source.FirstOrNone(_ => true);
+            => source.FirstOrNone(True);
 
         /// <summary>
         ///     Returns the first element of the sequence that satisfies a condition or <see cref="Option{T}.None" /> if the
@@ -67,7 +67,7 @@ namespace Galaxus.Functional.Linq
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
         public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source)
-            => source.LastOrNone(_ => true);
+            => source.LastOrNone(True);
 
         /// <summary>
         ///     Returns the last element of a sequence that satisfies a condition or <see cref="Option{T}.None" /> if no such
@@ -104,7 +104,7 @@ namespace Galaxus.Functional.Linq
         /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
         /// <exception cref="InvalidOperationException">The input sequence contains more than one element.</exception>
         public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
-            => source.SingleOrNone(_ => true);
+            => source.SingleOrNone(True);
 
         /// <summary>
         ///     Returns the only element of a sequence that satisfies a specified condition or <see cref="Option{T}.None" /> if no
@@ -122,5 +122,9 @@ namespace Galaxus.Functional.Linq
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
                 .SingleOrDefault();
+
+        // This probably should be defined publicly together with False and Identity
+        private static bool True<TSource>(TSource _)
+            => true;
     }
 }
