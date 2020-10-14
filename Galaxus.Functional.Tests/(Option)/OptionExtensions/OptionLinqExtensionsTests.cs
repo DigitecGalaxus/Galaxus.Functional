@@ -13,7 +13,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void ElementAtOrNone_IndexIsZero_ReturnsSome()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var some = list.ElementAtOrNone(0);
 
@@ -24,7 +24,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void ElementAtOrNone_IndexIsCount_ReturnsNone()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var none = list.ElementAtOrNone(5);
 
@@ -34,7 +34,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void ElementAtOrNone_IndexIsNegativeOne_ReturnsNone()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var none = list.ElementAtOrNone(-1);
 
@@ -56,7 +56,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void FirstOrNone_NoPredicate_ReturnsSome()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var some = list.FirstOrNone();
 
@@ -67,7 +67,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void FirstOrNone_WithPredicate_ReturnsSome()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
             var some = list.FirstOrNone(x => x > 2);
 
             Assert.IsTrue(some.IsSome);
@@ -77,7 +77,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void FirstOrNone_PredicateMatchesNone_ReturnsNone()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var none = list.FirstOrNone(x => x == 10);
 
@@ -98,7 +98,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void LastOrNone_GetLast_ReturnsSome()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var some1 = list.LastOrNone();
 
@@ -109,7 +109,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void LastOrNone_WithPredicate_ReturnsSome()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var some2 = list.LastOrNone(x => x > 2);
 
@@ -120,7 +120,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void LastOrNon_PredicateMatchesNon_ReturnsNone()
         {
-            var list = new List<int> { 0, 1, 2, 3, 4 };
+            var list = new List<int> {0, 1, 2, 3, 4};
 
             var none = list.FirstOrNone(x => x == 10);
 
@@ -130,7 +130,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_SingleMatchingElement_ReturnsSome()
         {
-            var list1 = new List<int> { 0, 1, 2, 3, 4 };
+            var list1 = new List<int> {0, 1, 2, 3, 4};
 
             var some1 = list1.SingleOrNone(x => x == 2);
 
@@ -141,7 +141,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_SingleElementInCollection_ReturnsSome()
         {
-            var list3 = new List<int> { 0 };
+            var list3 = new List<int> {0};
 
             var some2 = list3.SingleOrNone();
 
@@ -152,7 +152,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_MultipleMatchingElements_ThrowsException()
         {
-            var list2 = new List<int> { 0, 1, 2, 2, 3, 4 };
+            var list2 = new List<int> {0, 1, 2, 2, 3, 4};
 
             Assert.Throws<InvalidOperationException>(() => list2.SingleOrNone(x => x == 2));
         }
@@ -160,7 +160,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_MultipleElements_ThrowsException()
         {
-            var list2 = new List<int> { 0, 1, 2, 2, 3, 4 };
+            var list2 = new List<int> {0, 1, 2, 2, 3, 4};
 
             Assert.Throws<InvalidOperationException>(() => list2.SingleOrNone());
         }
