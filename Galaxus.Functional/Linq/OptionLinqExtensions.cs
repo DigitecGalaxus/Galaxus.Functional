@@ -51,17 +51,10 @@ namespace Galaxus.Functional.Linq
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
         public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
-        {
-            foreach (var element in source)
-            {
-                if (predicate(element))
-                {
-                    return Option<TSource>.Some(element);
-                }
-            }
-
-            return Option<TSource>.None;
-        }
+            => source
+                .Where(predicate)
+                .Select(Option<TSource>.Some)
+                .FirstOrDefault();
 
         /// <summary>
         ///     Returns the last element of a sequence, or <see cref="Option{T}.None" /> if the sequence contains no elements.
