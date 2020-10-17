@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Galaxus.Functional.Linq;
+using Galaxus.Functional.Tests.Helpers;
 using NUnit.Framework;
 
 namespace Galaxus.Functional.Tests.OptionExtensions
@@ -12,7 +14,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         public void ElementAtOrNone_IndexIsZero_ReturnsSome()
         {
             var list = new List<int> {0, 1, 2, 3, 4};
-            
+
             var some = list.ElementAtOrNone(0);
 
             Assert.IsTrue(some.IsSome);
@@ -37,6 +39,18 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             var none = list.ElementAtOrNone(-1);
 
             Assert.IsTrue(none.IsNone);
+        }
+
+        [Test]
+        public void ElementAtOrNone_AppliedToFailingEnumerator_DoesNotThrow()
+        {
+            var index = 5;
+            var sequence = new YieldElementsThenFail<string>("Hello world", index + 1);
+
+            var composition = sequence.ElementAtOrNone(index);
+
+            Assert.IsTrue(composition.IsSome);
+            Assert.Throws<AssertionException>(() => sequence.ToList());
         }
 
         [Test]
@@ -68,6 +82,17 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             var none = list.FirstOrNone(x => x == 10);
 
             Assert.IsTrue(none.IsNone);
+        }
+
+        [Test]
+        public void FirstOrNone_AppliedToFailingEnumerator_DoesNotThrow()
+        {
+            var sequence = new YieldElementsThenFail<string>("Hello world", 1);
+
+            var composition = sequence.FirstOrNone();
+
+            Assert.IsTrue(composition.IsSome);
+            Assert.Throws<AssertionException>(() => sequence.ToList());
         }
 
         [Test]
@@ -150,6 +175,15 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             var none = list4.SingleOrNone();
 
             Assert.IsTrue(none.IsNone);
+        }
+
+        [Test]
+        public void SingleOrNone_AppliedToFailingEnumerator_DoesNotThrow()
+        {
+            var sequence = new YieldElementsThenFail<string>("Hello world", 2);
+
+            Assert.Throws<InvalidOperationException>(() => sequence.SingleOrNone());
+            Assert.Throws<AssertionException>(() => sequence.ToList());
         }
     }
 }
