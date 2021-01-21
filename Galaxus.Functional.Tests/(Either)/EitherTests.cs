@@ -57,6 +57,36 @@ namespace Galaxus.Functional.Tests
             var union2 = new Either<byte, int>(default(int));
             Assert.AreNotEqual(union1, union2);
         }
+        
+        [Test]
+        public void IsAIsBAreEvaluatedCorrectly()
+        {
+            var someA = new Either<string, int>("hello");
+            var someB = new Either<string, int>(117);
+
+            Assert.IsTrue(someA.IsA);
+            Assert.IsFalse(someA.IsB);
+            Assert.IsFalse(someB.IsA);
+            Assert.IsTrue(someB.IsB);
+        }
+        
+        [Test]
+        public void IsAIsBIsCAreEvaluatedCorrectly()
+        {
+            var someA = new Either<string, int, bool>("hello");
+            var someB = new Either<string, int, bool>(117);
+            var someC = new Either<string, int, bool>(true);
+
+            Assert.IsTrue(someA.IsA);
+            Assert.IsFalse(someA.IsB);
+            Assert.IsFalse(someA.IsC);
+            Assert.IsFalse(someB.IsA);
+            Assert.IsTrue(someB.IsB);
+            Assert.IsFalse(someB.IsC);
+            Assert.IsFalse(someC.IsA);
+            Assert.IsFalse(someC.IsB);
+            Assert.IsTrue(someC.IsC);
+        }
 
         [Test]
         [TestCaseSource(nameof(IEitherReturnsCorrectTypeTestCases))]
