@@ -68,12 +68,12 @@ namespace Galaxus.Functional
         public Discriminant2 Discriminant { get; }
 
         /// <summary>
-        /// Indicates if field A is in use.
+        /// Indicates that field A is in use.
         /// </summary>
         public bool IsA => Discriminant == Discriminant2.A;
 
         /// <summary>
-        /// Indicates if field B is in use.
+        /// Indicates that field B is in use.
         /// </summary>
         public bool IsB => Discriminant == Discriminant2.B;
 
