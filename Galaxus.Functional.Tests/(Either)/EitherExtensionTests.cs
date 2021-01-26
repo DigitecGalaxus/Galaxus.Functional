@@ -20,11 +20,9 @@ namespace Galaxus.Functional.Tests
 
             var aEntries = eithers.SelectA().ToList();
             var bEntries = eithers.SelectB().ToList();
-
-            Assert.That(aEntries[0], Is.EqualTo("Hello"));
-            Assert.That(aEntries[1], Is.EqualTo("World"));
-            Assert.That(bEntries[0], Is.EqualTo(1));
-            Assert.That(bEntries[1], Is.EqualTo(2));
+            
+            CollectionAssert.AreEqual(new List<string> { "Hello", "World" }, aEntries);
+            CollectionAssert.AreEqual(new List<int> { 1, 2 }, bEntries);
         }
 
         [Test]
@@ -42,12 +40,10 @@ namespace Galaxus.Functional.Tests
             var aEntries = eithers.SelectA().ToList();
             var bEntries = eithers.SelectB().ToList();
             var cEntries = eithers.SelectC().ToList();
-
-            Assert.That(aEntries[0], Is.EqualTo("Hello"));
-            Assert.That(aEntries[1], Is.EqualTo("World"));
-            Assert.That(bEntries[0], Is.EqualTo(1));
-            Assert.That(bEntries[1], Is.EqualTo(2));
-            Assert.That(cEntries[0], Is.EqualTo(true));
+            
+            CollectionAssert.AreEqual(new List<string> { "Hello", "World" }, aEntries);
+            CollectionAssert.AreEqual(new List<int> { 1, 2 }, bEntries);
+            CollectionAssert.AreEqual(new List<bool> { true }, cEntries);
         }
     }
 }
