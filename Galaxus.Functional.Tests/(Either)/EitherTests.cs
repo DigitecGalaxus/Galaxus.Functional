@@ -110,9 +110,9 @@ namespace Galaxus.Functional.Tests
             Func<bool, Task<string>> continuationA = async _ => await Task.FromResult("A");
             Func<string, Task<string>> continuationB = async s =>  await Task.FromResult(s);
 
-            var someA = new Either<bool, string>("B");
+            var someB = new Either<bool, string>("B");
 
-            var result = await someA.MatchAsync(
+            var result = await someB.MatchAsync(
                 async a => await continuationA(a),
                 async b => await continuationB(b));
 
@@ -143,9 +143,9 @@ namespace Galaxus.Functional.Tests
             Func<string, Task<string>> continuationB = async s =>  await Task.FromResult(s);
             Func<int, Task<string>> continuationC = async _ =>  await Task.FromResult("C");
 
-            var someA = new Either<bool, string, int>("B");
+            var someB = new Either<bool, string, int>("B");
 
-            var result = await someA.MatchAsync(
+            var result = await someB.MatchAsync(
                 async a => await continuationA(a),
                 async b => await continuationB(b),
                 async c => await continuationC(c));
@@ -160,9 +160,9 @@ namespace Galaxus.Functional.Tests
             Func<int, Task<string>> continuationB = async _ =>  await Task.FromResult("B");
             Func<string, Task<string>> continuationC = async s =>  await Task.FromResult(s);
 
-            var someA = new Either<bool, int, string>("C");
+            var someC = new Either<bool, int, string>("C");
 
-            var result = await someA.MatchAsync(
+            var result = await someC.MatchAsync(
                 async a => await continuationA(a),
                 async b => await continuationB(b),
                 async c => await continuationC(c));
