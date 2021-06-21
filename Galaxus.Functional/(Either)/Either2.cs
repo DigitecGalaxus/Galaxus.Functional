@@ -143,7 +143,7 @@ namespace Galaxus.Functional
                 async a => await onA(a),
                 async b => await onB(b));
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>
@@ -155,7 +155,7 @@ namespace Galaxus.Functional
                 async a => await onA(a),
                 b => Task.FromResult(onB(b)));
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>

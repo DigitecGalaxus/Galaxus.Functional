@@ -103,7 +103,7 @@ namespace Galaxus.Functional.Tests
 
             Assert.That(result, Is.EqualTo("A"));
         }
-        
+
         [Test]
         public async Task Either2MatchAsyncForBReturnsB()
         {
@@ -118,7 +118,7 @@ namespace Galaxus.Functional.Tests
 
             Assert.That(result, Is.EqualTo("B"));
         }
-        
+
         [Test]
         public async Task Either3MatchAsyncForAReturnsA()
         {
@@ -135,7 +135,7 @@ namespace Galaxus.Functional.Tests
 
             Assert.That(result, Is.EqualTo("A"));
         }
-        
+
         [Test]
         public async Task Either3MatchAsyncForBReturnsB()
         {
@@ -152,7 +152,7 @@ namespace Galaxus.Functional.Tests
 
             Assert.That(result, Is.EqualTo("B"));
         }
-        
+
         [Test]
         public async Task Either3MatchAsyncForCReturnsC()
         {

@@ -177,7 +177,7 @@ namespace Galaxus.Functional
                     throw new InvalidOperationException($"{GetType()} has an invalid discriminant. This is an implementation bug.");
             }
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>
@@ -191,7 +191,7 @@ namespace Galaxus.Functional
                 async b => await onB(b),
                 async c => await onC(c));
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>
@@ -205,7 +205,7 @@ namespace Galaxus.Functional
                 async b => await onB(b),
                 async c => await onC(c));
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>
@@ -219,7 +219,7 @@ namespace Galaxus.Functional
                 b => Task.FromResult(onB(b)),
                 async c => await onC(c));
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>
@@ -233,7 +233,7 @@ namespace Galaxus.Functional
                 async b => await onB(b),
                 c => Task.FromResult(onC(c)));
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>
@@ -247,7 +247,7 @@ namespace Galaxus.Functional
                 b => Task.FromResult(onB(b)),
                 async c => await onC(c));
         }
-        
+
         /// <summary>
         /// An overload for <see cref="Match"/> using async functions.
         /// </summary>
