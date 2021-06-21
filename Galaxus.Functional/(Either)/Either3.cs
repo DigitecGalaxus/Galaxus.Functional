@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -175,6 +176,104 @@ namespace Galaxus.Functional
                 default:
                     throw new InvalidOperationException($"{GetType()} has an invalid discriminant. This is an implementation bug.");
             }
+        }
+        
+        /// <summary>
+        /// An overload for <see cref="Match"/> using async functions.
+        /// </summary>
+        /// <param name="onA">Async function to be called when field "A" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onB">Async function to be called when field "B" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onC">Async function to be called when field "C" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        public Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, Task<T>> onB, Func<C, Task<T>> onC)
+        {
+            return Match(
+                async a => await onA(a),
+                async b => await onB(b),
+                async c => await onC(c));
+        }
+        
+        /// <summary>
+        /// An overload for <see cref="Match"/> using async functions.
+        /// </summary>
+        /// <param name="onA">Non-async function to be called when field "A" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onB">Async function to be called when field "B" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onC">Async function to be called when field "C" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        public Task<T> MatchAsync<T>(Func<A, T> onA, Func<B, Task<T>> onB, Func<C, Task<T>> onC)
+        {
+            return Match(
+                a => Task.FromResult(onA(a)),
+                async b => await onB(b),
+                async c => await onC(c));
+        }
+        
+        /// <summary>
+        /// An overload for <see cref="Match"/> using async functions.
+        /// </summary>
+        /// <param name="onA">Async function to be called when field "A" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onB">Non-async function to be called when field "B" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onC">Async function to be called when field "C" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        public Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, T> onB, Func<C, Task<T>> onC)
+        {
+            return Match(
+                async a => await onA(a),
+                b => Task.FromResult(onB(b)),
+                async c => await onC(c));
+        }
+        
+        /// <summary>
+        /// An overload for <see cref="Match"/> using async functions.
+        /// </summary>
+        /// <param name="onA">Async function to be called when field "A" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onB">Async function to be called when field "B" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onC">Non-async function to be called when field "C" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        public Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, Task<T>> onB, Func<C, T> onC)
+        {
+            return Match(
+                async a => await onA(a),
+                async b => await onB(b),
+                c => Task.FromResult(onC(c)));
+        }
+        
+        /// <summary>
+        /// An overload for <see cref="Match"/> using async functions.
+        /// </summary>
+        /// <param name="onA">Non-async function to be called when field "A" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onB">Non-async function to be called when field "B" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onC">Async function to be called when field "C" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        public Task<T> MatchAsync<T>(Func<A, T> onA, Func<B, T> onB, Func<C, Task<T>> onC)
+        {
+            return Match(
+                a => Task.FromResult(onA(a)),
+                b => Task.FromResult(onB(b)),
+                async c => await onC(c));
+        }
+        
+        /// <summary>
+        /// An overload for <see cref="Match"/> using async functions.
+        /// </summary>
+        /// <param name="onA">Non-async function to be called when field "A" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onB">Async function to be called when field "B" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onC">Non-async function to be called when field "C" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        public Task<T> MatchAsync<T>(Func<A, T> onA, Func<B, Task<T>> onB, Func<C, T> onC)
+        {
+            return Match(
+                a => Task.FromResult(onA(a)),
+                async b => await onB(b),
+                c => Task.FromResult(onC(c)));
+        }
+
+        /// <summary>
+        /// An overload for <see cref="Match"/> using async functions.
+        /// </summary>
+        /// <param name="onA">Async function to be called when field "A" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onB">Non-async function to be called when field "B" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onC">Non-async function to be called when field "C" is in use. The argument to this action is never the <b>null</b> reference.</param>
+        public Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, T> onB, Func<C, T> onC)
+        {
+            return Match(
+                async a => await onA(a),
+                b => Task.FromResult(onB(b)),
+                c => Task.FromResult(onC(c)));
         }
 
         #endregion
