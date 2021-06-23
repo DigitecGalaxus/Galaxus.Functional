@@ -58,9 +58,9 @@ namespace Galaxus.Functional
         /// <param name="onErr">The async function to be called on an <b>Ok</b>.</param>
         /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}"/> type.</typeparam>
         /// <returns></returns>
-        public Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, Task<TResult>> onErr)
+        public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, Task<TResult>> onErr)
         {
-            return Match(
+            return await Match(
                 async ok => await onOk(ok),
                 async err => await onErr(err));
         }
@@ -72,9 +72,9 @@ namespace Galaxus.Functional
         /// <param name="onErr">The non-async function to be called on an <b>Ok</b>.</param>
         /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}"/> type.</typeparam>
         /// <returns></returns>
-        public Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, TResult> onErr)
+        public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, TResult> onErr)
         {
-            return Match(
+            return await Match(
                 async ok => await onOk(ok),
                 err => Task.FromResult(onErr(err)));
         }
@@ -86,9 +86,9 @@ namespace Galaxus.Functional
         /// <param name="onErr">The async function to be called on an <b>Ok</b>.</param>
         /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}"/> type.</typeparam>
         /// <returns></returns>
-        public Task<TResult> MatchAsync<TResult>(Func<TOk, TResult> onOk, Func<TErr, Task<TResult>> onErr)
+        public async Task<TResult> MatchAsync<TResult>(Func<TOk, TResult> onOk, Func<TErr, Task<TResult>> onErr)
         {
-            return Match(
+            return await Match(
                 ok => Task.FromResult(onOk(ok)),
                 async err => await onErr(err));
         }
