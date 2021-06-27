@@ -6,7 +6,7 @@
         <authors>Noël Widmer, Philipp Kiener</authors>
         <owners>DigitecGalaxus</owners>
         <license type="expression">MIT</license>
-        <copyright>2018-2020 Digitec Galaxus AG</copyright>
+        <copyright>2018-2021 Digitec Galaxus AG</copyright>
         <tags>functional option either result digitec galaxus digitecgalaxus</tags>
         <icon>logo.png</icon>
         <description>A package bringing popular functional abstractions (e.g. Option or Either) to C#.</description>
