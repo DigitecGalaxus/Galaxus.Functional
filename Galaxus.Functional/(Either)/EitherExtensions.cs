@@ -76,5 +76,13 @@ namespace Galaxus.Functional
                         _ => throw new InvalidOperationException("Only C is possible"),
                         c => c));
         }
+
+        /// <summary>
+        /// Maps an Option to an Either using the option's value or a fallback
+        /// </summary>
+        /// <param name="option">The Option to be mapped</param>
+        /// <param name="fallback">The value to be used, if option contains none</param>
+        public static Either<TSome, TNone> ToEither<TSome, TNone>(this Option<TSome> option, TNone fallback)
+            => option.MapOr<Either<TSome, TNone>>(some => some, fallback);
     }
 }
