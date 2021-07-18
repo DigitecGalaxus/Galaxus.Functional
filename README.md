@@ -36,8 +36,7 @@ No matter how small, we value every contribution! If you wish to contribute,
 
 1. Please create an issue first - this way, we can discuss the feature and flesh out the nitty-gritty details
 2. Fork the repository, implement the feature and submit a pull request
-3. Add yourself to the CONTRIBUTORS.txt file in that pull request
-4. Once the maintainers have released a new version, your feature will be part of the NuGet package
+3. Once the maintainers have released a new version, your feature will be part of the NuGet package
 
 And always remember the golden rule for every contribution:
 [Be excellent to each other!](https://www.youtube.com/watch?v=rph_1DODXDU)
