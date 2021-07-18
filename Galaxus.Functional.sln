@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 	README.md = README.md
-	CONTRIBUTORS = CONTRIBUTORS
 	LICENSE = LICENSE
 	Galaxus.Functional.nuspec = Galaxus.Functional.nuspec
 EndProjectSection
