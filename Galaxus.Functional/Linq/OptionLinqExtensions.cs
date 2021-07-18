@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -122,6 +122,21 @@ namespace Galaxus.Functional.Linq
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
                 .SingleOrDefault();
+
+        /// <summary>
+        /// Checks a Dictionary if it contains a value for a given key. If so this value is wraped in a Option. Else <see cref="Option{T}.None"/> is returned.
+        /// </summary>
+        /// <param name="dictionary">The dictionary in quesion</param>
+        /// <param name="key">The key to check if a value exists</param>
+        /// <returns>The Value of the Dictionary or None</returns>
+        public static Option<TSome> GetValueOrNone<TKey, TSome>(
+            this IReadOnlyDictionary<TKey, TSome> dictionary,
+            TKey key)
+        {
+            dictionary.TryGetValue(key, out var value);
+            return value.ToOption();
+        }
+
 
         // This probably should be defined publicly together with False and Identity
         private static bool True<TSource>(TSource _)
