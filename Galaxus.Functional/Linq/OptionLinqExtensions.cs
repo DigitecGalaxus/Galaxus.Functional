@@ -124,19 +124,31 @@ namespace Galaxus.Functional.Linq
                 .SingleOrDefault();
 
         /// <summary>
-        /// Checks a Dictionary if it contains a value for a given key. If so this value is wraped in a Option. Else <see cref="Option{T}.None"/> is returned.
+        /// Checks a dictionary if it contains a value for a given key. If so this value is wraped in a Option. Else <see cref="Option{T}.None"/> is returned.
         /// </summary>
-        /// <param name="dictionary">The dictionary in quesion</param>
+        /// <param name="dictionary">The dictionary in question</param>
         /// <param name="key">The key to check if a value exists</param>
-        /// <returns>The Value of the Dictionary or None</returns>
+        /// <returns>The value of the dictionary or None</returns>
+        /// <exception cref="NotImplementedException">If <paramref name="dictionary"/> is neither inheriting from
+        /// <see cref="IDictionary{TKey,TValue}"/> nor from <see cref="IReadOnlyDictionary{TKey,TValue}"/></exception>
         public static Option<TSome> GetValueOrNone<TKey, TSome>(
-            this IReadOnlyDictionary<TKey, TSome> dictionary,
+            this IEnumerable<KeyValuePair<TKey, TSome>> dictionary,
             TKey key)
         {
-            dictionary.TryGetValue(key, out var value);
-            return value.ToOption();
+            TSome value;
+            switch (dictionary)
+            {
+                case IDictionary<TKey, TSome> iDictionary:
+                    iDictionary.TryGetValue(key, out value);
+                    return value.ToOption();
+                case IReadOnlyDictionary<TKey, TSome> iReadonlyDictionary:
+                    iReadonlyDictionary.TryGetValue(key, out value);
+                    return value.ToOption();
+                default:
+                    throw new NotImplementedException(
+                        $"{nameof(GetValueOrNone)} is only implemented for IDictionary and IReadOnlyDictionary");
+            }
         }
-
 
         // This probably should be defined publicly together with False and Identity
         private static bool True<TSource>(TSource _)

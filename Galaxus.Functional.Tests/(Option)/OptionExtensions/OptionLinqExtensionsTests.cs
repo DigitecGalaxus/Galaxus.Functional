@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Galaxus.Functional.Linq;
 using Galaxus.Functional.Tests.Helpers;
@@ -213,5 +214,20 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             // Assert
             Assert.That(bestFriendOrNone, Is.EqualTo(Option<string>.None));
         }
+        
+        [Test]
+        public void GetValueOrNone_WorksForReadOnlyDictionary()
+        {
+            // Arrange
+            const string key = "Asterix";
+            const string expectedValue = "Obelix";
+            var bestFriends = new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { key, expectedValue }, });
+
+            // Act
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+
+            // Assert
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
+        } 
     }
 }
