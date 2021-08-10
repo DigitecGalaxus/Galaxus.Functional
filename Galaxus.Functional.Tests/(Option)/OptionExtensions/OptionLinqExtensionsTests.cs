@@ -228,6 +228,21 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             // Assert
             Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
+        }         
+
+        [Test]
+        public void GetValueOrNone_WorksForList()
+        {
+            // Arrange
+            const string key = "Asterix";
+            const string expectedValue = "Obelix";
+            var bestFriends = new[] { new KeyValuePair<string, string>(key, expectedValue) };
+
+            // Act
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+
+            // Assert
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
         } 
     }
 }

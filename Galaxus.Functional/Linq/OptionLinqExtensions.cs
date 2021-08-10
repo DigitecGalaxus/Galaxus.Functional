@@ -124,29 +124,26 @@ namespace Galaxus.Functional.Linq
                 .SingleOrDefault();
 
         /// <summary>
-        /// Checks a dictionary if it contains a value for a given key. If so this value is wraped in a Option. Else <see cref="Option{T}.None"/> is returned.
+        /// Checks a dictionary if it contains a value for a given key. If so this value is wrapped in an Option.
+        /// Else <see cref="Option{T}.None"/> is returned.
         /// </summary>
-        /// <param name="dictionary">The dictionary in question</param>
+        /// <param name="source">The dictionary in question</param>
         /// <param name="key">The key to check if a value exists</param>
         /// <returns>The value of the dictionary or None</returns>
-        /// <exception cref="NotImplementedException">If <paramref name="dictionary"/> is neither inheriting from
-        /// <see cref="IDictionary{TKey,TValue}"/> nor from <see cref="IReadOnlyDictionary{TKey,TValue}"/></exception>
         public static Option<TSome> GetValueOrNone<TKey, TSome>(
-            this IEnumerable<KeyValuePair<TKey, TSome>> dictionary,
+            this IEnumerable<KeyValuePair<TKey, TSome>> source,
             TKey key)
         {
-            TSome value;
-            switch (dictionary)
+            switch (source)
             {
-                case IDictionary<TKey, TSome> iDictionary:
-                    iDictionary.TryGetValue(key, out value);
-                    return value.ToOption();
-                case IReadOnlyDictionary<TKey, TSome> iReadonlyDictionary:
-                    iReadonlyDictionary.TryGetValue(key, out value);
-                    return value.ToOption();
+                case IDictionary<TKey, TSome> dictionary:
+                    return dictionary.ContainsKey(key) ? Option<TSome>.Some(dictionary[key]) : Option<TSome>.None;
+                case IReadOnlyDictionary<TKey, TSome> readOnlyDictionary:
+                    return readOnlyDictionary.ContainsKey(key)
+                        ? Option<TSome>.Some(readOnlyDictionary[key])
+                        : Option<TSome>.None;
                 default:
-                    throw new NotImplementedException(
-                        $"{nameof(GetValueOrNone)} is only implemented for IDictionary and IReadOnlyDictionary");
+                    return source.SingleOrNone(kvp => kvp.Key.Equals(key)).Map(kvp => kvp.Value);
             }
         }
 
