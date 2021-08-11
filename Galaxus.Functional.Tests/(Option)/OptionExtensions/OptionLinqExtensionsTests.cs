@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Galaxus.Functional.Linq;
 using Galaxus.Functional.Tests.Helpers;
@@ -13,7 +14,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void ElementAtOrNone_IndexIsZero_ReturnsSome()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var some = list.ElementAtOrNone(0);
 
@@ -24,7 +25,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void ElementAtOrNone_IndexIsCount_ReturnsNone()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var none = list.ElementAtOrNone(5);
 
@@ -34,7 +35,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void ElementAtOrNone_IndexIsNegativeOne_ReturnsNone()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var none = list.ElementAtOrNone(-1);
 
@@ -56,7 +57,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void FirstOrNone_NoPredicate_ReturnsSome()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var some = list.FirstOrNone();
 
@@ -67,7 +68,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void FirstOrNone_WithPredicate_ReturnsSome()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
             var some = list.FirstOrNone(x => x > 2);
 
             Assert.IsTrue(some.IsSome);
@@ -77,7 +78,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void FirstOrNone_PredicateMatchesNone_ReturnsNone()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var none = list.FirstOrNone(x => x == 10);
 
@@ -98,7 +99,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void LastOrNone_GetLast_ReturnsSome()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var some1 = list.LastOrNone();
 
@@ -109,7 +110,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void LastOrNone_WithPredicate_ReturnsSome()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var some2 = list.LastOrNone(x => x > 2);
 
@@ -120,7 +121,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void LastOrNon_PredicateMatchesNon_ReturnsNone()
         {
-            var list = new List<int> {0, 1, 2, 3, 4};
+            var list = new List<int> { 0, 1, 2, 3, 4 };
 
             var none = list.FirstOrNone(x => x == 10);
 
@@ -130,7 +131,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_SingleMatchingElement_ReturnsSome()
         {
-            var list1 = new List<int> {0, 1, 2, 3, 4};
+            var list1 = new List<int> { 0, 1, 2, 3, 4 };
 
             var some1 = list1.SingleOrNone(x => x == 2);
 
@@ -141,7 +142,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_SingleElementInCollection_ReturnsSome()
         {
-            var list3 = new List<int> {0};
+            var list3 = new List<int> { 0 };
 
             var some2 = list3.SingleOrNone();
 
@@ -152,7 +153,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_MultipleMatchingElements_ThrowsException()
         {
-            var list2 = new List<int> {0, 1, 2, 2, 3, 4};
+            var list2 = new List<int> { 0, 1, 2, 2, 3, 4 };
 
             Assert.Throws<InvalidOperationException>(() => list2.SingleOrNone(x => x == 2));
         }
@@ -160,7 +161,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void SingleOrNone_MultipleElements_ThrowsException()
         {
-            var list2 = new List<int> {0, 1, 2, 2, 3, 4};
+            var list2 = new List<int> { 0, 1, 2, 2, 3, 4 };
 
             Assert.Throws<InvalidOperationException>(() => list2.SingleOrNone());
         }
@@ -185,5 +186,63 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             Assert.Throws<InvalidOperationException>(() => sequence.SingleOrNone());
             Assert.Throws<AssertionException>(() => sequence.ToList());
         }
+
+        [Test]
+        public void GetValueOrNone_WithValue_ReturnsValue()
+        {
+            // Arrange
+            const string key = "Asterix";
+            const string expectedValue = "Obelix";
+            var bestFriends = new Dictionary<string, string> { { key, expectedValue }, };
+
+            // Act
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+
+            // Assert
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void GetValueOrNone_WithoutValue_ReturnsNone()
+        {
+            // Arrange
+            var bestFriends = new Dictionary<string, string>();
+
+            // Act
+            var bestFriendOrNone = bestFriends.GetValueOrNone("The Grinch");
+
+            // Assert
+            Assert.That(bestFriendOrNone, Is.EqualTo(Option<string>.None));
+        }
+        
+        [Test]
+        public void GetValueOrNone_WorksForReadOnlyDictionary()
+        {
+            // Arrange
+            const string key = "Asterix";
+            const string expectedValue = "Obelix";
+            var bestFriends = new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { key, expectedValue }, });
+
+            // Act
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+
+            // Assert
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
+        }         
+
+        [Test]
+        public void GetValueOrNone_WorksForList()
+        {
+            // Arrange
+            const string key = "Asterix";
+            const string expectedValue = "Obelix";
+            var bestFriends = new[] { new KeyValuePair<string, string>(key, expectedValue) };
+
+            // Act
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+
+            // Assert
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
+        } 
     }
 }

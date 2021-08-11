@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -122,6 +122,30 @@ namespace Galaxus.Functional.Linq
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
                 .SingleOrDefault();
+
+        /// <summary>
+        /// Checks a dictionary if it contains a value for a given key. If so this value is wrapped in an Option.
+        /// Else <see cref="Option{T}.None"/> is returned.
+        /// </summary>
+        /// <param name="source">The dictionary in question</param>
+        /// <param name="key">The key to check if a value exists</param>
+        /// <returns>The value of the dictionary or None</returns>
+        public static Option<TSome> GetValueOrNone<TKey, TSome>(
+            this IEnumerable<KeyValuePair<TKey, TSome>> source,
+            TKey key)
+        {
+            switch (source)
+            {
+                case IDictionary<TKey, TSome> dictionary:
+                    return dictionary.ContainsKey(key) ? Option<TSome>.Some(dictionary[key]) : Option<TSome>.None;
+                case IReadOnlyDictionary<TKey, TSome> readOnlyDictionary:
+                    return readOnlyDictionary.ContainsKey(key)
+                        ? Option<TSome>.Some(readOnlyDictionary[key])
+                        : Option<TSome>.None;
+                default:
+                    return source.SingleOrNone(kvp => kvp.Key.Equals(key)).Map(kvp => kvp.Value);
+            }
+        }
 
         // This probably should be defined publicly together with False and Identity
         private static bool True<TSource>(TSource _)
