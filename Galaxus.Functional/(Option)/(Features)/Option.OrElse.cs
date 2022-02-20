@@ -10,7 +10,7 @@ namespace Galaxus.Functional
         /// <param name="fallback">
         ///     The value to return if <b>self</b> contains <b>None</b>.
         ///     This argument is eagerly evaluated; if you are passing the result of a function call,
-        ///     it is recommended to use <see cref="OrElse(System.Func{Galaxus.Functional.Option{T}}())" />, which is lazily
+        ///     it is recommended to use <see cref="OrElse(System.Func{Galaxus.Functional.Option{T}})" />, which is lazily
         ///     evaluated.
         /// </param>
         public Option<T> Or(Option<T> fallback)
