@@ -27,7 +27,9 @@ namespace Galaxus.Functional
         public Either(A a)
         {
             if (typeof(A).IsValueType == false && a == null)
+            {
                 throw new ArgumentNullException(nameof(a));
+            }
 
             Discriminant = Discriminant2.A;
             _a = a;
@@ -39,7 +41,9 @@ namespace Galaxus.Functional
         public Either(B b)
         {
             if (typeof(B).IsValueType == false && b == null)
+            {
                 throw new ArgumentNullException(nameof(b));
+            }
 
             Discriminant = Discriminant2.B;
             _b = b;
@@ -110,13 +114,17 @@ namespace Galaxus.Functional
             {
                 case Discriminant2.A:
                     if (onA == null)
+                    {
                         throw new ArgumentNullException(nameof(onA));
+                    }
 
                     onA(obj: _a);
                     break;
                 case Discriminant2.B:
                     if (onB == null)
+                    {
                         throw new ArgumentNullException(nameof(onB));
+                    }
 
                     onB(obj: _b);
                     break;
@@ -138,12 +146,16 @@ namespace Galaxus.Functional
             {
                 case Discriminant2.A:
                     if (onA == null)
+                    {
                         throw new ArgumentNullException(nameof(onA));
+                    }
 
                     return onA(arg: _a);
                 case Discriminant2.B:
                     if (onB == null)
+                    {
                         throw new ArgumentNullException(nameof(onB));
+                    }
 
                     return onB(arg: _b);
                 default:
@@ -220,13 +232,19 @@ namespace Galaxus.Functional
         public bool Equals(Either<A, B> other)
         {
             if (other is null)
+            {
                 return false;
+            }
 
             if (ReferenceEquals(this, objB: other))
+            {
                 return true;
+            }
 
             if (Discriminant != other.Discriminant)
+            {
                 return false;
+            }
 
             switch (Discriminant)
             {
@@ -249,7 +267,9 @@ namespace Galaxus.Functional
         public static bool operator ==(Either<A, B> lhs, Either<A, B> rhs)
         {
             if (lhs is null)
+            {
                 return rhs is null;
+            }
 
             return lhs.Equals(other: rhs);
         }

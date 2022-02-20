@@ -486,7 +486,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public async Task UnwrapOrElseAsync_WhenUnwrapSomeWithCallBack_ThenNoCallbackInvoked()
         {
-            // arrange 
+            // arrange
             var some = Task.FromResult(Option<string>.Some("hello"));
             var invoked = false;
 

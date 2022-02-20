@@ -758,7 +758,8 @@ namespace Galaxus.Functional.Tests
                 result = s;
             };
 
-            await Result<string, string>.FromOk(ok: continuationString).IfOkAsync(async s => await continuation(arg: s));
+            await Result<string, string>.FromOk(ok: continuationString)
+                .IfOkAsync(async s => await continuation(arg: s));
 
             Assert.That(actual: result, Is.EqualTo(expected: continuationString));
         }
@@ -792,7 +793,8 @@ namespace Galaxus.Functional.Tests
                 result = s;
             };
 
-            await Result<string, string>.FromErr(err: continuationString).IfErrAsync(async s => await continuation(arg: s));
+            await Result<string, string>.FromErr(err: continuationString)
+                .IfErrAsync(async s => await continuation(arg: s));
 
             Assert.That(actual: result, Is.EqualTo(expected: continuationString));
         }

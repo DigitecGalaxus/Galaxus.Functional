@@ -16,7 +16,9 @@ namespace Galaxus.Functional
                 some =>
                 {
                     if (map == null)
+                    {
                         throw new ArgumentNullException(nameof(map));
+                    }
 
                     return map(arg: some).ToOption();
                 },
@@ -36,7 +38,9 @@ namespace Galaxus.Functional
                 some =>
                 {
                     if (map == null)
+                    {
                         throw new ArgumentNullException(nameof(map));
+                    }
 
                     return map(arg: some);
                 },

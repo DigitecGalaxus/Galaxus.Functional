@@ -26,10 +26,14 @@ namespace Galaxus.Functional
         public Option<T> OrElse(Func<Option<T>> fallback)
         {
             if (IsSome)
+            {
                 return this;
+            }
 
             if (fallback is null)
+            {
                 throw new ArgumentNullException(nameof(fallback));
+            }
 
             return fallback();
         }
@@ -42,7 +46,9 @@ namespace Galaxus.Functional
         public Option<T> Xor(Option<T> fallback)
         {
             if (IsSome == fallback.IsSome)
+            {
                 return None;
+            }
 
             return IsSome ? this : fallback;
         }

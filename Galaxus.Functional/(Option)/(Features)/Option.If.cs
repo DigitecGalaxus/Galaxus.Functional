@@ -17,7 +17,9 @@ namespace Galaxus.Functional
             if (IsSome)
             {
                 if (onSome is null)
+                {
                     throw new ArgumentNullException(nameof(onSome));
+                }
 
                 onSome(obj: _some);
             }

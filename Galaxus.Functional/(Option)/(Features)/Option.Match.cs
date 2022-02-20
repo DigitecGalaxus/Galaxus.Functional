@@ -18,14 +18,18 @@ namespace Galaxus.Functional
             if (IsSome)
             {
                 if (onSome is null)
+                {
                     throw new ArgumentNullException(nameof(onSome));
+                }
 
                 onSome(obj: _some);
             }
             else
             {
                 if (onNone is null)
+                {
                     throw new ArgumentNullException(nameof(onNone));
+                }
 
                 onNone();
             }
@@ -45,13 +49,17 @@ namespace Galaxus.Functional
             if (IsSome)
             {
                 if (onSome is null)
+                {
                     throw new ArgumentNullException(nameof(onSome));
+                }
 
                 return onSome(arg: _some);
             }
 
             if (onNone is null)
+            {
                 throw new ArgumentNullException(nameof(onNone));
+            }
 
             return onNone();
         }

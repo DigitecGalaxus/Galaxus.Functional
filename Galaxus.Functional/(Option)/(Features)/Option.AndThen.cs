@@ -22,10 +22,14 @@ namespace Galaxus.Functional
         public Option<U> AndThen<U>(Func<T, Option<U>> continuation)
         {
             if (IsNone)
+            {
                 return Option<U>.None;
+            }
 
             if (continuation is null)
+            {
                 throw new ArgumentNullException(nameof(continuation));
+            }
 
             return continuation(arg: _some);
         }

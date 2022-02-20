@@ -105,10 +105,14 @@ namespace Galaxus.Functional
         public Result<T, TErr> OkOrElse<TErr>(Func<TErr> fallback)
         {
             if (IsSome)
+            {
                 return Result<T, TErr>.FromOk(ok: _some);
+            }
 
             if (fallback is null)
+            {
                 throw new ArgumentNullException(nameof(fallback));
+            }
 
             return Result<T, TErr>.FromErr(fallback());
         }
@@ -138,7 +142,9 @@ namespace Galaxus.Functional
         public T Unwrap(string error)
         {
             if (IsSome == false)
+            {
                 throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(message: error);
+            }
 
             return _some;
         }
@@ -153,7 +159,9 @@ namespace Galaxus.Functional
             if (IsSome == false)
             {
                 if (error is null)
+                {
                     throw new ArgumentNullException(nameof(error));
+                }
 
                 throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(error());
             }
@@ -183,10 +191,14 @@ namespace Galaxus.Functional
         public T UnwrapOrElse(Func<T> fallback)
         {
             if (IsSome)
+            {
                 return _some;
+            }
 
             if (fallback is null)
+            {
                 throw new ArgumentNullException(nameof(fallback));
+            }
 
             return fallback();
         }
@@ -250,11 +262,9 @@ namespace Galaxus.Functional
         /// <inheritdoc />
         public bool Equals(Option<T> other)
         {
-            return
-                IsSome
-                    ? other.IsSome && _some.Equals(obj: other._some)
-                    : other.IsSome == false
-                ;
+            return IsSome
+                ? other.IsSome && _some.Equals(obj: other._some)
+                : other.IsSome == false;
         }
 
         /// <summary>

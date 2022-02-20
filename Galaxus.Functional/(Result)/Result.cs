@@ -43,7 +43,9 @@ namespace Galaxus.Functional
         private Result(TOk ok)
         {
             if (typeof(TOk).IsValueType == false && ok == null)
+            {
                 throw new ArgumentNullException(nameof(ok));
+            }
 
             _ok = ok;
             IsOk = true;
@@ -52,7 +54,9 @@ namespace Galaxus.Functional
         private Result(TErr err)
         {
             if (typeof(TErr).IsValueType == false && err == null)
+            {
                 throw new ArgumentNullException(nameof(err));
+            }
 
             _err = err;
         }
@@ -147,7 +151,9 @@ namespace Galaxus.Functional
         public TOk Unwrap(string error)
         {
             if (IsErr)
+            {
                 throw new AttemptToUnwrapErrWhenResultWasOkException(message: error);
+            }
 
             return _ok;
         }
@@ -162,7 +168,9 @@ namespace Galaxus.Functional
             if (IsErr)
             {
                 if (error is null)
+                {
                     throw new ArgumentNullException(nameof(error));
+                }
 
                 throw new AttemptToUnwrapErrWhenResultWasOkException(error(arg: _err));
             }
@@ -192,10 +200,14 @@ namespace Galaxus.Functional
         public TOk UnwrapOrElse(Func<TOk> fallback)
         {
             if (IsOk)
+            {
                 return _ok;
+            }
 
             if (fallback is null)
+            {
                 throw new ArgumentNullException(nameof(fallback));
+            }
 
             return fallback();
         }
@@ -245,12 +257,19 @@ namespace Galaxus.Functional
         public bool Equals(Result<TOk, TErr> other)
         {
             if (other is null)
+            {
                 return false;
+            }
 
             if (ReferenceEquals(this, objB: other))
+            {
                 return true;
+            }
 
-            if (IsOk) return other.IsOk && _ok.Equals(obj: other._ok);
+            if (IsOk)
+            {
+                return other.IsOk && _ok.Equals(obj: other._ok);
+            }
 
             return !other.IsOk && _err.Equals(obj: other._err);
         }
@@ -264,7 +283,9 @@ namespace Galaxus.Functional
         public static bool operator ==(Result<TOk, TErr> lhs, Result<TOk, TErr> rhs)
         {
             if (lhs is null)
+            {
                 return rhs is null;
+            }
 
             return lhs.Equals(other: rhs);
         }

@@ -11,13 +11,8 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         {
             var some = new[]
             {
-                0.ToOption(),
-                99.ToOption(),
-                new Option<int>(),
-                new Option<int>(),
-                666.ToOption(),
-                new Option<int>(),
-                999.ToOption()
+                0.ToOption(), 99.ToOption(), new Option<int>(), new Option<int>(), 666.ToOption(),
+                new Option<int>(), 999.ToOption()
             }.SelectSome().ToList();
 
             Assert.AreEqual(4, actual: some.Count);
@@ -32,11 +27,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         {
             var some = new[]
             {
-                "hello".ToOption(),
-                "world".ToOption(),
-                new Option<string>(),
-                new Option<string>(),
-                "!".ToOption(),
+                "hello".ToOption(), "world".ToOption(), new Option<string>(), new Option<string>(), "!".ToOption(),
                 new Option<string>()
             }.SelectSome(str => str[0]).ToList();
 

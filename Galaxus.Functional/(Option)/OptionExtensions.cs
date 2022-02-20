@@ -206,7 +206,9 @@ namespace Galaxus.Functional
             if (res.IsNone)
             {
                 if (error is null)
+                {
                     throw new ArgumentNullException(nameof(error));
+                }
 
                 throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(await error());
             }
@@ -269,10 +271,15 @@ namespace Galaxus.Functional
         public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<Task<T>> fallback)
         {
             var opt = await self;
-            if (opt.IsSome) return opt.Unwrap();
+            if (opt.IsSome)
+            {
+                return opt.Unwrap();
+            }
 
             if (fallback is null)
+            {
                 throw new ArgumentNullException(nameof(fallback));
+            }
 
             return await fallback();
         }

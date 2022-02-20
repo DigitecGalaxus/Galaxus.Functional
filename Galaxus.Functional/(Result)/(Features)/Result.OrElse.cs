@@ -29,10 +29,14 @@ namespace Galaxus.Functional
             Func<TErr, Result<TOk, TContinuationErr>> continuation)
         {
             if (IsOk)
+            {
                 return _ok;
+            }
 
             if (continuation is null)
+            {
                 throw new ArgumentNullException(nameof(continuation));
+            }
 
             return continuation(arg: _err);
         }
@@ -52,10 +56,14 @@ namespace Galaxus.Functional
             Func<TErr, Task<Result<TOk, TContinuationErr>>> continuation)
         {
             if (IsOk)
+            {
                 return Task.FromResult(_ok.ToOk<TOk, TContinuationErr>());
+            }
 
             if (continuation is null)
+            {
                 throw new ArgumentNullException(nameof(continuation));
+            }
 
             return continuation(arg: _err);
         }

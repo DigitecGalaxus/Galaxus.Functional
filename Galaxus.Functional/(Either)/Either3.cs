@@ -28,7 +28,9 @@ namespace Galaxus.Functional
         public Either(A a)
         {
             if (typeof(A).IsValueType == false && a == null)
+            {
                 throw new ArgumentNullException(nameof(a));
+            }
 
             Discriminant = Discriminant3.A;
             _a = a;
@@ -40,7 +42,9 @@ namespace Galaxus.Functional
         public Either(B b)
         {
             if (typeof(B).IsValueType == false && b == null)
+            {
                 throw new ArgumentNullException(nameof(b));
+            }
 
             Discriminant = Discriminant3.B;
             _b = b;
@@ -52,7 +56,9 @@ namespace Galaxus.Functional
         public Either(C c)
         {
             if (typeof(C).IsValueType == false && c == null)
+            {
                 throw new ArgumentNullException(nameof(c));
+            }
 
             Discriminant = Discriminant3.C;
             _c = c;
@@ -143,21 +149,27 @@ namespace Galaxus.Functional
             {
                 case Discriminant3.A:
                     if (onA == null)
+                    {
                         throw new ArgumentNullException(nameof(onA));
+                    }
 
                     onA(obj: _a);
                     break;
 
                 case Discriminant3.B:
                     if (onB == null)
+                    {
                         throw new ArgumentNullException(nameof(onB));
+                    }
 
                     onB(obj: _b);
                     break;
 
                 case Discriminant3.C:
                     if (onC == null)
+                    {
                         throw new ArgumentNullException(nameof(onC));
+                    }
 
                     onC(obj: _c);
                     break;
@@ -181,19 +193,25 @@ namespace Galaxus.Functional
             {
                 case Discriminant3.A:
                     if (onA == null)
+                    {
                         throw new ArgumentNullException(nameof(onA));
+                    }
 
                     return onA(arg: _a);
 
                 case Discriminant3.B:
                     if (onB == null)
+                    {
                         throw new ArgumentNullException(nameof(onB));
+                    }
 
                     return onB(arg: _b);
 
                 case Discriminant3.C:
                     if (onC == null)
+                    {
                         throw new ArgumentNullException(nameof(onC));
+                    }
 
                     return onC(arg: _c);
 
@@ -378,13 +396,19 @@ namespace Galaxus.Functional
         public bool Equals(Either<A, B, C> other)
         {
             if (other is null)
+            {
                 return false;
+            }
 
             if (ReferenceEquals(this, objB: other))
+            {
                 return true;
+            }
 
             if (Discriminant != other.Discriminant)
+            {
                 return false;
+            }
 
             switch (Discriminant)
             {
@@ -409,7 +433,9 @@ namespace Galaxus.Functional
         public static bool operator ==(Either<A, B, C> lhs, Either<A, B, C> rhs)
         {
             if (lhs is null)
+            {
                 return rhs is null;
+            }
 
             return lhs.Equals(other: rhs);
         }

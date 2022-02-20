@@ -22,14 +22,18 @@ namespace Galaxus.Functional
             if (IsOk)
             {
                 if (onOk is null)
+                {
                     throw new ArgumentNullException(nameof(onOk));
+                }
 
                 onOk(obj: _ok);
             }
             else
             {
                 if (onErr is null)
+                {
                     throw new ArgumentNullException(nameof(onErr));
+                }
 
                 onErr(obj: _err);
             }
@@ -52,13 +56,17 @@ namespace Galaxus.Functional
             if (IsOk)
             {
                 if (onOk is null)
+                {
                     throw new ArgumentNullException(nameof(onOk));
+                }
 
                 return onOk(arg: _ok);
             }
 
             if (onErr is null)
+            {
                 throw new ArgumentNullException(nameof(onErr));
+            }
 
             return onErr(arg: _err);
         }

@@ -11,8 +11,7 @@ namespace Galaxus.Functional.Tests
     public class EitherTests
     {
         [Test]
-        [SuppressMessage("ReSharper", "ObjectCreationAsStatement",
-            Justification = "The 'new' throws anyways - at least it should")]
+        [SuppressMessage("ReSharper", "ObjectCreationAsStatement", Justification = "The 'new' throws anyways - at least it should")]
         public void CtorThrowsWhenNull()
         {
             Assert.Throws<ArgumentNullException>(() => new Either<string, object>(default));

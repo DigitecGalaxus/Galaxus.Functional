@@ -17,7 +17,9 @@ namespace Galaxus.Functional
                 ok =>
                 {
                     if (result is null)
+                    {
                         throw new ArgumentNullException(nameof(result));
+                    }
 
                     return result;
                 },
@@ -42,7 +44,9 @@ namespace Galaxus.Functional
                 ok =>
                 {
                     if (continuation is null)
+                    {
                         throw new ArgumentNullException(nameof(continuation));
+                    }
 
                     return continuation(arg: ok);
                 },
