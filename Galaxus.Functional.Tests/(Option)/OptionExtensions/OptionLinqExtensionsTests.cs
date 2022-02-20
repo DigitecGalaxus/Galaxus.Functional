@@ -18,7 +18,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var some = list.ElementAtOrNone(0);
 
-            Assert.IsTrue(some.IsSome);
+            Assert.IsTrue(condition: some.IsSome);
             Assert.AreEqual(0, some.Unwrap());
         }
 
@@ -29,7 +29,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var none = list.ElementAtOrNone(5);
 
-            Assert.IsTrue(none.IsNone);
+            Assert.IsTrue(condition: none.IsNone);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var none = list.ElementAtOrNone(-1);
 
-            Assert.IsTrue(none.IsNone);
+            Assert.IsTrue(condition: none.IsNone);
         }
 
         [Test]
@@ -48,9 +48,9 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             var index = 5;
             var sequence = new YieldElementsThenFail<string>("Hello world", index + 1);
 
-            var composition = sequence.ElementAtOrNone(index);
+            var composition = sequence.ElementAtOrNone(index: index);
 
-            Assert.IsTrue(composition.IsSome);
+            Assert.IsTrue(condition: composition.IsSome);
             Assert.Throws<AssertionException>(() => sequence.ToList());
         }
 
@@ -61,7 +61,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var some = list.FirstOrNone();
 
-            Assert.IsTrue(some.IsSome);
+            Assert.IsTrue(condition: some.IsSome);
             Assert.AreEqual(0, some.Unwrap());
         }
 
@@ -71,7 +71,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             var list = new List<int> { 0, 1, 2, 3, 4 };
             var some = list.FirstOrNone(x => x > 2);
 
-            Assert.IsTrue(some.IsSome);
+            Assert.IsTrue(condition: some.IsSome);
             Assert.AreEqual(3, some.Unwrap());
         }
 
@@ -82,7 +82,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var none = list.FirstOrNone(x => x == 10);
 
-            Assert.IsTrue(none.IsNone);
+            Assert.IsTrue(condition: none.IsNone);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var composition = sequence.FirstOrNone();
 
-            Assert.IsTrue(composition.IsSome);
+            Assert.IsTrue(condition: composition.IsSome);
             Assert.Throws<AssertionException>(() => sequence.ToList());
         }
 
@@ -103,7 +103,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var some1 = list.LastOrNone();
 
-            Assert.IsTrue(some1.IsSome);
+            Assert.IsTrue(condition: some1.IsSome);
             Assert.AreEqual(4, some1.Unwrap());
         }
 
@@ -114,7 +114,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var some2 = list.LastOrNone(x => x > 2);
 
-            Assert.IsTrue(some2.IsSome);
+            Assert.IsTrue(condition: some2.IsSome);
             Assert.AreEqual(4, some2.Unwrap());
         }
 
@@ -125,7 +125,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var none = list.FirstOrNone(x => x == 10);
 
-            Assert.IsTrue(none.IsNone);
+            Assert.IsTrue(condition: none.IsNone);
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var some1 = list1.SingleOrNone(x => x == 2);
 
-            Assert.IsTrue(some1.IsSome);
+            Assert.IsTrue(condition: some1.IsSome);
             Assert.AreEqual(2, some1.Unwrap());
         }
 
@@ -146,7 +146,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var some2 = list3.SingleOrNone();
 
-            Assert.IsTrue(some2.IsSome);
+            Assert.IsTrue(condition: some2.IsSome);
             Assert.AreEqual(0, some2.Unwrap());
         }
 
@@ -175,7 +175,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
 
             var none = list4.SingleOrNone();
 
-            Assert.IsTrue(none.IsNone);
+            Assert.IsTrue(condition: none.IsNone);
         }
 
         [Test]
@@ -193,13 +193,13 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             // Arrange
             const string key = "Asterix";
             const string expectedValue = "Obelix";
-            var bestFriends = new Dictionary<string, string> { { key, expectedValue }, };
+            var bestFriends = new Dictionary<string, string> { { key, expectedValue } };
 
             // Act
-            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key: key);
 
             // Assert
-            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expected: expectedValue));
         }
 
         [Test]
@@ -212,23 +212,24 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             var bestFriendOrNone = bestFriends.GetValueOrNone("The Grinch");
 
             // Assert
-            Assert.That(bestFriendOrNone, Is.EqualTo(Option<string>.None));
+            Assert.That(actual: bestFriendOrNone, Is.EqualTo(expected: Option<string>.None));
         }
-        
+
         [Test]
         public void GetValueOrNone_WorksForReadOnlyDictionary()
         {
             // Arrange
             const string key = "Asterix";
             const string expectedValue = "Obelix";
-            var bestFriends = new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { key, expectedValue }, });
+            var bestFriends =
+                new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { key, expectedValue } });
 
             // Act
-            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key: key);
 
             // Assert
-            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
-        }         
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expected: expectedValue));
+        }
 
         [Test]
         public void GetValueOrNone_WorksForList()
@@ -236,13 +237,13 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             // Arrange
             const string key = "Asterix";
             const string expectedValue = "Obelix";
-            var bestFriends = new[] { new KeyValuePair<string, string>(key, expectedValue) };
+            var bestFriends = new[] { new KeyValuePair<string, string>(key: key, value: expectedValue) };
 
             // Act
-            var bestFriendOrNone = bestFriends.GetValueOrNone(key);
+            var bestFriendOrNone = bestFriends.GetValueOrNone(key: key);
 
             // Assert
-            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expectedValue));
-        } 
+            Assert.That(bestFriendOrNone.Unwrap(), Is.EqualTo(expected: expectedValue));
+        }
     }
 }

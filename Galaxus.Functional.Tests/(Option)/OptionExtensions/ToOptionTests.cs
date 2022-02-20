@@ -15,31 +15,31 @@ namespace Galaxus.Functional.Tests.OptionExtensions
             Assert.AreEqual("hello", "hello".ToOption<object>().Unwrap());
 
             var instance = new DummyReferenceType();
-            Assert.AreSame(instance, instance.ToOption().Unwrap());
+            Assert.AreSame(expected: instance, instance.ToOption().Unwrap());
         }
 
         [Test]
         public void ToOption_ValueType_ReturnsSome()
         {
-            Assert.IsTrue(1.ToOption().IsSome);
+            Assert.IsTrue(condition: 1.ToOption().IsSome);
         }
 
         [Test]
         public void ToOption_ReferenceType_ReturnsSome()
         {
-            Assert.IsTrue(new DummyReferenceType().ToOption().IsSome);
+            Assert.IsTrue(condition: new DummyReferenceType().ToOption().IsSome);
         }
 
         [Test]
         public void ToOption_NullValueType_ReturnsNone()
         {
-            Assert.IsTrue(((int?)null).ToOption().IsNone);
+            Assert.IsTrue(condition: ((int?)null).ToOption().IsNone);
         }
 
         [Test]
         public void ToOption_NullReferenceType_ReturnsNone()
         {
-            Assert.IsTrue(((DummyReferenceType)null).ToOption().IsNone);
+            Assert.IsTrue(condition: ((DummyReferenceType)null).ToOption().IsNone);
         }
     }
 }

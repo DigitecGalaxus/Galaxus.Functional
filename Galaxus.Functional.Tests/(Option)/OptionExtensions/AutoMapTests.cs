@@ -16,7 +16,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
         [Test]
         public void Map_None_RemainsNone()
         {
-            Assert.IsTrue(Option<string>.None.Map<string, object>().IsNone);
+            Assert.IsTrue(condition: Option<string>.None.Map<string, object>().IsNone);
         }
     }
 }

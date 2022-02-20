@@ -11,12 +11,12 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
-            
+
             // act
             var hello = await ok.UnwrapAsync();
-            
+
             // assert
-            Assert.AreEqual("hello", hello);
+            Assert.AreEqual("hello", actual: hello);
         }
 
         [Test]
@@ -24,12 +24,15 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var err = Task.FromResult(99.ToErr<string, int>());
-            
+
             // act
-            async Task Act() => await err.UnwrapAsync();
+            async Task Act()
+            {
+                await err.UnwrapAsync();
+            }
 
             // assert
-            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
+            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(code: Act);
         }
 
         [Test]
@@ -37,10 +40,10 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await okTask.UnwrapAsync();
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -52,10 +55,13 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             var failingTask = Task.FromException<Result<int, string>>(new ArgumentException());
 
             // act
-            async Task Act() => await failingTask.UnwrapAsync();
+            async Task Act()
+            {
+                await failingTask.UnwrapAsync();
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -63,12 +69,12 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
-            
+
             // act
             var hello = await ok.UnwrapAsync("world");
-            
+
             // assert
-            Assert.AreEqual("hello", hello);
+            Assert.AreEqual("hello", actual: hello);
         }
 
         [Test]
@@ -76,7 +82,7 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var err = Task.FromResult(99.ToErr<string, int>());
-            
+
             // act
             async Task Act()
             {
@@ -86,13 +92,13 @@ namespace Galaxus.Functional.Tests.ResultExtensions
                 }
                 catch (AttemptToUnwrapErrWhenResultWasOkException ex)
                 {
-                    Assert.AreEqual("YOLO", ex.Message);
+                    Assert.AreEqual("YOLO", actual: ex.Message);
                     throw;
                 }
             }
 
             // assert
-            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
+            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(code: Act);
         }
 
         [Test]
@@ -100,10 +106,10 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await okTask.UnwrapAsync("Arthur Dent");
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -113,12 +119,15 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var failingTask = Task.FromException<Result<int, string>>(new ArgumentException());
-            
+
             // act
-            async Task Act() => await failingTask.UnwrapAsync("Arthur Dent");
+            async Task Act()
+            {
+                await failingTask.UnwrapAsync("Arthur Dent");
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -127,17 +136,17 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
             var invoked = false;
-            
+
             // act
             var hello = await ok.UnwrapAsync(err =>
             {
                 invoked = true;
                 return "YOLO";
             });
-            
+
             // assert
-            Assert.AreEqual("hello", hello);
-            Assert.IsFalse(invoked);
+            Assert.AreEqual("hello", actual: hello);
+            Assert.IsFalse(condition: invoked);
         }
 
         [Test]
@@ -146,7 +155,7 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             var err = Task.FromResult(0.ToErr<string, int>());
             var invoked = false;
-            
+
             // act
             async Task Act()
             {
@@ -160,14 +169,14 @@ namespace Galaxus.Functional.Tests.ResultExtensions
                 }
                 catch (AttemptToUnwrapErrWhenResultWasOkException ex)
                 {
-                    Assert.AreEqual("YOLO", ex.Message);
+                    Assert.AreEqual("YOLO", actual: ex.Message);
                     throw;
                 }
             }
 
             // assert
-            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
-            Assert.IsTrue(invoked);
+            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(code: Act);
+            Assert.IsTrue(condition: invoked);
         }
 
         [Test]
@@ -175,10 +184,10 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await okTask.UnwrapAsync(err => "Arthur Dent");
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -190,10 +199,13 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             var failingTask = Task.FromException<Result<int, string>>(new ArgumentException());
 
             // act
-            async Task Act() => await failingTask.UnwrapAsync(err => "Arthur Dent");
-            
+            async Task Act()
+            {
+                await failingTask.UnwrapAsync(err => "Arthur Dent");
+            }
+
             // arrange
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -202,17 +214,17 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
             var invoked = false;
-            
+
             // act
             var hello = await ok.UnwrapAsync(async err =>
             {
                 invoked = true;
                 return await Task.FromResult("YOLO");
             });
-            
+
             // assert
-            Assert.AreEqual("hello", hello);
-            Assert.IsFalse(invoked);
+            Assert.AreEqual("hello", actual: hello);
+            Assert.IsFalse(condition: invoked);
         }
 
         [Test]
@@ -221,7 +233,7 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             var err = Task.FromResult(0.ToErr<string, int>());
             var invoked = false;
-            
+
             // act
             async Task Act()
             {
@@ -235,14 +247,14 @@ namespace Galaxus.Functional.Tests.ResultExtensions
                 }
                 catch (AttemptToUnwrapErrWhenResultWasOkException ex)
                 {
-                    Assert.AreEqual("YOLO", ex.Message);
+                    Assert.AreEqual("YOLO", actual: ex.Message);
                     throw;
                 }
             }
 
             // arrange
-            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
-            Assert.IsTrue(invoked);
+            Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(code: Act);
+            Assert.IsTrue(condition: invoked);
         }
 
         [Test]
@@ -250,10 +262,10 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await okTask.UnwrapAsync(async err => await Task.FromResult("Arthur Dent"));
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -265,10 +277,13 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             var failingTask = Task.FromException<Result<int, string>>(new ArgumentException());
 
             // act
-            async Task Act() => await failingTask.UnwrapAsync(async err => await Task.FromResult("Arthur Dent"));
+            async Task Act()
+            {
+                await failingTask.UnwrapAsync(async err => await Task.FromResult("Arthur Dent"));
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -276,12 +291,12 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
-            
+
             //act
             var hello = await ok.UnwrapOrAsync("world");
-            
+
             // assert
-            Assert.AreEqual("hello", hello);
+            Assert.AreEqual("hello", actual: hello);
         }
 
         [Test]
@@ -289,12 +304,12 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var err = Task.FromResult(33.ToErr<string, int>());
-            
+
             // act
             var world = await err.UnwrapOrAsync("world");
-            
+
             // assert
-            Assert.AreEqual("world", world);
+            Assert.AreEqual("world", actual: world);
         }
 
         [Test]
@@ -302,10 +317,10 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await okTask.UnwrapOrAsync("Arthur Dent");
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -315,12 +330,15 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var failingTask = Task.FromException<Result<string, int>>(new ArgumentException());
-            
+
             // act
-            async Task Act() => await failingTask.UnwrapOrAsync("Arthur Dent");
+            async Task Act()
+            {
+                await failingTask.UnwrapOrAsync("Arthur Dent");
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -328,12 +346,12 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
-            
+
             // act
             var hello = await ok.UnwrapOrAsync(Task.FromResult("world"));
-            
+
             // assert
-            Assert.AreEqual("hello", hello);
+            Assert.AreEqual("hello", actual: hello);
         }
 
         [Test]
@@ -341,12 +359,12 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var err = Task.FromResult(99.ToErr<string, int>());
-            
+
             // act
             var world = await err.UnwrapOrAsync(Task.FromResult("world"));
-            
+
             // assert
-            Assert.AreEqual("world", world);
+            Assert.AreEqual("world", actual: world);
         }
 
         [Test]
@@ -354,10 +372,10 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await okTask.UnwrapOrAsync(Task.FromResult("Arthur Dent"));
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -367,25 +385,28 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var failingTask = Task.FromException<Result<string, int>>(new ArgumentException());
-            
+
             // act
-            async Task Act() => await failingTask.UnwrapOrAsync(Task.FromResult("Arthur Dent"));
+            async Task Act()
+            {
+                await failingTask.UnwrapOrAsync(Task.FromResult("Arthur Dent"));
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
-        
+
         [Test]
         public async Task UnwrapOrElseAsync_WhenOk_ThenResultIsOkValue()
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
-            
+
             // act
             var hello = await ok.UnwrapOrElseAsync(() => "world");
-            
+
             // arrange
-            Assert.AreEqual("hello", hello);
+            Assert.AreEqual("hello", actual: hello);
         }
 
         [Test]
@@ -393,23 +414,23 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var err = Task.FromResult(99.ToErr<string, int>());
-            
+
             // act
             var world = await err.UnwrapOrElseAsync(() => "world");
-            
+
             // assert
-            Assert.AreEqual("world", world);
+            Assert.AreEqual("world", actual: world);
         }
-        
+
         [Test]
         public async Task UnwrapOrElseAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await okTask.UnwrapOrElseAsync(() => "Arthur Dent");
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -419,31 +440,34 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var failingTask = Task.FromException<Result<string, int>>(new ArgumentException());
-            
+
             // act
-            async Task Act() => await failingTask.UnwrapOrElseAsync(() => "Arthur Dent");
+            async Task Act()
+            {
+                await failingTask.UnwrapOrElseAsync(() => "Arthur Dent");
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
-        
+
         [Test]
         public async Task UnwrapOrElseAsync_WhenUnwrapOkWithCallBack_ThenNoCallbackInvoked()
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
             var invoked = false;
-            
+
             // act
             var hello = await ok.UnwrapOrElseAsync(() =>
             {
                 invoked = true;
                 return "world";
             });
-            
+
             // assert
-            Assert.AreEqual("hello", hello);
-            Assert.IsFalse(invoked);
+            Assert.AreEqual("hello", actual: hello);
+            Assert.IsFalse(condition: invoked);
         }
 
         [Test]
@@ -452,17 +476,17 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             var err = Task.FromResult(77.ToErr<string, int>());
             var invoked = false;
-            
+
             // act
             var world = await err.UnwrapOrElseAsync(() =>
             {
                 invoked = true;
                 return "world";
             });
-            
+
             // assert
-            Assert.AreEqual("world", world);
-            Assert.IsTrue(invoked);
+            Assert.AreEqual("world", actual: world);
+            Assert.IsTrue(condition: invoked);
         }
 
 
@@ -474,50 +498,65 @@ namespace Galaxus.Functional.Tests.ResultExtensions
 
             // act
             // ReSharper disable once ExpressionIsAlwaysNull
-            async Task Act() => await Task.FromResult(88.ToErr<string, int>()).UnwrapOrElseAsync(nullFunc);
+            async Task Act()
+            {
+                await Task.FromResult(88.ToErr<string, int>()).UnwrapOrElseAsync(fallback: nullFunc);
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentNullException>(Act);
+            Assert.ThrowsAsync<ArgumentNullException>(code: Act);
         }
-        
+
         [Test]
         public async Task UnwrapOrElseAsyncWithTaskParam_WhenOk_ThenResultIsOkValue()
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
-            static async Task<string> Continuation() => await Task.FromResult("world");
-            
+
+            static async Task<string> Continuation()
+            {
+                return await Task.FromResult("world");
+            }
+
             // act
-            var hello = await ok.UnwrapOrElseAsync((Func<Task<string>>) Continuation);
-            
+            var hello = await ok.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+
             // assert
-            Assert.AreEqual("hello", hello);
+            Assert.AreEqual("hello", actual: hello);
         }
-        
+
         [Test]
         public async Task UnwrapOrElseAsyncWithTaskParam_WhenErr_ThenResultIsParameterValue()
         {
             // arrange
             var err = Task.FromResult(99.ToErr<string, int>());
-            static async Task<string> Continuation() => await Task.FromResult("world");
-            
+
+            static async Task<string> Continuation()
+            {
+                return await Task.FromResult("world");
+            }
+
             // act
-            var world = await err.UnwrapOrElseAsync((Func<Task<string>>) Continuation);
-            
+            var world = await err.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+
             // assert
-            Assert.AreEqual("world", world);
+            Assert.AreEqual("world", actual: world);
         }
-        
+
         [Test]
         public async Task UnwrapOrElseAsyncWithTaskParam_WhenSynchronousContinuation_ThenReturnsSuccessTask()
         {
             // arrange
             var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            static async  Task<string> Continuation() => await Task.FromResult("Arthur Dent");
-            
+
+            static async Task<string> Continuation()
+            {
+                return await Task.FromResult("Arthur Dent");
+            }
+
             // act
-            await okTask.UnwrapOrElseAsync((Func<Task<string>>) Continuation);
-            
+            await okTask.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
@@ -527,34 +566,44 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var failingTask = Task.FromException<Result<string, int>>(new ArgumentException());
-            static async Task<string> Continuation() => await Task.FromResult("Arthur Dent");
-            
+
+            static async Task<string> Continuation()
+            {
+                return await Task.FromResult("Arthur Dent");
+            }
+
             // act
-            async Task Act() => await failingTask.UnwrapOrElseAsync((Func<Task<string>>) Continuation);
+            async Task Act()
+            {
+                await failingTask.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
-        
+
         [Test]
         public async Task UnwrapOrElseAsyncWithTaskParam_WhenUnwrapOkWithCallBack_ThenNoCallbackInvoked()
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
             var invoked = false;
-            async Task<string> Continuation() =>
-                await Task.Run(() =>
+
+            async Task<string> Continuation()
+            {
+                return await Task.Run(() =>
                 {
                     invoked = true;
                     return "world";
                 });
+            }
 
             // act
-            var hello = await ok.UnwrapOrElseAsync((Func<Task<string>>) Continuation);
-            
+            var hello = await ok.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+
             // assert
-            Assert.AreEqual("hello", hello);
-            Assert.IsFalse(invoked);
+            Assert.AreEqual("hello", actual: hello);
+            Assert.IsFalse(condition: invoked);
         }
 
         [Test]
@@ -563,19 +612,22 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             var err = Task.FromResult(11.ToErr<string, int>());
             var invoked = false;
-            async Task<string> Continuation() =>
-                await Task.Run(() =>
+
+            async Task<string> Continuation()
+            {
+                return await Task.Run(() =>
                 {
                     invoked = true;
                     return "world";
                 });
-            
+            }
+
             // act
-            var world = await err.UnwrapOrElseAsync((Func<Task<string>>) Continuation);
+            var world = await err.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
 
             // assert
-            Assert.AreEqual("world", world);
-            Assert.IsTrue(invoked);
+            Assert.AreEqual("world", actual: world);
+            Assert.IsTrue(condition: invoked);
         }
 
         [Test]
@@ -583,25 +635,28 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             Func<Task<string>> nullFunc = null;
-            
+
             // act
             // ReSharper disable once ExpressionIsAlwaysNull
-            Task Act() => Task.FromResult(12.ToErr<string, int>()).UnwrapOrElseAsync(nullFunc);
+            Task Act()
+            {
+                return Task.FromResult(12.ToErr<string, int>()).UnwrapOrElseAsync(fallback: nullFunc);
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentNullException>(Act);
+            Assert.ThrowsAsync<ArgumentNullException>(code: Act);
         }
-        
+
         [Test]
         public async Task UnwrapOrDefaultAsync_WhenOk_ThenResultIsOkValue()
         {
             // arrange
             var ok = Task.FromResult("hello".ToOk<string, int>());
-            
+
             // act
             var hello = await ok.UnwrapOrDefaultAsync();
             // assert
-            Assert.AreEqual("hello", hello);
+            Assert.AreEqual("hello", actual: hello);
         }
 
         [Test]
@@ -609,51 +664,54 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             var err = Task.FromResult(11.ToErr<string, int>());
-            
+
             // act
             var defaultString = await err.UnwrapOrDefaultAsync();
-            
+
             // assert
-            Assert.AreEqual(null, defaultString);
+            Assert.AreEqual(null, actual: defaultString);
         }
-        
+
         [Test]
         public async Task UnwrapOrDefaultAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
         {
             // arrange
             var ok = Task.FromResult("Ford Prefect".ToOk<string, int>());
-            
+
             // act
             await ok.UnwrapOrDefaultAsync();
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: ok.Status);
         }
-        
+
         [Test]
         public async Task UnwrapOrDefaultAsync_WhenSynchronousContinuationForErr_ThenReturnsSuccessTask()
         {
             // arrange
             var okTask = Task.FromResult(99.ToErr<string, int>());
-            
+
             // act
             await okTask.UnwrapOrDefaultAsync();
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: okTask.Status);
         }
-        
+
         [Test]
         public void UnwrapOrDefaultAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
         {
             // arrange
             var failingTask = Task.FromException<Result<string, int>>(new ArgumentException());
-            
+
             // act
-            async Task Act() => await failingTask.UnwrapOrDefaultAsync();
+            async Task Act()
+            {
+                await failingTask.UnwrapOrDefaultAsync();
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
     }
 }

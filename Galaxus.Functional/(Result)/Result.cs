@@ -4,28 +4,32 @@ using System.Collections.Generic;
 namespace Galaxus.Functional
 {
     /// <summary>
-    ///     <see cref="Result{TOk, TErr}"/>s are used for returning and propagating errors.
+    ///     <see cref="Result{TOk, TErr}" />s are used for returning and propagating errors.
     ///     They're either <b>Ok</b>, representing success and containing a value,
     ///     or <b>Err</b>, representing failure and containing an error value.
-    ///     Functions return <see cref="Result{TOk, TErr}"/>s whenever errors are expected and recoverable.
+    ///     Functions return <see cref="Result{TOk, TErr}" />s whenever errors are expected and recoverable.
     /// </summary>
     public sealed partial class Result<TOk, TErr> : IEquatable<Result<TOk, TErr>>
     {
         #region Instance Initializer
 
         /// <summary>
-        /// Constructs a <see cref="Result{TOk, TErr}"/> containing <b>Ok</b>.
+        ///     Constructs a <see cref="Result{TOk, TErr}" /> containing <b>Ok</b>.
         /// </summary>
         /// <param name="ok">The <b>Ok</b> value.</param>
         public static Result<TOk, TErr> FromOk(TOk ok)
-            => new Result<TOk, TErr>(ok);
+        {
+            return new Result<TOk, TErr>(ok: ok);
+        }
 
         /// <summary>
-        /// Constructs a <see cref="Result{TOk, TErr}"/> containing <b>Err</b>.
+        ///     Constructs a <see cref="Result{TOk, TErr}" /> containing <b>Err</b>.
         /// </summary>
         /// <param name="err">The <b>Err</b> value.</param>
         public static Result<TOk, TErr> FromErr(TErr err)
-            => new Result<TOk, TErr>(err);
+        {
+            return new Result<TOk, TErr>(err: err);
+        }
 
         // Note:
         // We use private ctors here to allow TOk and TErr to be of the same type.
@@ -54,20 +58,24 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Cast a value to a <see cref="Result{TOk,TErr}"/> containing Ok.
+        ///     Cast a value to a <see cref="Result{TOk,TErr}" /> containing Ok.
         /// </summary>
         /// <param name="ok">The value to be contained.</param>
         /// <returns>The result.</returns>
         public static implicit operator Result<TOk, TErr>(TOk ok)
-            => new Result<TOk, TErr>(ok);
+        {
+            return new Result<TOk, TErr>(ok: ok);
+        }
 
         /// <summary>
-        /// Cast a value to a <see cref="Result{TOk,TErr}"/> containing Err.
+        ///     Cast a value to a <see cref="Result{TOk,TErr}" /> containing Err.
         /// </summary>
         /// <param name="err">The value to be contained.</param>
         /// <returns>The result.</returns>
         public static implicit operator Result<TOk, TErr>(TErr err)
-            => new Result<TOk, TErr>(err);
+        {
+            return new Result<TOk, TErr>(err: err);
+        }
 
         #endregion
 
@@ -77,24 +85,24 @@ namespace Galaxus.Functional
         private readonly TErr _err;
 
         /// <summary>
-        /// Returns <b>true</b> if <b>self</b> contains <b>Ok</b>.
+        ///     Returns <b>true</b> if <b>self</b> contains <b>Ok</b>.
         /// </summary>
         public bool IsOk { get; }
 
         /// <summary>
-        /// Returns <b>true</b> if <b>self</b> contains <b>Err</b>.
+        ///     Returns <b>true</b> if <b>self</b> contains <b>Err</b>.
         /// </summary>
         public bool IsErr
             => IsOk == false;
 
         /// <summary>
-        /// Discards <b>Err</b> and returns <b>Ok</b>.
+        ///     Discards <b>Err</b> and returns <b>Ok</b>.
         /// </summary>
         public Option<TOk> Ok
             => IsOk ? _ok.ToOption() : None.Value;
 
         /// <summary>
-        /// Discards <b>Ok</b> and returns <b>Err</b>.
+        ///     Discards <b>Ok</b> and returns <b>Err</b>.
         /// </summary>
         public Option<TErr> Err
             => IsOk ? None.Value : _err.ToOption();
@@ -104,8 +112,8 @@ namespace Galaxus.Functional
         #region Unwrap
 
         /// <summary>
-        /// Unwraps <b>self</b> and returns <b>Ok</b>.
-        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        ///     Unwraps <b>self</b> and returns <b>Ok</b>.
+        ///     <i>Throws if <b>self</b> contains <b>Err</b>!</i>
         /// </summary>
         public TOk Unwrap()
         {
@@ -116,11 +124,11 @@ namespace Galaxus.Functional
                     case IError error:
                         return error.Description;
                     case IEnumerable<IError> errors:
-                        return string.Join("; ", errors);
+                        return string.Join("; ", values: errors);
                     case string str:
                         return str;
                     case IEnumerable<string> strs:
-                        return string.Join("; ", strs);
+                        return string.Join("; ", values: strs);
                     default:
                         return $"Cannot unwrap \"Ok\" when the result is \"Err\": {_err.ToString()}.";
                 }
@@ -128,25 +136,25 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Unwraps <b>self</b> and returns <b>Ok</b>.
-        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        ///     Unwraps <b>self</b> and returns <b>Ok</b>.
+        ///     <i>Throws if <b>self</b> contains <b>Err</b>!</i>
         /// </summary>
         /// <param name="error">
-        /// A custom error to use as the exception message.
-        /// This argument is eagerly evaluated; if you are passing the result of a function call,
-        /// it is recommended to use <see cref="Unwrap(Func{TErr, string})"/>, which is lazily evaluated.
+        ///     A custom error to use as the exception message.
+        ///     This argument is eagerly evaluated; if you are passing the result of a function call,
+        ///     it is recommended to use <see cref="Unwrap(Func{TErr, string})" />, which is lazily evaluated.
         /// </param>
         public TOk Unwrap(string error)
         {
             if (IsErr)
-                throw new AttemptToUnwrapErrWhenResultWasOkException(error);
+                throw new AttemptToUnwrapErrWhenResultWasOkException(message: error);
 
             return _ok;
         }
 
         /// <summary>
-        /// Unwraps <b>self</b> and returns <b>Ok</b>.
-        /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        ///     Unwraps <b>self</b> and returns <b>Ok</b>.
+        ///     <i>Throws if <b>self</b> contains <b>Err</b>!</i>
         /// </summary>
         /// <param name="error">A function that returns a custom error to use as the exception message.</param>
         public TOk Unwrap(Func<TErr, string> error)
@@ -156,25 +164,29 @@ namespace Galaxus.Functional
                 if (error is null)
                     throw new ArgumentNullException(nameof(error));
 
-                throw new AttemptToUnwrapErrWhenResultWasOkException(error(_err));
+                throw new AttemptToUnwrapErrWhenResultWasOkException(error(arg: _err));
             }
 
             return _ok;
         }
 
         /// <summary>
-        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns <paramref name="fallback"/> otherwise.
+        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns <paramref name="fallback" />
+        ///     otherwise.
         /// </summary>
         /// <param name="fallback">
-        /// The value to return if <b>self</b> contains <b>Err</b>.
-        /// This argument is eagerly evaluated; if you are passing the result of a function call,
-        /// it is recommended to use <see cref="UnwrapOrElse(Func{TOk})"/>, which is lazily evaluated.
+        ///     The value to return if <b>self</b> contains <b>Err</b>.
+        ///     This argument is eagerly evaluated; if you are passing the result of a function call,
+        ///     it is recommended to use <see cref="UnwrapOrElse(Func{TOk})" />, which is lazily evaluated.
         /// </param>
         public TOk UnwrapOr(TOk fallback)
-            => IsOk ? _ok : fallback;
+        {
+            return IsOk ? _ok : fallback;
+        }
 
         /// <summary>
-        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the result of <paramref name="fallback"/> otherwise.
+        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the result of
+        ///     <paramref name="fallback" /> otherwise.
         /// </summary>
         /// <param name="fallback">The function to call if <b>self</b> contains <b>Err</b>.</param>
         public TOk UnwrapOrElse(Func<TOk> fallback)
@@ -189,31 +201,34 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the default value of <typeparamref name="TOk"/> otherwise.
+        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the default value of
+        ///     <typeparamref name="TOk" /> otherwise.
         /// </summary>
         public TOk UnwrapOrDefault()
-            => IsOk ? _ok : default;
+        {
+            return IsOk ? _ok : default;
+        }
 
         #endregion
 
         #region Contains
 
         /// <summary>
-        /// Returns true if the the result is <b>Ok</b> and contains the given value.
+        ///     Returns true if the the result is <b>Ok</b> and contains the given value.
         /// </summary>
         /// <param name="value">The value to check against.</param>
         public bool Contains(TOk value)
         {
-            return Match(ok => ok.Equals(value), err => false);
+            return Match(ok => ok.Equals(obj: value), err => false);
         }
 
         /// <summary>
-        /// Returns true if the the result is <b>Err</b> and contains the given value.
+        ///     Returns true if the the result is <b>Err</b> and contains the given value.
         /// </summary>
         /// <param name="value">The value to check against.</param>
         public bool ContainsErr(TErr value)
         {
-            return Match(ok => false, err => err.Equals(value));
+            return Match(ok => false, err => err.Equals(obj: value));
         }
 
         #endregion
@@ -222,7 +237,9 @@ namespace Galaxus.Functional
 
         /// <inheritdoc />
         public override bool Equals(object other)
-            => Equals(other as Result<TOk, TErr>);
+        {
+            return Equals(other as Result<TOk, TErr>);
+        }
 
         /// <inheritdoc />
         public bool Equals(Result<TOk, TErr> other)
@@ -230,19 +247,16 @@ namespace Galaxus.Functional
             if (other is null)
                 return false;
 
-            if (ReferenceEquals(this, other))
+            if (ReferenceEquals(this, objB: other))
                 return true;
 
-            if (IsOk)
-            {
-                return other.IsOk && _ok.Equals(other._ok);
-            }
+            if (IsOk) return other.IsOk && _ok.Equals(obj: other._ok);
 
-            return !other.IsOk && _err.Equals(other._err);
+            return !other.IsOk && _err.Equals(obj: other._err);
         }
 
         /// <summary>
-        /// Check that two results are equal.
+        ///     Check that two results are equal.
         /// </summary>
         /// <param name="lhs">Result to check against.</param>
         /// <param name="rhs">Result to check.</param>
@@ -252,25 +266,31 @@ namespace Galaxus.Functional
             if (lhs is null)
                 return rhs is null;
 
-            return lhs.Equals(rhs);
+            return lhs.Equals(other: rhs);
         }
 
         /// <summary>
-        /// Check that two results are not equal.
+        ///     Check that two results are not equal.
         /// </summary>
         /// <param name="lhs">Result to check against.</param>
         /// <param name="rhs">Result to check.</param>
         /// <returns><c>False</c> if the results are equal, <c>true</c> otherwise.</returns>
         public static bool operator !=(Result<TOk, TErr> lhs, Result<TOk, TErr> rhs)
-            => (lhs == rhs) == false;
+        {
+            return lhs == rhs == false;
+        }
 
         /// <inheritdoc />
         public override int GetHashCode()
-            => (IsOk, _ok, _err).GetHashCode();
+        {
+            return (IsOk, _ok, _err).GetHashCode();
+        }
 
         /// <inheritdoc />
         public override string ToString()
-            => Match(ok => $"Ok: {ok.ToString()}", err => $"Err: {err.ToString()}");
+        {
+            return Match(ok => $"Ok: {ok.ToString()}", err => $"Err: {err.ToString()}");
+        }
 
         #endregion
     }

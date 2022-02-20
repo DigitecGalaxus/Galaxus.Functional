@@ -9,7 +9,7 @@ namespace Galaxus.Functional.Tests
         {
             var option = Option<string>.None;
             var contains = option.Contains("hello");
-            Assert.IsFalse(contains);
+            Assert.IsFalse(condition: contains);
         }
 
         [Test]
@@ -17,7 +17,7 @@ namespace Galaxus.Functional.Tests
         {
             var option = "world".ToOption();
             var contains = option.Contains("hello");
-            Assert.IsFalse(contains);
+            Assert.IsFalse(condition: contains);
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Galaxus.Functional.Tests
         {
             var option = "hello".ToOption();
             var contains = option.Contains("hello");
-            Assert.IsTrue(contains);
+            Assert.IsTrue(condition: contains);
         }
     }
 }

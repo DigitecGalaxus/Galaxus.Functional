@@ -9,7 +9,7 @@ namespace Galaxus.Functional.Tests
         {
             var result = "value".ToErr<int, string>();
             var contains = result.Contains(3);
-            Assert.IsFalse(contains);
+            Assert.IsFalse(condition: contains);
         }
 
         [Test]
@@ -17,7 +17,7 @@ namespace Galaxus.Functional.Tests
         {
             var result = 3.ToOk<int, string>();
             var contains = result.Contains(5);
-            Assert.IsFalse(contains);
+            Assert.IsFalse(condition: contains);
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Galaxus.Functional.Tests
         {
             var result = 3.ToOk<int, string>();
             var contains = result.Contains(3);
-            Assert.IsTrue(contains);
+            Assert.IsTrue(condition: contains);
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace Galaxus.Functional.Tests
         {
             var result = 3.ToOk<int, string>();
             var contains = result.ContainsErr("hello");
-            Assert.IsFalse(contains);
+            Assert.IsFalse(condition: contains);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace Galaxus.Functional.Tests
         {
             var result = "hello".ToErr<int, string>();
             var contains = result.ContainsErr("world");
-            Assert.IsFalse(contains);
+            Assert.IsFalse(condition: contains);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Galaxus.Functional.Tests
         {
             var result = "hello".ToErr<int, string>();
             var contains = result.ContainsErr("hello");
-            Assert.IsTrue(contains);
+            Assert.IsTrue(condition: contains);
         }
     }
 }

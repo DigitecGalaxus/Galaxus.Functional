@@ -1,6 +1,6 @@
-using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Galaxus.Functional.Tests
 {
@@ -11,15 +11,15 @@ namespace Galaxus.Functional.Tests
         {
             {
                 var ok = Result<int, string>.FromOk(666);
-                Assert.IsTrue(ok.IsOk);
-                Assert.IsTrue(ok.Ok.IsSome);
+                Assert.IsTrue(condition: ok.IsOk);
+                Assert.IsTrue(condition: ok.Ok.IsSome);
                 Assert.AreEqual(666, ok.Unwrap());
             }
 
             {
                 var err = Result<int, string>.FromErr("err");
-                Assert.IsTrue(err.IsErr);
-                Assert.IsTrue(err.Err.IsSome);
+                Assert.IsTrue(condition: err.IsErr);
+                Assert.IsTrue(condition: err.Err.IsSome);
                 Assert.AreEqual("err", err.Err.Unwrap());
             }
         }
@@ -29,15 +29,15 @@ namespace Galaxus.Functional.Tests
         {
             {
                 var ok = Result<string, string>.FromOk("ok");
-                Assert.IsTrue(ok.IsOk);
-                Assert.IsTrue(ok.Ok.IsSome);
+                Assert.IsTrue(condition: ok.IsOk);
+                Assert.IsTrue(condition: ok.Ok.IsSome);
                 Assert.AreEqual("ok", ok.Unwrap());
             }
 
             {
                 var err = Result<string, string>.FromErr("err");
-                Assert.IsTrue(err.IsErr);
-                Assert.IsTrue(err.Err.IsSome);
+                Assert.IsTrue(condition: err.IsErr);
+                Assert.IsTrue(condition: err.Err.IsSome);
                 Assert.AreEqual("err", err.Err.Unwrap());
             }
         }
@@ -47,12 +47,12 @@ namespace Galaxus.Functional.Tests
         {
             {
                 var ok = Result<int?, string>.FromOk(null);
-                Assert.IsTrue(ok.IsOk);
+                Assert.IsTrue(condition: ok.IsOk);
             }
 
             {
                 var ok = Result<string, int?>.FromErr(null);
-                Assert.IsTrue(ok.IsErr);
+                Assert.IsTrue(condition: ok.IsErr);
             }
 
             Assert.Throws<ArgumentNullException>(() => Result<string, int?>.FromOk(null));
@@ -65,46 +65,47 @@ namespace Galaxus.Functional.Tests
             var result = "hello".ToOk<string, int>();
 
             {
-                bool called = false;
+                var called = false;
                 result.Match(ok =>
                 {
                     called = true;
-                    Assert.AreEqual("hello", ok);
+                    Assert.AreEqual("hello", actual: ok);
                 }, err => Assert.Fail());
-                Assert.IsTrue(called);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
 
                 var number = result.Match(ok =>
                 {
                     called = true;
-                    Assert.AreEqual("hello", ok);
+                    Assert.AreEqual("hello", actual: ok);
                     return 666;
-                }, err => {
+                }, err =>
+                {
                     Assert.Fail();
                     throw new InvalidOperationException();
                 });
 
-                Assert.AreEqual(666, number);
-                Assert.IsTrue(called);
+                Assert.AreEqual(666, actual: number);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
                 result.IfOk(ok =>
                 {
-                    Assert.AreEqual("hello", ok);
+                    Assert.AreEqual("hello", actual: ok);
                     called = true;
                 });
-                Assert.IsTrue(called);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
                 result.IfErr(err => called = true);
-                Assert.IsFalse(called);
+                Assert.IsFalse(condition: called);
             }
         }
 
@@ -114,47 +115,48 @@ namespace Galaxus.Functional.Tests
             var result = Result<string, int>.FromErr(99);
 
             {
-                bool called = false;
+                var called = false;
                 result.Match(ok => Assert.Fail(), err =>
                 {
-                    Assert.AreEqual(99, err);
+                    Assert.AreEqual(99, actual: err);
                     called = true;
                 });
-                Assert.IsTrue(called);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
 
                 var number = result.Match(ok =>
-                {
-                    Assert.Fail();
-                    throw new InvalidOperationException();
-                },
-                err => {
-                    called = true;
-                    Assert.AreEqual(99, err);
-                    return 666;
-                });
+                    {
+                        Assert.Fail();
+                        throw new InvalidOperationException();
+                    },
+                    err =>
+                    {
+                        called = true;
+                        Assert.AreEqual(99, actual: err);
+                        return 666;
+                    });
 
-                Assert.AreEqual(666, number);
-                Assert.IsTrue(called);
+                Assert.AreEqual(666, actual: number);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
                 result.IfErr(err =>
                 {
-                    Assert.AreEqual(99, err);
+                    Assert.AreEqual(99, actual: err);
                     called = true;
                 });
-                Assert.IsTrue(called);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
                 result.IfOk(ok => called = true);
-                Assert.IsFalse(called);
+                Assert.IsFalse(condition: called);
             }
         }
 
@@ -179,16 +181,16 @@ namespace Galaxus.Functional.Tests
         {
             const string successString = "success";
 
-            Func<string, Task<string>> continuationOk = async s => await Task.FromResult(s);
+            Func<string, Task<string>> continuationOk = async s => await Task.FromResult(result: s);
 
-            Func<string, Task<string>> continuationErr = async _ =>  await Task.FromResult("error");
+            Func<string, Task<string>> continuationErr = async _ => await Task.FromResult("error");
 
-            var result = await Result<string, string>.FromOk(successString)
+            var result = await Result<string, string>.FromOk(ok: successString)
                 .MatchAsync(
-                    async ok => await continuationOk(ok),
-                    async err => await continuationErr(err));
+                    async ok => await continuationOk(arg: ok),
+                    async err => await continuationErr(arg: err));
 
-            Assert.That(result, Is.EqualTo(successString));
+            Assert.That(actual: result, Is.EqualTo(expected: successString));
         }
 
         [Test]
@@ -196,16 +198,16 @@ namespace Galaxus.Functional.Tests
         {
             const string errorString = "error";
 
-            Func<string, Task<string>> continuationOk = async s => await Task.FromResult(s);
+            Func<string, Task<string>> continuationOk = async s => await Task.FromResult(result: s);
 
-            Func<string, Task<string>> continuationErr = async _ =>  await Task.FromResult(errorString);
+            Func<string, Task<string>> continuationErr = async _ => await Task.FromResult(result: errorString);
 
             var result = await Result<string, string>.FromErr("any error message")
                 .MatchAsync(
-                    async ok => await continuationOk(ok),
-                    async err => await continuationErr(err));
+                    async ok => await continuationOk(arg: ok),
+                    async err => await continuationErr(arg: err));
 
-            Assert.That(result, Is.EqualTo(errorString));
+            Assert.That(actual: result, Is.EqualTo(expected: errorString));
         }
 
         [Test]
@@ -215,38 +217,49 @@ namespace Galaxus.Functional.Tests
                 var ok = Result<int, string>.FromOk(2);
                 var err = Result<int, string>.FromErr("late error");
 
-                Assert.AreEqual(2.ToOk<int, string>(), ok.Or(err));
+                Assert.AreEqual(2.ToOk<int, string>(), ok.Or(fallback: err));
             }
             {
                 var err = Result<int, string>.FromErr("early error");
                 var ok = Result<int, string>.FromOk(2);
 
-                Assert.AreEqual(2.ToOk<int, string>(), err.Or(ok));
+                Assert.AreEqual(2.ToOk<int, string>(), err.Or(fallback: ok));
             }
             {
                 var err1 = Result<int, string>.FromErr("not a 2");
                 var err2 = Result<int, string>.FromErr("late error");
 
-                Assert.AreEqual("late error".ToErr<int, string>(), err1.Or(err2));
+                Assert.AreEqual("late error".ToErr<int, string>(), err1.Or(fallback: err2));
             }
             {
                 var ok1 = Result<int, string>.FromOk(2);
                 var ok2 = Result<int, string>.FromOk(100);
 
-                Assert.AreEqual(2.ToOk<int, string>(), ok1.Or(ok2));
+                Assert.AreEqual(2.ToOk<int, string>(), ok1.Or(fallback: ok2));
             }
         }
 
         [Test]
         public void Result_OrElse()
         {
-            Result<int, int> Square(int i) => Result<int, int>.FromOk(i * i);
-            Result<int, int> Error(int i) => Result<int, int>.FromErr(i);
+            Result<int, int> Square(int i)
+            {
+                return Result<int, int>.FromOk(i * i);
+            }
 
-            Assert.AreEqual(Result<int, int>.FromOk(2), Result<int, int>.FromOk(2).OrElse(Square).OrElse(Square));
-            Assert.AreEqual(Result<int, int>.FromOk(2), Result<int, int>.FromOk(2).OrElse(Error).OrElse(Square));
-            Assert.AreEqual(Result<int, int>.FromOk(9), Result<int, int>.FromErr(3).OrElse(Square).OrElse(Error));
-            Assert.AreEqual(Result<int, int>.FromErr(3), Result<int, int>.FromErr(3).OrElse(Error).OrElse(Error));
+            Result<int, int> Error(int i)
+            {
+                return Result<int, int>.FromErr(err: i);
+            }
+
+            Assert.AreEqual(Result<int, int>.FromOk(2),
+                Result<int, int>.FromOk(2).OrElse(continuation: Square).OrElse(continuation: Square));
+            Assert.AreEqual(Result<int, int>.FromOk(2),
+                Result<int, int>.FromOk(2).OrElse(continuation: Error).OrElse(continuation: Square));
+            Assert.AreEqual(Result<int, int>.FromOk(9),
+                Result<int, int>.FromErr(3).OrElse(continuation: Square).OrElse(continuation: Error));
+            Assert.AreEqual(Result<int, int>.FromErr(3),
+                Result<int, int>.FromErr(3).OrElse(continuation: Error).OrElse(continuation: Error));
         }
 
         [Test]
@@ -254,13 +267,14 @@ namespace Galaxus.Functional.Tests
         {
             const string initialResult = "a";
             const string continuationResult = "b";
-            Func<string, Task<Result<string, string>>> continuation = s => Task.FromResult(Result<string, string>.FromErr(continuationResult));
-            var result = await Result<string, string>.FromErr(initialResult)
-                .OrElseAsync(continuation);
+            Func<string, Task<Result<string, string>>> continuation = s =>
+                Task.FromResult(Result<string, string>.FromErr(err: continuationResult));
+            var result = await Result<string, string>.FromErr(err: initialResult)
+                .OrElseAsync(continuation: continuation);
 
             result.Match(
                 ok => Assert.Fail(),
-                err => Assert.AreEqual(continuationResult, err));
+                err => Assert.AreEqual(expected: continuationResult, actual: err));
         }
 
         [Test]
@@ -268,13 +282,14 @@ namespace Galaxus.Functional.Tests
         {
             const string initialResult = "a";
             const string continuationResult = "b";
-            Func<string, Task<Result<string, string>>> continuation = s => Task.FromResult(Result<string, string>.FromErr(continuationResult));
+            Func<string, Task<Result<string, string>>> continuation = s =>
+                Task.FromResult(Result<string, string>.FromErr(err: continuationResult));
 
-            var result = await Result<string, string>.FromOk(initialResult)
-                .OrElseAsync(continuation);
+            var result = await Result<string, string>.FromOk(ok: initialResult)
+                .OrElseAsync(continuation: continuation);
 
             result.Match(
-                ok => Assert.AreEqual(initialResult, ok),
+                ok => Assert.AreEqual(expected: initialResult, actual: ok),
                 err => Assert.Fail());
         }
 
@@ -295,7 +310,7 @@ namespace Galaxus.Functional.Tests
             var err = 99.ToErr<string, int>();
 
             {
-                bool invoked = false;
+                var invoked = false;
 
                 Assert.AreEqual("hello", ok.UnwrapOrElse(() =>
                 {
@@ -303,11 +318,11 @@ namespace Galaxus.Functional.Tests
                     return "world";
                 }));
 
-                Assert.IsFalse(invoked);
+                Assert.IsFalse(condition: invoked);
             }
 
             {
-                bool invoked = false;
+                var invoked = false;
 
                 Assert.AreEqual("world", err.UnwrapOrElse(() =>
                 {
@@ -315,7 +330,7 @@ namespace Galaxus.Functional.Tests
                     return "world";
                 }));
 
-                Assert.IsTrue(invoked);
+                Assert.IsTrue(condition: invoked);
             }
         }
 
@@ -336,14 +351,15 @@ namespace Galaxus.Functional.Tests
             var err = 99.ToErr<string, int>();
 
             Assert.AreEqual("hello", ok.Unwrap("YOLO"));
-            Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() => {
+            Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() =>
+            {
                 try
                 {
                     err.Unwrap("YOLO");
                 }
                 catch (AttemptToUnwrapErrWhenResultWasOkException ex)
                 {
-                    Assert.AreEqual("YOLO", ex.Message);
+                    Assert.AreEqual("YOLO", actual: ex.Message);
                     throw;
                 }
             });
@@ -352,31 +368,38 @@ namespace Galaxus.Functional.Tests
         [Test]
         public void Result_UnwrapWithCustomInvokableError()
         {
-
             {
                 var ok = "hello".ToOk<string, int>();
-                bool invoked = false;
-                Assert.AreEqual("hello", ok.Unwrap(err => { invoked = true; return "YOLO"; }));
-                Assert.IsFalse(invoked);
+                var invoked = false;
+                Assert.AreEqual("hello", ok.Unwrap(err =>
+                {
+                    invoked = true;
+                    return "YOLO";
+                }));
+                Assert.IsFalse(condition: invoked);
             }
 
             {
                 var err = 0.ToErr<string, int>();
-                bool invoked = false;
+                var invoked = false;
                 Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() =>
                 {
                     try
                     {
-                        err.Unwrap(err_ => { invoked = true; return "YOLO"; });
+                        err.Unwrap(err_ =>
+                        {
+                            invoked = true;
+                            return "YOLO";
+                        });
                     }
                     catch (AttemptToUnwrapErrWhenResultWasOkException ex)
                     {
-                        Assert.AreEqual("YOLO", ex.Message);
+                        Assert.AreEqual("YOLO", actual: ex.Message);
                         throw;
                     }
                 });
 
-                Assert.IsTrue(invoked);
+                Assert.IsTrue(condition: invoked);
             }
         }
 
@@ -386,7 +409,7 @@ namespace Galaxus.Functional.Tests
             var ok1 = "hello".ToOk<string, string>();
             var ok2 = "hello".ToOk<string, string>();
             Assert.AreEqual(ok1.GetHashCode(), ok2.GetHashCode());
-            Assert.AreEqual(ok1, ok2);
+            Assert.AreEqual(expected: ok1, actual: ok2);
         }
 
         [Test]
@@ -395,7 +418,7 @@ namespace Galaxus.Functional.Tests
             var err1 = "hello".ToErr<string, string>();
             var err2 = "hello".ToErr<string, string>();
             Assert.AreEqual(err1.GetHashCode(), err2.GetHashCode());
-            Assert.AreEqual(err1, err2);
+            Assert.AreEqual(expected: err1, actual: err2);
         }
 
         [Test]
@@ -403,7 +426,7 @@ namespace Galaxus.Functional.Tests
         {
             var ok = "hello".ToOk<string, string>();
             var err = "hello".ToErr<string, string>();
-            Assert.AreNotEqual(ok, err);
+            Assert.AreNotEqual(expected: ok, actual: err);
         }
 
         [Test]
@@ -411,7 +434,7 @@ namespace Galaxus.Functional.Tests
         {
             var ok1 = "hello".ToOk<string, string>();
             var ok2 = "world".ToOk<string, string>();
-            Assert.AreNotEqual(ok1, ok2);
+            Assert.AreNotEqual(expected: ok1, actual: ok2);
         }
 
         [Test]
@@ -419,7 +442,7 @@ namespace Galaxus.Functional.Tests
         {
             var err1 = "hello".ToErr<string, string>();
             var err2 = "world".ToErr<string, string>();
-            Assert.AreNotEqual(err1, err2);
+            Assert.AreNotEqual(expected: err1, actual: err2);
         }
 
         [Test]
@@ -427,7 +450,7 @@ namespace Galaxus.Functional.Tests
         {
             var ok1 = "hello".ToOk<string, string>();
             var ok2 = "hello".ToOk<string, int>();
-            Assert.AreNotEqual(ok1, ok2);
+            Assert.AreNotEqual(expected: ok1, actual: ok2);
         }
 
         [Test]
@@ -437,68 +460,90 @@ namespace Galaxus.Functional.Tests
                 var ok = Result<int, string>.FromOk(2);
                 var err = Result<int, string>.FromErr("late error");
 
-                Assert.AreEqual(Result<int, string>.FromErr("late error"), ok.And(err));
+                Assert.AreEqual(Result<int, string>.FromErr("late error"), ok.And(result: err));
             }
 
             {
                 var err = Result<int, string>.FromErr("early error");
                 var ok = Result<string, string>.FromOk("hello");
 
-                Assert.AreEqual( Result<string, string>.FromErr("early error"), err.And(ok));
+                Assert.AreEqual(Result<string, string>.FromErr("early error"), err.And(result: ok));
             }
 
             {
                 var err1 = Result<int, string>.FromErr("not a 2");
                 var err2 = Result<string, string>.FromErr("late error");
 
-                Assert.AreEqual(Result<string, string>.FromErr("not a 2"), err1.And(err2));
+                Assert.AreEqual(Result<string, string>.FromErr("not a 2"), err1.And(result: err2));
             }
 
             {
                 var ok1 = Result<int, string>.FromOk(2);
                 var ok2 = Result<string, string>.FromOk("different result type");
 
-                Assert.AreEqual(Result<string, string>.FromOk("different result type"), ok1.And(ok2));
+                Assert.AreEqual(Result<string, string>.FromOk("different result type"), ok1.And(result: ok2));
             }
         }
 
         [Test]
         public void Result_AndThen()
         {
-            Result<int, int> Square(int i) => Result<int, int>.FromOk(i * i);
-            Result<int, int> Error(int i) => Result<int, int>.FromErr(i);
+            Result<int, int> Square(int i)
+            {
+                return Result<int, int>.FromOk(i * i);
+            }
 
-            Assert.AreEqual(Result<int, int>.FromOk(16), Result<int, int>.FromOk(2).AndThen(Square).AndThen(Square));
-            Assert.AreEqual(Result<int, int>.FromErr(4), Result<int, int>.FromOk(2).AndThen(Square).AndThen(Error));
-            Assert.AreEqual(Result<int, int>.FromErr(2), Result<int, int>.FromOk(2).AndThen(Error).AndThen(Square));
-            Assert.AreEqual(Result<int, int>.FromErr(3), Result<int, int>.FromErr(3).AndThen(Square).AndThen(Square));
+            Result<int, int> Error(int i)
+            {
+                return Result<int, int>.FromErr(err: i);
+            }
+
+            Assert.AreEqual(Result<int, int>.FromOk(16),
+                Result<int, int>.FromOk(2).AndThen(continuation: Square).AndThen(continuation: Square));
+            Assert.AreEqual(Result<int, int>.FromErr(4),
+                Result<int, int>.FromOk(2).AndThen(continuation: Square).AndThen(continuation: Error));
+            Assert.AreEqual(Result<int, int>.FromErr(2),
+                Result<int, int>.FromOk(2).AndThen(continuation: Error).AndThen(continuation: Square));
+            Assert.AreEqual(Result<int, int>.FromErr(3),
+                Result<int, int>.FromErr(3).AndThen(continuation: Square).AndThen(continuation: Square));
         }
 
         [Test]
         public void Result_AndThenWithAction()
         {
-            Result<int, int> Square(int i) => Result<int, int>.FromOk(i * i);
-            Result<int, int> Error(int i) => Result<int, int>.FromErr(i);
+            Result<int, int> Square(int i)
+            {
+                return Result<int, int>.FromOk(i * i);
+            }
+
+            Result<int, int> Error(int i)
+            {
+                return Result<int, int>.FromErr(err: i);
+            }
 
             {
                 var invoked = false;
-                Assert.AreEqual(Result<int, int>.FromOk(9), Result<int, int>.FromOk(3).AndThen(i => invoked = true).AndThen(Square));
-                Assert.IsTrue(invoked);
+                Assert.AreEqual(Result<int, int>.FromOk(9),
+                    Result<int, int>.FromOk(3).AndThen(i => invoked = true).AndThen(continuation: Square));
+                Assert.IsTrue(condition: invoked);
             }
             {
                 var invoked = false;
-                Assert.AreEqual(Result<int, int>.FromErr(3), Result<int, int>.FromOk(3).AndThen(i => invoked = true).AndThen(Error));
-                Assert.IsTrue(invoked);
+                Assert.AreEqual(Result<int, int>.FromErr(3),
+                    Result<int, int>.FromOk(3).AndThen(i => invoked = true).AndThen(continuation: Error));
+                Assert.IsTrue(condition: invoked);
             }
             {
                 var invoked = false;
-                Assert.AreEqual(Result<int, int>.FromErr(3), Result<int, int>.FromOk(3).AndThen(Error).AndThen(i => invoked = true));
-                Assert.IsFalse(invoked);
+                Assert.AreEqual(Result<int, int>.FromErr(3),
+                    Result<int, int>.FromOk(3).AndThen(continuation: Error).AndThen(i => invoked = true));
+                Assert.IsFalse(condition: invoked);
             }
             {
                 var invoked = false;
-                Assert.AreEqual(Result<int, int>.FromErr(5), Result<int, int>.FromErr(5).AndThen(Square).AndThen(i => invoked = true));
-                Assert.IsFalse(invoked);
+                Assert.AreEqual(Result<int, int>.FromErr(5),
+                    Result<int, int>.FromErr(5).AndThen(continuation: Square).AndThen(i => invoked = true));
+                Assert.IsFalse(condition: invoked);
             }
         }
 
@@ -506,9 +551,9 @@ namespace Galaxus.Functional.Tests
         public void Result_AndThenAction_ForwardsCurrentValue()
         {
             var result = Result<string, int>.FromOk("Success");
-            var nextResult = result.AndThen(Console.WriteLine);
+            var nextResult = result.AndThen(continuation: Console.WriteLine);
 
-            Assert.AreSame(nextResult, result);
+            Assert.AreSame(expected: nextResult, actual: result);
         }
 
         [Test]
@@ -521,9 +566,9 @@ namespace Galaxus.Functional.Tests
                 return Unit.Value;
             }
 
-            var nextResult = success.AndThen(Nop);
-            Assert.IsTrue(nextResult.IsOk);
-            Assert.AreEqual(Unit.Value, nextResult.Ok.Unwrap());
+            var nextResult = success.AndThen(continuation: Nop);
+            Assert.IsTrue(condition: nextResult.IsOk);
+            Assert.AreEqual(expected: Unit.Value, nextResult.Ok.Unwrap());
         }
 
 
@@ -534,11 +579,11 @@ namespace Galaxus.Functional.Tests
 
             Result<Unit, int> Nop(Result<string, int> x)
             {
-                return x.Match(ok => Result<Unit, int>.FromOk(Unit.Value), err => err);
+                return x.Match(ok => Result<Unit, int>.FromOk(ok: Unit.Value), err => err);
             }
 
-            var nextResult = success.AndThen(s => Nop(s));
-            Assert.IsTrue(nextResult.IsErr);
+            var nextResult = success.AndThen(s => Nop(x: s));
+            Assert.IsTrue(condition: nextResult.IsErr);
             Assert.AreEqual(5, nextResult.Err.Unwrap());
         }
 
@@ -547,10 +592,11 @@ namespace Galaxus.Functional.Tests
         {
             const string initialResult = "a";
             const string continuationResult = "b";
-            Func<string, Task<Result<string, string>>> continuation = s => Task.FromResult(Result<string, string>.FromOk(continuationResult));
-            var result = await Result<string, string>.FromOk(initialResult)
-                .AndThenAsync(continuation);
-            Assert.AreEqual(expected: continuationResult, actual: result.Ok.UnwrapOrDefault());
+            Func<string, Task<Result<string, string>>> continuation = s =>
+                Task.FromResult(Result<string, string>.FromOk(ok: continuationResult));
+            var result = await Result<string, string>.FromOk(ok: initialResult)
+                .AndThenAsync(continuation: continuation);
+            Assert.AreEqual(expected: continuationResult, result.Ok.UnwrapOrDefault());
         }
 
         [Test]
@@ -558,10 +604,11 @@ namespace Galaxus.Functional.Tests
         {
             const string initialError = "a";
             const string continuationResult = "b";
-            Func<string, Task<Result<string, string>>> continuation = s => Task.FromResult(Result<string, string>.FromOk(continuationResult));
-            var result = await Result<string, string>.FromErr(initialError)
-                .AndThenAsync(continuation);
-            Assert.IsTrue(result.IsErr);
+            Func<string, Task<Result<string, string>>> continuation = s =>
+                Task.FromResult(Result<string, string>.FromOk(ok: continuationResult));
+            var result = await Result<string, string>.FromErr(err: initialError)
+                .AndThenAsync(continuation: continuation);
+            Assert.IsTrue(condition: result.IsErr);
         }
 
         [Test]
@@ -569,10 +616,10 @@ namespace Galaxus.Functional.Tests
         {
             const string initialResult = "a";
             const string continuationResult = "b";
-            Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
-            var result = await Result<string, string>.FromOk(initialResult)
-                .MapAsync(continuation);
-            Assert.AreEqual(expected: continuationResult, actual: result.Ok.UnwrapOrDefault());
+            Func<string, Task<string>> continuation = s => Task.FromResult(result: continuationResult);
+            var result = await Result<string, string>.FromOk(ok: initialResult)
+                .MapAsync(continuation: continuation);
+            Assert.AreEqual(expected: continuationResult, result.Ok.UnwrapOrDefault());
         }
 
         [Test]
@@ -580,10 +627,10 @@ namespace Galaxus.Functional.Tests
         {
             const string initialError = "a";
             const string continuationResult = "b";
-            Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
-            var result = await Result<string, string>.FromErr(initialError)
-                .MapAsync(continuation);
-            Assert.IsTrue(result.IsErr);
+            Func<string, Task<string>> continuation = s => Task.FromResult(result: continuationResult);
+            var result = await Result<string, string>.FromErr(err: initialError)
+                .MapAsync(continuation: continuation);
+            Assert.IsTrue(condition: result.IsErr);
         }
 
         [Test]
@@ -594,8 +641,8 @@ namespace Galaxus.Functional.Tests
 
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                await Result<string, string>.FromOk(initialResult)
-                    .MapAsync(continuation);
+                await Result<string, string>.FromOk(ok: initialResult)
+                    .MapAsync(continuation: continuation);
             });
         }
 
@@ -604,10 +651,10 @@ namespace Galaxus.Functional.Tests
         {
             const string initialError = "a";
             const string continuationResult = "b";
-            Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
-            var result = await Result<string, string>.FromErr(initialError)
-                .MapErrAsync(continuation);
-            Assert.AreEqual(expected: continuationResult, actual: result.Err.UnwrapOrDefault());
+            Func<string, Task<string>> continuation = s => Task.FromResult(result: continuationResult);
+            var result = await Result<string, string>.FromErr(err: initialError)
+                .MapErrAsync(continuation: continuation);
+            Assert.AreEqual(expected: continuationResult, result.Err.UnwrapOrDefault());
         }
 
         [Test]
@@ -615,10 +662,10 @@ namespace Galaxus.Functional.Tests
         {
             const string initialResult = "a";
             const string continuationResult = "b";
-            Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
-            var result = await Result<string, string>.FromOk(initialResult)
-                .MapErrAsync(continuation);
-            Assert.IsTrue(result.IsOk);
+            Func<string, Task<string>> continuation = s => Task.FromResult(result: continuationResult);
+            var result = await Result<string, string>.FromOk(ok: initialResult)
+                .MapErrAsync(continuation: continuation);
+            Assert.IsTrue(condition: result.IsOk);
         }
 
         [Test]
@@ -629,8 +676,8 @@ namespace Galaxus.Functional.Tests
 
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                await Result<string, string>.FromErr(initialResult)
-                    .MapErrAsync(continuation);
+                await Result<string, string>.FromErr(err: initialResult)
+                    .MapErrAsync(continuation: continuation);
             });
         }
 
@@ -643,8 +690,8 @@ namespace Galaxus.Functional.Tests
 
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                await Result<string, string>.FromOk(initialResult)
-                    .MatchAsync(continuationOk, continuationErr);
+                await Result<string, string>.FromOk(ok: initialResult)
+                    .MatchAsync(onOk: continuationOk, onErr: continuationErr);
             });
         }
 
@@ -660,8 +707,8 @@ namespace Galaxus.Functional.Tests
         {
             var ok = Result<string, string>.FromOk("Success");
             var mappingResult = ok.Map(s => s.Length);
-            Assert.IsTrue(mappingResult.IsOk);
-            Assert.AreEqual("Success".Length, mappingResult.Ok.Unwrap());
+            Assert.IsTrue(condition: mappingResult.IsOk);
+            Assert.AreEqual(expected: "Success".Length, mappingResult.Ok.Unwrap());
         }
 
         [Test]
@@ -669,7 +716,7 @@ namespace Galaxus.Functional.Tests
         {
             var ok = Result<string, string>.FromErr("Failure");
             var mappingResult = ok.Map(s => s.Length);
-            Assert.IsTrue(mappingResult.IsErr);
+            Assert.IsTrue(condition: mappingResult.IsErr);
             Assert.AreEqual("Failure", mappingResult.Err.Unwrap());
         }
 
@@ -685,8 +732,8 @@ namespace Galaxus.Functional.Tests
         {
             var ok = Result<string, string>.FromErr("Failure");
             var mappingResult = ok.MapErr(s => s.Length);
-            Assert.IsTrue(mappingResult.IsErr);
-            Assert.AreEqual("Failure".Length, mappingResult.Err.Unwrap());
+            Assert.IsTrue(condition: mappingResult.IsErr);
+            Assert.AreEqual(expected: "Failure".Length, mappingResult.Err.Unwrap());
         }
 
         [Test]
@@ -694,7 +741,7 @@ namespace Galaxus.Functional.Tests
         {
             var ok = Result<string, string>.FromOk("Success");
             var mappingResult = ok.MapErr(s => s.Length);
-            Assert.IsTrue(mappingResult.IsOk);
+            Assert.IsTrue(condition: mappingResult.IsOk);
             Assert.AreEqual("Success", mappingResult.Ok.Unwrap());
         }
 
@@ -711,9 +758,9 @@ namespace Galaxus.Functional.Tests
                 result = s;
             };
 
-            await Result<string, string>.FromOk(continuationString).IfOkAsync(async s => await continuation(s));
+            await Result<string, string>.FromOk(ok: continuationString).IfOkAsync(async s => await continuation(arg: s));
 
-            Assert.That(result, Is.EqualTo(continuationString));
+            Assert.That(actual: result, Is.EqualTo(expected: continuationString));
         }
 
         [Test]
@@ -727,9 +774,9 @@ namespace Galaxus.Functional.Tests
                 result = s;
             };
 
-            await Result<string, string>.FromErr("err").IfOkAsync(async s => await continuation(s));
+            await Result<string, string>.FromErr("err").IfOkAsync(async s => await continuation(arg: s));
 
-            Assert.That(result, Is.EqualTo(string.Empty));
+            Assert.That(actual: result, Is.EqualTo(expected: string.Empty));
         }
 
         [Test]
@@ -745,9 +792,9 @@ namespace Galaxus.Functional.Tests
                 result = s;
             };
 
-            await Result<string, string>.FromErr(continuationString).IfErrAsync(async s => await continuation(s));
+            await Result<string, string>.FromErr(err: continuationString).IfErrAsync(async s => await continuation(arg: s));
 
-            Assert.That(result, Is.EqualTo(continuationString));
+            Assert.That(actual: result, Is.EqualTo(expected: continuationString));
         }
 
         [Test]
@@ -761,9 +808,9 @@ namespace Galaxus.Functional.Tests
                 result = s;
             };
 
-            await Result<string, string>.FromOk("success").IfErrAsync(async s => await continuation(s));
+            await Result<string, string>.FromOk("success").IfErrAsync(async s => await continuation(arg: s));
 
-            Assert.That(result, Is.EqualTo(string.Empty));
+            Assert.That(actual: result, Is.EqualTo(expected: string.Empty));
         }
     }
 }

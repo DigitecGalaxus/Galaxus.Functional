@@ -5,7 +5,8 @@ namespace Galaxus.Functional
     public readonly partial struct Option<T>
     {
         /// <summary>
-        /// Maps a <see cref="Option{T}"/> to <see cref="Option{U}"/> by applying a function to a contained <b>Some</b> value.
+        ///     Maps a <see cref="Option{T}" /> to <see cref="Option{U}" /> by applying a function to a contained <b>Some</b>
+        ///     value.
         /// </summary>
         /// <typeparam name="TTo">The type to map to.</typeparam>
         /// <param name="map">The mapping function.</param>
@@ -17,14 +18,14 @@ namespace Galaxus.Functional
                     if (map == null)
                         throw new ArgumentNullException(nameof(map));
 
-                    return map(some).ToOption();
+                    return map(arg: some).ToOption();
                 },
                 () => Option<TTo>.None
             );
         }
 
         /// <summary>
-        /// Applies a function to the contained <b>Some</b> value (if any). Returns <paramref name="fallback"/> otherwise.
+        ///     Applies a function to the contained <b>Some</b> value (if any). Returns <paramref name="fallback" /> otherwise.
         /// </summary>
         /// <typeparam name="TTo">The type to map to.</typeparam>
         /// <param name="fallback">The value to return if <b>self</b> contains <b>None</b>.</param>
@@ -37,7 +38,7 @@ namespace Galaxus.Functional
                     if (map == null)
                         throw new ArgumentNullException(nameof(map));
 
-                    return map(some);
+                    return map(arg: some);
                 },
                 () => fallback
             );

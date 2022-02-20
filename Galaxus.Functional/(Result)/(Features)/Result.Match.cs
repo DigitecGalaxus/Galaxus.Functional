@@ -6,11 +6,17 @@ namespace Galaxus.Functional
     public sealed partial class Result<TOk, TErr>
     {
         /// <summary>
-        /// Provides access to <b>self</b>'s content by calling <paramref name="onOk"/> and passing in <b>Ok</b>
-        /// or calling <paramref name="onErr"/> and passing in <b>Err</b>.
+        ///     Provides access to <b>self</b>'s content by calling <paramref name="onOk" /> and passing in <b>Ok</b>
+        ///     or calling <paramref name="onErr" /> and passing in <b>Err</b>.
         /// </summary>
-        /// <param name="onOk">Called when <b>self</b> contains <b>Ok</b>. The argument to this action is never the <b>null</b> reference.</param>
-        /// <param name="onErr">Called when <b>self</b> contains <b>Err</b>. The argument to this action is never the <b>null</b> reference.</param>
+        /// <param name="onOk">
+        ///     Called when <b>self</b> contains <b>Ok</b>. The argument to this action is never the <b>null</b>
+        ///     reference.
+        /// </param>
+        /// <param name="onErr">
+        ///     Called when <b>self</b> contains <b>Err</b>. The argument to this action is never the <b>null</b>
+        ///     reference.
+        /// </param>
         public void Match(Action<TOk> onOk, Action<TErr> onErr)
         {
             if (IsOk)
@@ -18,23 +24,29 @@ namespace Galaxus.Functional
                 if (onOk is null)
                     throw new ArgumentNullException(nameof(onOk));
 
-                onOk(_ok);
+                onOk(obj: _ok);
             }
             else
             {
                 if (onErr is null)
                     throw new ArgumentNullException(nameof(onErr));
 
-                onErr(_err);
+                onErr(obj: _err);
             }
         }
 
         /// <summary>
-        /// Provides access to <b>self</b>'s content by calling <paramref name="onOk"/> and passing in <b>Ok</b>
-        /// or calling <paramref name="onErr"/> and passing in <b>Err</b>.
+        ///     Provides access to <b>self</b>'s content by calling <paramref name="onOk" /> and passing in <b>Ok</b>
+        ///     or calling <paramref name="onErr" /> and passing in <b>Err</b>.
         /// </summary>
-        /// <param name="onOk">Called when <b>self</b> contains <b>Ok</b>. The argument to this function is never the <b>null</b> reference.</param>
-        /// <param name="onErr">Called when <b>self</b> contains <b>Err</b>. The argument to this function is never the <b>null</b> reference.</param>
+        /// <param name="onOk">
+        ///     Called when <b>self</b> contains <b>Ok</b>. The argument to this function is never the <b>null</b>
+        ///     reference.
+        /// </param>
+        /// <param name="onErr">
+        ///     Called when <b>self</b> contains <b>Err</b>. The argument to this function is never the <b>null</b>
+        ///     reference.
+        /// </param>
         public T Match<T>(Func<TOk, T> onOk, Func<TErr, T> onErr)
         {
             if (IsOk)
@@ -42,55 +54,55 @@ namespace Galaxus.Functional
                 if (onOk is null)
                     throw new ArgumentNullException(nameof(onOk));
 
-                return onOk(_ok);
+                return onOk(arg: _ok);
             }
 
             if (onErr is null)
                 throw new ArgumentNullException(nameof(onErr));
 
-            return onErr(_err);
+            return onErr(arg: _err);
         }
 
         /// <summary>
-        /// An overload for <see cref="Match"/> using async functions.
+        ///     An overload for <see cref="Match" /> using async functions.
         /// </summary>
         /// <param name="onOk">The async function to be called on an <b>Ok</b>.</param>
         /// <param name="onErr">The async function to be called on an <b>Ok</b>.</param>
-        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}"/> type.</typeparam>
+        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}" /> type.</typeparam>
         /// <returns></returns>
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, Task<TResult>> onErr)
         {
             return await Match(
-                async ok => await onOk(ok),
-                async err => await onErr(err));
+                async ok => await onOk(arg: ok),
+                async err => await onErr(arg: err));
         }
 
         /// <summary>
-        /// An overload for <see cref="Match"/> using async functions.
+        ///     An overload for <see cref="Match" /> using async functions.
         /// </summary>
         /// <param name="onOk">The async function to be called on an <b>Ok</b>.</param>
         /// <param name="onErr">The non-async function to be called on an <b>Ok</b>.</param>
-        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}"/> type.</typeparam>
+        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}" /> type.</typeparam>
         /// <returns></returns>
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, TResult> onErr)
         {
             return await Match(
-                async ok => await onOk(ok),
-                err => Task.FromResult(onErr(err)));
+                async ok => await onOk(arg: ok),
+                err => Task.FromResult(onErr(arg: err)));
         }
 
         /// <summary>
-        /// An overload for <see cref="Match"/> using async functions.
+        ///     An overload for <see cref="Match" /> using async functions.
         /// </summary>
         /// <param name="onOk">The non-async function to be called on an <b>Ok</b>.</param>
         /// <param name="onErr">The async function to be called on an <b>Ok</b>.</param>
-        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}"/> type.</typeparam>
+        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}" /> type.</typeparam>
         /// <returns></returns>
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, TResult> onOk, Func<TErr, Task<TResult>> onErr)
         {
             return await Match(
-                ok => Task.FromResult(onOk(ok)),
-                async err => await onErr(err));
+                ok => Task.FromResult(onOk(arg: ok)),
+                async err => await onErr(arg: err));
         }
     }
 }

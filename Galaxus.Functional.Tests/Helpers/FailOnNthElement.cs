@@ -17,15 +17,14 @@ namespace Galaxus.Functional.Tests.Helpers
 
         public IEnumerator<T> GetEnumerator()
         {
-            foreach (var _ in Enumerable.Range(0, _numberOfElements))
-            {
-                yield return _elementToYield;
-            }
+            foreach (var _ in Enumerable.Range(0, count: _numberOfElements)) yield return _elementToYield;
 
             Assert.Fail("Sequence was unexpectedly enumerated.");
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => GetEnumerator();
+        {
+            return GetEnumerator();
+        }
     }
 }

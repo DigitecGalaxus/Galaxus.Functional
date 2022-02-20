@@ -7,15 +7,15 @@ namespace Galaxus.Functional.Tests
         [Test]
         public void Unit_AreEqual()
         {
-            Assert.AreEqual(Unit.Value, new Unit());
+            Assert.AreEqual(expected: Unit.Value, new Unit());
             Assert.AreEqual(new Unit(), new Unit());
         }
 
         [Test]
         public void Unit_AreNotEqual()
         {
-            Assert.AreNotEqual(Unit.Value, null);
-            Assert.AreNotEqual(Unit.Value, 0);
+            Assert.AreNotEqual(expected: Unit.Value, null);
+            Assert.AreNotEqual(expected: Unit.Value, 0);
         }
 
         [Test]

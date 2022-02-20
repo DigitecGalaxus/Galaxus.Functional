@@ -12,15 +12,21 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             const string continuationResult = "b";
-            async Task<Result<string, string>> Continuation(string s) => await Task.FromResult(Result<string, string>.FromOk(continuationResult));
+
+            async Task<Result<string, string>> Continuation(string s)
+            {
+                return await Task.FromResult(Result<string, string>.FromOk(ok: continuationResult));
+            }
 
             // act
-            async Task Act() =>
+            async Task Act()
+            {
                 await Task.FromException<Result<string, string>>(new ArgumentException())
-                    .OrElseAsync((Func<string, Task<Result<string, string>>>) Continuation);
+                    .OrElseAsync((Func<string, Task<Result<string, string>>>)Continuation);
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -28,17 +34,25 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             const string continuationResult = "b";
-            async Task<Result<string, string>> Continuation(string s) => await Task.FromResult(Result<string, string>.FromOk(continuationResult));
+
+            async Task<Result<string, string>> Continuation(string s)
+            {
+                return await Task.FromResult(Result<string, string>.FromOk(ok: continuationResult));
+            }
+
             var cancellationTokenSource = new CancellationTokenSource();
-            
+
             // act
             cancellationTokenSource.Cancel();
-            async Task Act() =>
-                await Task.FromCanceled<Result<string, string>>(cancellationTokenSource.Token)
-                    .OrElseAsync((Func<string, Task<Result<string, string>>>) Continuation);
+
+            async Task Act()
+            {
+                await Task.FromCanceled<Result<string, string>>(cancellationToken: cancellationTokenSource.Token)
+                    .OrElseAsync((Func<string, Task<Result<string, string>>>)Continuation);
+            }
 
             // assert
-            Assert.ThrowsAsync<TaskCanceledException>(Act);
+            Assert.ThrowsAsync<TaskCanceledException>(code: Act);
         }
 
         [Test]
@@ -47,13 +61,18 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             const string initialResult = "a";
             const string continuationResult = "b";
-            Result<string, string> Continuation(string s) => Result<string, string>.FromErr(continuationResult);
-            var resultTask = Task.FromResult(Result<string, string>.FromErr(initialResult))
-                .OrElseAsync((Func<string, Result<string, string>>) Continuation);
-            
+
+            Result<string, string> Continuation(string s)
+            {
+                return Result<string, string>.FromErr(err: continuationResult);
+            }
+
+            var resultTask = Task.FromResult(Result<string, string>.FromErr(err: initialResult))
+                .OrElseAsync((Func<string, Result<string, string>>)Continuation);
+
             // act
             await resultTask;
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: resultTask.Status);
         }

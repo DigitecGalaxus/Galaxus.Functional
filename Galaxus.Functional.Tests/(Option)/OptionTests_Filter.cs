@@ -9,7 +9,7 @@ namespace Galaxus.Functional.Tests
         {
             var option = Option<string>.None;
             option = option.Filter(val => val == "hello");
-            Assert.IsTrue(option.IsNone);
+            Assert.IsTrue(condition: option.IsNone);
         }
 
         [Test]
@@ -17,7 +17,7 @@ namespace Galaxus.Functional.Tests
         {
             var option = "hello".ToOption();
             option = option.Filter(val => val == "hello");
-            Assert.IsTrue(option.IsSome);
+            Assert.IsTrue(condition: option.IsSome);
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Galaxus.Functional.Tests
         {
             var option = "world".ToOption();
             option = option.Filter(val => val == "hello");
-            Assert.IsTrue(option.IsNone);
+            Assert.IsTrue(condition: option.IsNone);
         }
     }
 }

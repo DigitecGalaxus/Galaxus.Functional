@@ -50,7 +50,8 @@ namespace Galaxus.Functional.Linq
         ///     <c>predicate</c>; otherwise, the first element in <c>source</c> that passes the test specified by <c>predicate</c>.
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
-        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source,
+            Func<TSource, bool> predicate)
             => source
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
@@ -124,8 +125,8 @@ namespace Galaxus.Functional.Linq
                 .SingleOrDefault();
 
         /// <summary>
-        /// Checks a dictionary if it contains a value for a given key. If so this value is wrapped in an Option.
-        /// Else <see cref="Option{T}.None"/> is returned.
+        ///     Checks a dictionary if it contains a value for a given key. If so this value is wrapped in an Option.
+        ///     Else <see cref="Option{T}.None" /> is returned.
         /// </summary>
         /// <param name="source">The dictionary in question</param>
         /// <param name="key">The key to check if a value exists</param>

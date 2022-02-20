@@ -1,5 +1,5 @@
-using NUnit.Framework;
 using System;
+using NUnit.Framework;
 
 namespace Galaxus.Functional.Tests
 {
@@ -10,13 +10,13 @@ namespace Galaxus.Functional.Tests
         {
             {
                 var val = Option<int>.Some(666);
-                Assert.IsTrue(val.IsSome);
+                Assert.IsTrue(condition: val.IsSome);
                 Assert.AreEqual(666, val.Unwrap());
             }
 
             {
                 var val = Option<string>.Some("hello");
-                Assert.IsTrue(val.IsSome);
+                Assert.IsTrue(condition: val.IsSome);
                 Assert.AreEqual("hello", val.Unwrap());
             }
         }
@@ -26,12 +26,12 @@ namespace Galaxus.Functional.Tests
         {
             {
                 var val = Option<int?>.Some(null);
-                Assert.IsTrue(val.IsSome);
+                Assert.IsTrue(condition: val.IsSome);
             }
 
             {
                 var val = Option<string>.Some(null);
-                Assert.IsTrue(val.IsNone);
+                Assert.IsTrue(condition: val.IsNone);
             }
         }
 
@@ -40,20 +40,20 @@ namespace Galaxus.Functional.Tests
         {
             {
                 var val = new Option<int>();
-                Assert.IsTrue(val.IsNone);
+                Assert.IsTrue(condition: val.IsNone);
             }
 
             {
                 var val = new Option<string>();
-                Assert.IsTrue(val.IsNone);
+                Assert.IsTrue(condition: val.IsNone);
             }
         }
 
         [Test]
         public void Option_StaticNoneIsNone()
         {
-            Assert.IsTrue(Option<int>.None.IsNone);
-            Assert.IsTrue(Option<string>.None.IsNone);
+            Assert.IsTrue(condition: Option<int>.None.IsNone);
+            Assert.IsTrue(condition: Option<string>.None.IsNone);
         }
 
         [Test]
@@ -62,32 +62,33 @@ namespace Galaxus.Functional.Tests
             var some = "hello".ToOption();
 
             {
-                bool called = false;
+                var called = false;
                 some.Match(s => called = true, () => Assert.Fail());
-                Assert.IsTrue(called);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
 
                 var number = some.Match(s =>
-                {
-                    called = true;
-                    return 666;
-                },
-                () => {
-                    Assert.Fail();
-                    throw new InvalidOperationException();
-                });
+                    {
+                        called = true;
+                        return 666;
+                    },
+                    () =>
+                    {
+                        Assert.Fail();
+                        throw new InvalidOperationException();
+                    });
 
-                Assert.AreEqual(666, number);
-                Assert.IsTrue(called);
+                Assert.AreEqual(666, actual: number);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
                 some.IfSome(s => called = true);
-                Assert.IsTrue(called);
+                Assert.IsTrue(condition: called);
             }
         }
 
@@ -97,32 +98,33 @@ namespace Galaxus.Functional.Tests
             var none = Option<string>.None;
 
             {
-                bool called = false;
+                var called = false;
                 none.Match(s => Assert.Fail(), () => called = true);
-                Assert.IsTrue(called);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
 
                 var number = none.Match(s =>
-                {
-                    Assert.Fail();
-                    throw new InvalidOperationException();
-                },
-                () => {
-                    called = true;
-                    return 666;
-                });
+                    {
+                        Assert.Fail();
+                        throw new InvalidOperationException();
+                    },
+                    () =>
+                    {
+                        called = true;
+                        return 666;
+                    });
 
-                Assert.AreEqual(666, number);
-                Assert.IsTrue(called);
+                Assert.AreEqual(666, actual: number);
+                Assert.IsTrue(condition: called);
             }
 
             {
-                bool called = false;
+                var called = false;
                 none.IfSome(s => called = true);
-                Assert.IsFalse(called);
+                Assert.IsFalse(condition: called);
             }
         }
 
@@ -148,35 +150,46 @@ namespace Galaxus.Functional.Tests
                 var some = "hello".ToOption();
                 var none = Option<string>.None;
 
-                Assert.AreEqual(Option<string>.None, some.And(none));
-                Assert.AreEqual(Option<string>.None, none.And(some));
+                Assert.AreEqual(expected: Option<string>.None, some.And(fallback: none));
+                Assert.AreEqual(expected: Option<string>.None, none.And(fallback: some));
             }
 
             {
                 var some1 = "hello".ToOption();
                 var some2 = 123.ToOption();
 
-                Assert.AreEqual(123.ToOption(), some1.And(some2));
+                Assert.AreEqual(123.ToOption(), some1.And(fallback: some2));
             }
 
             {
                 var none1 = Option<string>.None;
                 var none2 = Option<string>.None;
 
-                Assert.AreEqual(Option<string>.None, none1.And(none2));
+                Assert.AreEqual(expected: Option<string>.None, none1.And(fallback: none2));
             }
         }
 
         [Test]
         public void Option_AndThen()
         {
-            Option<int> Square(int i) => Option<int>.Some(i * i);
-            Option<int> Nope(int i) => Option<int>.None;
+            Option<int> Square(int i)
+            {
+                return Option<int>.Some(i * i);
+            }
 
-            Assert.AreEqual(Option<int>.Some(16), Option<int>.Some(2).AndThen(Square).AndThen(Square));
-            Assert.AreEqual(Option<int>.None, Option<int>.Some(2).AndThen(Square).AndThen(Nope));
-            Assert.AreEqual(Option<int>.None, Option<int>.Some(2).AndThen(Nope).AndThen(Square));
-            Assert.AreEqual(Option<int>.None, Option<int>.None.AndThen(Square).AndThen(Square));
+            Option<int> Nope(int i)
+            {
+                return Option<int>.None;
+            }
+
+            Assert.AreEqual(Option<int>.Some(16),
+                Option<int>.Some(2).AndThen(continuation: Square).AndThen(continuation: Square));
+            Assert.AreEqual(expected: Option<int>.None,
+                Option<int>.Some(2).AndThen(continuation: Square).AndThen(continuation: Nope));
+            Assert.AreEqual(expected: Option<int>.None,
+                Option<int>.Some(2).AndThen(continuation: Nope).AndThen(continuation: Square));
+            Assert.AreEqual(expected: Option<int>.None,
+                Option<int>.None.AndThen(continuation: Square).AndThen(continuation: Square));
         }
 
         [Test]
@@ -187,17 +200,17 @@ namespace Galaxus.Functional.Tests
                 var none = Option<string>.None;
 
                 {
-                    bool invoked = false;
+                    var invoked = false;
 
                     Assert.AreEqual(Option<string>.Some("hello"), some.AndThen(_ => invoked = true));
-                    Assert.IsTrue(invoked);
+                    Assert.IsTrue(condition: invoked);
                 }
 
                 {
-                    bool invoked = false;
+                    var invoked = false;
 
-                    Assert.AreEqual(Option<string>.None, none.AndThen(_ => invoked = true));
-                    Assert.IsFalse(invoked);
+                    Assert.AreEqual(expected: Option<string>.None, none.AndThen(_ => invoked = true));
+                    Assert.IsFalse(condition: invoked);
                 }
             }
         }
@@ -219,7 +232,7 @@ namespace Galaxus.Functional.Tests
             var none = Option<string>.None;
 
             {
-                bool invoked = false;
+                var invoked = false;
 
                 Assert.AreEqual("hello", some.UnwrapOrElse(() =>
                 {
@@ -227,11 +240,11 @@ namespace Galaxus.Functional.Tests
                     return "world";
                 }));
 
-                Assert.IsFalse(invoked);
+                Assert.IsFalse(condition: invoked);
             }
 
             {
-                bool invoked = false;
+                var invoked = false;
 
                 Assert.AreEqual("world", none.UnwrapOrElse(() =>
                 {
@@ -239,7 +252,7 @@ namespace Galaxus.Functional.Tests
                     return "world";
                 }));
 
-                Assert.IsTrue(invoked);
+                Assert.IsTrue(condition: invoked);
             }
         }
 
@@ -285,7 +298,7 @@ namespace Galaxus.Functional.Tests
             var none = Option<string>.None;
 
             {
-                bool invoked = false;
+                var invoked = false;
 
                 Assert.AreEqual("hello".ToOption(), some.OrElse(() =>
                 {
@@ -293,11 +306,11 @@ namespace Galaxus.Functional.Tests
                     return "world".ToOption();
                 }));
 
-                Assert.IsFalse(invoked);
+                Assert.IsFalse(condition: invoked);
             }
 
             {
-                bool invoked = false;
+                var invoked = false;
 
                 Assert.AreEqual("world".ToOption(), none.OrElse(() =>
                 {
@@ -305,7 +318,7 @@ namespace Galaxus.Functional.Tests
                     return "world".ToOption();
                 }));
 
-                Assert.IsTrue(invoked);
+                Assert.IsTrue(condition: invoked);
             }
         }
 
@@ -316,22 +329,22 @@ namespace Galaxus.Functional.Tests
                 var some = 2.ToOption();
                 var none = Option<int>.None;
 
-                Assert.AreEqual(2.ToOption(), some.Xor(none));
-                Assert.AreEqual(2.ToOption(), none.Xor(some));
+                Assert.AreEqual(2.ToOption(), some.Xor(fallback: none));
+                Assert.AreEqual(2.ToOption(), none.Xor(fallback: some));
             }
 
             {
                 var some1 = 2.ToOption();
                 var some2 = 2.ToOption();
 
-                Assert.AreEqual(Option<int>.None, some1.Xor(some2));
+                Assert.AreEqual(expected: Option<int>.None, some1.Xor(fallback: some2));
             }
 
             {
                 var none1 = Option<int>.None;
                 var none2 = Option<int>.None;
 
-                Assert.AreEqual(Option<int>.None, none1.Xor(none2));
+                Assert.AreEqual(expected: Option<int>.None, none1.Xor(fallback: none2));
             }
         }
 
@@ -376,7 +389,7 @@ namespace Galaxus.Functional.Tests
         [Test]
         public void Option_UnwrapNullFunc()
         {
-            Assert.Throws<ArgumentNullException>(() => Option<string>.None.Unwrap((Func<string>) null));
+            Assert.Throws<ArgumentNullException>(() => Option<string>.None.Unwrap((Func<string>)null));
         }
 
         [Test]
@@ -386,14 +399,15 @@ namespace Galaxus.Functional.Tests
             var none = Option<string>.None;
 
             Assert.AreEqual("hello", some.Unwrap("YOLO"));
-            Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() => {
+            Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() =>
+            {
                 try
                 {
                     none.Unwrap("YOLO");
                 }
                 catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
                 {
-                    Assert.AreEqual("YOLO", ex.Message);
+                    Assert.AreEqual("YOLO", actual: ex.Message);
                     throw;
                 }
             });
@@ -404,28 +418,36 @@ namespace Galaxus.Functional.Tests
         {
             {
                 var some = "hello".ToOption();
-                bool invoked = false;
-                Assert.AreEqual("hello", some.Unwrap(() => { invoked = true; return "YOLO"; }));
-                Assert.IsFalse(invoked);
+                var invoked = false;
+                Assert.AreEqual("hello", some.Unwrap(() =>
+                {
+                    invoked = true;
+                    return "YOLO";
+                }));
+                Assert.IsFalse(condition: invoked);
             }
 
             {
                 var none = Option<string>.None;
-                bool invoked = false;
+                var invoked = false;
                 Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() =>
                 {
                     try
                     {
-                        none.Unwrap(() => { invoked = true; return "YOLO"; });
+                        none.Unwrap(() =>
+                        {
+                            invoked = true;
+                            return "YOLO";
+                        });
                     }
                     catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
                     {
-                        Assert.AreEqual("YOLO", ex.Message);
+                        Assert.AreEqual("YOLO", actual: ex.Message);
                         throw;
                     }
                 });
 
-                Assert.IsTrue(invoked);
+                Assert.IsTrue(condition: invoked);
             }
         }
 
@@ -437,14 +459,14 @@ namespace Galaxus.Functional.Tests
             var two = 2.ToOption();
             var none = new Option<int>();
 
-            Assert.AreEqual(one, oneClone);
-            Assert.AreEqual(oneClone, one);
+            Assert.AreEqual(expected: one, actual: oneClone);
+            Assert.AreEqual(expected: oneClone, actual: one);
 
-            Assert.AreNotEqual(one, two);
-            Assert.AreNotEqual(two, one);
+            Assert.AreNotEqual(expected: one, actual: two);
+            Assert.AreNotEqual(expected: two, actual: one);
 
-            Assert.AreNotEqual(none, one);
-            Assert.AreNotEqual(one, none);
+            Assert.AreNotEqual(expected: none, actual: one);
+            Assert.AreNotEqual(expected: one, actual: none);
         }
 
         [Test]
@@ -454,11 +476,11 @@ namespace Galaxus.Functional.Tests
             var oneAsObject = 1.ToOption<object>();
             var none = new Option<object>();
 
-            Assert.AreNotEqual(one, oneAsObject);
-            Assert.AreNotEqual(oneAsObject, one);
+            Assert.AreNotEqual(expected: one, actual: oneAsObject);
+            Assert.AreNotEqual(expected: oneAsObject, actual: one);
 
-            Assert.AreNotEqual(none, one);
-            Assert.AreNotEqual(one, none);
+            Assert.AreNotEqual(expected: none, actual: one);
+            Assert.AreNotEqual(expected: one, actual: none);
         }
 
         [Test]
@@ -474,7 +496,7 @@ namespace Galaxus.Functional.Tests
         {
             Assert.AreEqual(true.ToString(), true.ToOption().Map(b => b.ToString()).Unwrap());
 
-            Assert.AreEqual(Option<string>.None, Option<string>.None.Map(b => "foobar"));
+            Assert.AreEqual(expected: Option<string>.None, Option<string>.None.Map(b => "foobar"));
 
             Assert.Throws<ArgumentNullException>(() => "Foobar".ToOption().Map<string>(null));
         }

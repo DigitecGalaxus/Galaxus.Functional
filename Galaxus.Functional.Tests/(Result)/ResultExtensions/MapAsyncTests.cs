@@ -13,13 +13,18 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             const string initialResult = "a";
             const string continuationResult = "b";
-            string Continuation(string s) => continuationResult;
-            var resultTask = Task.FromResult(Result<string, string>.FromOk(initialResult))
-                .MapAsync((Func<string, string>) Continuation);
-            
+
+            string Continuation(string s)
+            {
+                return continuationResult;
+            }
+
+            var resultTask = Task.FromResult(Result<string, string>.FromOk(ok: initialResult))
+                .MapAsync((Func<string, string>)Continuation);
+
             // act
             await resultTask;
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: resultTask.Status);
         }
@@ -29,15 +34,21 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             const string continuationResult = "b";
-            async Task<string> Continuation(string s) => await Task.FromResult(continuationResult);
+
+            async Task<string> Continuation(string s)
+            {
+                return await Task.FromResult(result: continuationResult);
+            }
 
             // act
-            async Task Act() =>
+            async Task Act()
+            {
                 await Task.FromException<Result<string, string>>(new ArgumentException())
-                    .MapAsync((Func<string, Task<string>>) Continuation);
+                    .MapAsync((Func<string, Task<string>>)Continuation);
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -45,16 +56,25 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             const string continuationResult = "b";
-            async Task<string> Continuation(string s) => await Task.FromResult(continuationResult);
+
+            async Task<string> Continuation(string s)
+            {
+                return await Task.FromResult(result: continuationResult);
+            }
+
             var cancellationTokenSource = new CancellationTokenSource();
-            
+
             // act
             cancellationTokenSource.Cancel();
-            async Task Act() => await Task.FromCanceled<Result<string, string>>(cancellationTokenSource.Token)
-                    .MapAsync((Func<string, Task<string>>) Continuation);
+
+            async Task Act()
+            {
+                await Task.FromCanceled<Result<string, string>>(cancellationToken: cancellationTokenSource.Token)
+                    .MapAsync((Func<string, Task<string>>)Continuation);
+            }
 
             // assert
-            Assert.ThrowsAsync<TaskCanceledException>(Act);
+            Assert.ThrowsAsync<TaskCanceledException>(code: Act);
         }
 
         [Test]
@@ -63,13 +83,18 @@ namespace Galaxus.Functional.Tests.ResultExtensions
             // arrange
             const string initialResult = "a";
             const string continuationResult = "b";
-            string Continuation(string s) => continuationResult;
-            var resultTask = Task.FromResult(Result<string, string>.FromErr(initialResult))
-                .MapErrAsync((Func<string, string>) Continuation);
-            
+
+            string Continuation(string s)
+            {
+                return continuationResult;
+            }
+
+            var resultTask = Task.FromResult(Result<string, string>.FromErr(err: initialResult))
+                .MapErrAsync((Func<string, string>)Continuation);
+
             // act
             await resultTask;
-            
+
             // assert
             Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: resultTask.Status);
         }
@@ -79,15 +104,21 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             const string continuationResult = "b";
-            async Task<string> Continuation(string s) => await Task.FromResult(continuationResult);
-            
+
+            async Task<string> Continuation(string s)
+            {
+                return await Task.FromResult(result: continuationResult);
+            }
+
             // act
-            async Task Act() =>
+            async Task Act()
+            {
                 await Task.FromException<Result<string, string>>(new ArgumentException())
-                    .MapErrAsync((Func<string, Task<string>>) Continuation);
+                    .MapErrAsync((Func<string, Task<string>>)Continuation);
+            }
 
             // assert
-            Assert.ThrowsAsync<ArgumentException>(Act);
+            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
         [Test]
@@ -95,17 +126,25 @@ namespace Galaxus.Functional.Tests.ResultExtensions
         {
             // arrange
             const string continuationResult = "b";
-            async Task<string> Continuation(string s) => await Task.FromResult(continuationResult);
+
+            async Task<string> Continuation(string s)
+            {
+                return await Task.FromResult(result: continuationResult);
+            }
+
             var cancellationTokenSource = new CancellationTokenSource();
-            
+
             // act
             cancellationTokenSource.Cancel();
-            async Task Act() =>
-                await Task.FromCanceled<Result<string, string>>(cancellationTokenSource.Token)
-                    .MapErrAsync((Func<string, Task<string>>) Continuation);
+
+            async Task Act()
+            {
+                await Task.FromCanceled<Result<string, string>>(cancellationToken: cancellationTokenSource.Token)
+                    .MapErrAsync((Func<string, Task<string>>)Continuation);
+            }
 
             // assert
-            Assert.ThrowsAsync<TaskCanceledException>(Act);
+            Assert.ThrowsAsync<TaskCanceledException>(code: Act);
         }
     }
 }

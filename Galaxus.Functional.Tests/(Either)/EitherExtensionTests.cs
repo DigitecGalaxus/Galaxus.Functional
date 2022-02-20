@@ -21,8 +21,8 @@ namespace Galaxus.Functional.Tests
             var aEntries = eithers.SelectA().ToList();
             var bEntries = eithers.SelectB().ToList();
 
-            CollectionAssert.AreEqual(new List<string> { "Hello", "World" }, aEntries);
-            CollectionAssert.AreEqual(new List<int> { 1, 2 }, bEntries);
+            CollectionAssert.AreEqual(new List<string> { "Hello", "World" }, actual: aEntries);
+            CollectionAssert.AreEqual(new List<int> { 1, 2 }, actual: bEntries);
         }
 
         [Test]
@@ -41,9 +41,9 @@ namespace Galaxus.Functional.Tests
             var bEntries = eithers.SelectB().ToList();
             var cEntries = eithers.SelectC().ToList();
 
-            CollectionAssert.AreEqual(new List<string> { "Hello", "World" }, aEntries);
-            CollectionAssert.AreEqual(new List<int> { 1, 2 }, bEntries);
-            CollectionAssert.AreEqual(new List<bool> { true }, cEntries);
+            CollectionAssert.AreEqual(new List<string> { "Hello", "World" }, actual: aEntries);
+            CollectionAssert.AreEqual(new List<int> { 1, 2 }, actual: bEntries);
+            CollectionAssert.AreEqual(new List<bool> { true }, actual: cEntries);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Galaxus.Functional.Tests
             var result = option.ToEither("default");
 
             // Assert
-            Assert.That(result.Equals(expectedResult));
+            Assert.That(result.Equals(other: expectedResult));
         }
 
         [Test]
@@ -68,10 +68,10 @@ namespace Galaxus.Functional.Tests
             var option = Option<int>.None;
 
             // Act
-            var result = option.ToEither(expectedResult);
+            var result = option.ToEither(fallback: expectedResult);
 
             // Assert
-            Assert.That(result.Equals(expectedResult));
+            Assert.That(result.Equals(other: expectedResult));
         }
     }
 }

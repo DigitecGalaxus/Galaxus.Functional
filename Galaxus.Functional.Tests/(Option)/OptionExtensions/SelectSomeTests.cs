@@ -20,7 +20,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
                 999.ToOption()
             }.SelectSome().ToList();
 
-            Assert.AreEqual(4, some.Count);
+            Assert.AreEqual(4, actual: some.Count);
             Assert.AreEqual(0, some[0]);
             Assert.AreEqual(99, some[1]);
             Assert.AreEqual(666, some[2]);
@@ -40,7 +40,7 @@ namespace Galaxus.Functional.Tests.OptionExtensions
                 new Option<string>()
             }.SelectSome(str => str[0]).ToList();
 
-            Assert.AreEqual("hw!", string.Join("", some));
+            Assert.AreEqual("hw!", string.Join("", values: some));
         }
     }
 }
