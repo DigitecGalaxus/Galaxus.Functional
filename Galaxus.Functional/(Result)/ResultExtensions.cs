@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
+    /// <summary>
+    /// Extensions for the result type, providing some quality of life-shorthands.
+    /// </summary>
     public static class ResultExtensions
     {
         #region Instance Initializer
@@ -64,6 +67,9 @@ namespace Galaxus.Functional
         /// leaving an <b>Err</b> value untouched. This function can be used to compose the results of two functions.
         /// </summary>
         /// <typeparam name="TOkTo">The type to map <b>Ok</b> to.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The mapping function.</param>
         public static async Task<Result<TOkTo, TErr>> MapAsync<TOk, TErr, TOkTo>(
             this Task<Result<TOk, TErr>> self,
@@ -77,6 +83,9 @@ namespace Galaxus.Functional
         /// leaving an <b>Err</b> value untouched. This function can be used to compose the results of two functions.
         /// </summary>
         /// <typeparam name="TOkTo">The type to map <b>Ok</b> to.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The mapping function.</param>
         public static Task<Result<TOkTo, TErr>> MapAsync<TOk, TErr, TOkTo>(
             this Task<Result<TOk, TErr>> self,
@@ -90,6 +99,9 @@ namespace Galaxus.Functional
         /// leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
         /// </summary>
         /// <typeparam name="TErrTo">The type to map "Err" to.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The mapping function.</param>
         public static async Task<Result<TOk, TErrTo>> MapErrAsync<TOk, TErr, TErrTo>(
             this Task<Result<TOk, TErr>> self,
@@ -103,6 +115,9 @@ namespace Galaxus.Functional
         /// leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
         /// </summary>
         /// <typeparam name="TErrTo">The type to map "Err" to.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The mapping function.</param>
         public static Task<Result<TOk, TErrTo>> MapErrAsync<TOk, TErr, TErrTo>(
             this Task<Result<TOk, TErr>> self,
@@ -145,6 +160,16 @@ namespace Galaxus.Functional
 
         #region Match
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="onOk"></param>
+        /// <param name="onErr"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<TResult>> onOk,
@@ -153,6 +178,16 @@ namespace Galaxus.Functional
             return await (await self).MatchAsync(onOk, onErr);
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="onOk"></param>
+        /// <param name="onErr"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, TResult> onOk,
@@ -161,6 +196,16 @@ namespace Galaxus.Functional
             return (await self).Match(onOk, onErr);
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="onOk"></param>
+        /// <param name="onErr"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<TResult>> onOk,
@@ -169,6 +214,16 @@ namespace Galaxus.Functional
             return await (await self).MatchAsync(onOk, onErr);
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="onOk"></param>
+        /// <param name="onErr"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <returns></returns>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, TResult> onOk,
@@ -177,6 +232,17 @@ namespace Galaxus.Functional
             return await (await self).MatchAsync(onOk, onErr);
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="onOk"></param>
+        /// <param name="onErr"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <typeparam name="TOkResult"></typeparam>
+        /// <typeparam name="TErrResult"></typeparam>
+        /// <returns></returns>
         public static async Task<Result<TOkResult, TErrResult>> MatchResultAsync<TOk, TErr, TOkResult, TErrResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<TOkResult>> onOk,
@@ -187,6 +253,17 @@ namespace Galaxus.Functional
                 async err => Result<TOkResult, TErrResult>.FromErr(await onErr(err)));
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="onOk"></param>
+        /// <param name="onErr"></param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <typeparam name="TOkResult"></typeparam>
+        /// <typeparam name="TErrResult"></typeparam>
+        /// <returns></returns>
         public static async Task<Result<TOkResult, TErrResult>> MatchResultAsync<TOk, TErr, TOkResult, TErrResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<Result<TOkResult, TErrResult>>> onOk,
@@ -206,6 +283,9 @@ namespace Galaxus.Functional
         /// This function can be used for control flow based on <see cref="Result{TOk, TErr}"/>s.
         /// </summary>
         /// <typeparam name="TContinuationOk">The <b>Ok</b> type of the <paramref name="continuation"/>'s <see cref="Result{TOk, TErr}"/>.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The function to call if <b>self</b> contains <b>Ok</b>.</param>
         public static async Task<Result<TContinuationOk, TErr>> AndThenAsync<TOk, TErr, TContinuationOk>(
             this Task<Result<TOk, TErr>> self,
@@ -219,6 +299,9 @@ namespace Galaxus.Functional
         /// This function can be used for control flow based on <see cref="Result{TOk, TErr}"/>s.
         /// </summary>
         /// <typeparam name="TContinuationOk">The <b>Ok</b> type of the <paramref name="continuation"/>'s <see cref="Result{TOk, TErr}"/>.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The function to call if <b>self</b> contains <b>Ok</b>.</param>
         public static Task<Result<TContinuationOk, TErr>> AndThenAsync<TOk, TErr, TContinuationOk>(
             this Task<Result<TOk, TErr>> self,
@@ -236,6 +319,8 @@ namespace Galaxus.Functional
         /// This function can be used for control flow based on <see cref="Result{TOk, TErr}"/>s.
         /// </summary>
         /// <typeparam name="TContinuationErr">The <b>Error</b> type of the <paramref name="continuation"/>'s <see cref="Result{TOk, TErr}"/>.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The function to call if <b>self</b> contains <b>Err</b>.</param>
         public static async Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
             this Task<Result<TOk, TContinuationErr>> self,
@@ -249,6 +334,8 @@ namespace Galaxus.Functional
         /// This function can be used for control flow based on <see cref="Result{TOk, TErr}"/>s.
         /// </summary>
         /// <typeparam name="TContinuationErr">The <b>Error</b> type of the <paramref name="continuation"/>'s <see cref="Result{TOk, TErr}"/>.</typeparam>
+        /// <typeparam name="TOk"></typeparam>
+        /// <param name="self"></param>
         /// <param name="continuation">The function to call if <b>self</b> contains <b>Err</b>.</param>
         public static Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
             this Task<Result<TOk, TContinuationErr>> self,
@@ -278,13 +365,13 @@ namespace Galaxus.Functional
         /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
         /// </summary>
         /// <param name="self"></param>
-        /// <param name="error"></param>
-        /// <typeparam name="TOk"></typeparam>
         /// <param name="error">
         /// A custom error to use as the exception message.
         /// This argument is eagerly evaluated; if you are passing the result of a function call,
-        /// it is recommended to use <see cref="Unwrap(Func{TErr, string})"/>, which is lazily evaluated.
+        /// it is recommended to use <see cref="Result{TOk, TErr}.Unwrap(Func{TErr, string})"/>, which is lazily evaluated.
         /// </param>
+        /// <typeparam name="TOk"></typeparam>
+        /// <typeparam name="TErr"></typeparam>
         /// <returns><b>self</b></returns>
         public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, string error) =>
             (await self).Unwrap(error);
@@ -300,7 +387,7 @@ namespace Galaxus.Functional
         /// <returns></returns>
         public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
             Func<TErr, string> error) => (await self).Unwrap(error);
-        
+
         /// <summary>
         /// Unwraps <b>self</b> and returns <b>Ok</b>.
         /// <i>Throws if <b>self</b> contains <b>Err</b>!</i>
@@ -336,7 +423,7 @@ namespace Galaxus.Functional
         /// </param>
         public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, TOk fallback) =>
             (await self).UnwrapOr(fallback);
-        
+
         /// <summary>
         /// Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns <paramref name="fallback"/> otherwise.
         /// </summary>

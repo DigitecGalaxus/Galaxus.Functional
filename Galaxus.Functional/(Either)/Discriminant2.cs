@@ -10,7 +10,13 @@ namespace Galaxus.Functional
     /// </remarks>
     public enum Discriminant2 : byte
     {
+        /// <summary>
+        ///
+        /// </summary>
         A,
+        /// <summary>
+        ///
+        /// </summary>
         B
     }
 }

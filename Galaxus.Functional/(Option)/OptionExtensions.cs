@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
+    /// <summary>
+    /// Extensions for the option type, providing some quality of life-shorthands.
+    /// </summary>
     public static class OptionExtensions
     {
         #region Enumeration
@@ -47,11 +50,29 @@ namespace Galaxus.Functional
 
         #region Flatten
 
+        /// <summary>
+        /// Flatten an option containing an option into a single option.
+        /// </summary>
+        /// <param name="option">The option to flatten.</param>
+        /// <typeparam name="T">Type contained in the option.</typeparam>
+        /// <returns>
+        ///     <see cref="Option{T}"/> containing <c>Some</c> if both the outer as well as the inner option are <c>Some</c>;
+        ///     otherwise, returns <see cref="None"/>
+        /// </returns>
         public static Option<T> Flatten<T>(this Option<Option<T>> option)
         {
             return option.UnwrapOr(Option<T>.None);
         }
 
+        /// <summary>
+        /// Flatten an option containing an option within an option into a single option.
+        /// </summary>
+        /// <param name="option">The option to flatten.</param>
+        /// <typeparam name="T">Type contained in the option.</typeparam>
+        /// <returns>
+        ///     <see cref="Option{T}"/> containing <c>Some</c> if all layers in the given option are <c>Some</c>;
+        ///     otherwise, returns <see cref="None"/>
+        /// </returns>
         public static Option<T> Flatten<T>(this Option<Option<Option<T>>> option)
         {
             return option.UnwrapOr(Option<Option<T>>.None).UnwrapOr(Option<T>.None);

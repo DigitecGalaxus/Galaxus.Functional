@@ -41,7 +41,7 @@ namespace Galaxus.Functional
         // Usages of implicit operators will only compile if A and B are different types.
 
         /// <summary>
-        /// Implicitly cast a value of type <see cref="A"/> to an <see cref="Either{A,B}"/> containing A.
+        /// Implicitly cast a value of type <c>A</c> to an <see cref="Either{A,B}"/> containing A.
         /// </summary>
         /// <param name="a">The value to cast.</param>
         /// <returns>An either containing that value as A.</returns>
@@ -49,7 +49,7 @@ namespace Galaxus.Functional
             => new Either<A, B>(a);
 
         /// <summary>
-        /// Implicitly cast a value of type <see cref="B"/> to an <see cref="Either{A,B}"/> containing B.
+        /// Implicitly cast a value of type <c>B</c> to an <see cref="Either{A,B}"/> containing B.
         /// </summary>
         /// <param name="b">The value to cast.</param>
         /// <returns>An either containing that value as B.</returns>
@@ -60,7 +60,14 @@ namespace Galaxus.Functional
 
         #region State
 
+        /// <summary>
+        ///
+        /// </summary>
         protected readonly A _a;
+
+        /// <summary>
+        ///
+        /// </summary>
         protected readonly B _b;
 
         /// <summary>

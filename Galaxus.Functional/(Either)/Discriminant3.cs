@@ -10,8 +10,17 @@ namespace Galaxus.Functional
     /// </remarks>
     public enum Discriminant3 : byte
     {
+        /// <summary>
+        ///
+        /// </summary>
         A,
+        /// <summary>
+        ///
+        /// </summary>
         B,
+        /// <summary>
+        ///
+        /// </summary>
         C
     }
 }
