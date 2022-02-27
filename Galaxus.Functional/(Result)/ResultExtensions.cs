@@ -81,15 +81,9 @@ namespace Galaxus.Functional
         #region Map
 
         /// <summary>
-        ///     Maps a <see cref="Result{TOk, TErr}" /> to <see cref="Result{TOkTo, TErr}" /> by applying a function to a contained
-        ///     <b>Ok</b> value,
-        ///     leaving an <b>Err</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Async overload for <see cref="Map{TOkFrom,TOkTo,TErr}"/>
         /// </summary>
-        /// <typeparam name="TOkTo">The type to map <b>Ok</b> to.</typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The mapping function.</param>
+        /// <inheritdoc cref="Map{TOkFrom,TOkTo,TErr}"/>
         public static async Task<Result<TOkTo, TErr>> MapAsync<TOk, TErr, TOkTo>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<TOkTo>> continuation)
@@ -98,15 +92,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Maps a <see cref="Result{TOk, TErr}" /> to <see cref="Result{TOkTo, TErr}" /> by applying a function to a contained
-        ///     <b>Ok</b> value,
-        ///     leaving an <b>Err</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Async overload for <see cref="Map{TOkFrom,TOkTo,TErr}"/>
         /// </summary>
-        /// <typeparam name="TOkTo">The type to map <b>Ok</b> to.</typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The mapping function.</param>
+        /// <inheritdoc cref="Map{TOkFrom,TOkTo,TErr}"/>
         public static Task<Result<TOkTo, TErr>> MapAsync<TOk, TErr, TOkTo>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, TOkTo> continuation)
@@ -115,15 +103,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Maps a <see cref="Result{TOk, TErr}" /> to <see cref="Result{TOk, TErrTo}" /> by applying a function to a contained
-        ///     <b>Err</b> value,
-        ///     leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Async overload for <see cref="MapErr{TOk,TErrFrom,TErrTo}"/>
         /// </summary>
-        /// <typeparam name="TErrTo">The type to map "Err" to.</typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The mapping function.</param>
+        /// <inheritdoc cref="MapErr{TOk,TErrFrom,TErrTo}"/>
         public static async Task<Result<TOk, TErrTo>> MapErrAsync<TOk, TErr, TErrTo>(
             this Task<Result<TOk, TErr>> self,
             Func<TErr, Task<TErrTo>> continuation)
@@ -132,15 +114,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Maps a <see cref="Result{TOk, TErr}" /> to <see cref="Result{TOk, TErrTo}" /> by applying a function to a contained
-        ///     <b>Err</b> value,
-        ///     leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Async overload for <see cref="MapErr{TOk,TErrFrom,TErrTo}"/>
         /// </summary>
-        /// <typeparam name="TErrTo">The type to map "Err" to.</typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The mapping function.</param>
+        /// <inheritdoc cref="MapErr{TOk,TErrFrom,TErrTo}"/>
         public static Task<Result<TOk, TErrTo>> MapErrAsync<TOk, TErr, TErrTo>(
             this Task<Result<TOk, TErr>> self,
             Func<TErr, TErrTo> continuation)
@@ -162,7 +138,8 @@ namespace Galaxus.Functional
         ///     Returns a subset of <paramref name="self" /> which contains all <b>Ok</b> values in <paramref name="self" />.
         ///     Then runs it through the <paramref name="selector" />.
         /// </summary>
-        public static IEnumerable<TSelection> SelectOk<TOk, TErr, TSelection>(this IEnumerable<Result<TOk, TErr>> self,
+        public static IEnumerable<TSelection> SelectOk<TOk, TErr, TSelection>(
+            this IEnumerable<Result<TOk, TErr>> self,
             Func<TOk, TSelection> selector)
             => self.SelectOk().Select(selector);
 
@@ -176,7 +153,8 @@ namespace Galaxus.Functional
         ///     Returns a subset of <paramref name="self" /> which contains all <b>Err</b> values in <paramref name="self" />.
         ///     Then runs it through the <paramref name="selector" />.
         /// </summary>
-        public static IEnumerable<TSelection> SelectErr<TOk, TErr, TSelection>(this IEnumerable<Result<TOk, TErr>> self,
+        public static IEnumerable<TSelection> SelectErr<TOk, TErr, TSelection>(
+            this IEnumerable<Result<TOk, TErr>> self,
             Func<TErr, TSelection> selector)
             => self.SelectErr().Select(selector);
 
@@ -185,15 +163,9 @@ namespace Galaxus.Functional
         #region Match
 
         /// <summary>
-        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
+        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="onOk"></param>
-        /// <param name="onErr"></param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<TResult>> onOk,
@@ -203,15 +175,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
+        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="onOk"></param>
-        /// <param name="onErr"></param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, TResult> onOk,
@@ -221,15 +187,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
+        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="onOk"></param>
-        /// <param name="onErr"></param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<TResult>> onOk,
@@ -239,15 +199,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
+        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="onOk"></param>
-        /// <param name="onErr"></param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
         public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, TResult> onOk,
@@ -257,16 +211,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
+        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>, producing another result.
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="onOk"></param>
-        /// <param name="onErr"></param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <typeparam name="TOkResult"></typeparam>
-        /// <typeparam name="TErrResult"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
         public static async Task<Result<TOkResult, TErrResult>> MatchResultAsync<TOk, TErr, TOkResult, TErrResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<TOkResult>> onOk,
@@ -278,16 +225,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
+        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>, producing another result.
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="onOk"></param>
-        /// <param name="onErr"></param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <typeparam name="TOkResult"></typeparam>
-        /// <typeparam name="TErrResult"></typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
         public static async Task<Result<TOkResult, TErrResult>> MatchResultAsync<TOk, TErr, TOkResult, TErrResult>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<Result<TOkResult, TErrResult>>> onOk,
@@ -303,18 +243,9 @@ namespace Galaxus.Functional
         #region AndThen
 
         /// <summary>
-        ///     Calls <paramref name="continuation" /> if <b>self</b> contains <b>Ok</b>, otherwise returns the <b>Err</b> value
-        ///     contained in <b>self</b>.
-        ///     This function can be used for control flow based on <see cref="Result{TOk, TErr}" />s.
+        ///     Async overload for <see cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
         /// </summary>
-        /// <typeparam name="TContinuationOk">
-        ///     The <b>Ok</b> type of the <paramref name="continuation" />'s
-        ///     <see cref="Result{TOk, TErr}" />.
-        /// </typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The function to call if <b>self</b> contains <b>Ok</b>.</param>
+        /// <inheritdoc cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
         public static async Task<Result<TContinuationOk, TErr>> AndThenAsync<TOk, TErr, TContinuationOk>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Task<Result<TContinuationOk, TErr>>> continuation)
@@ -323,18 +254,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Calls <paramref name="continuation" /> if <b>self</b> contains <b>Ok</b>, otherwise returns the <b>Err</b> value
-        ///     contained in <b>self</b>.
-        ///     This function can be used for control flow based on <see cref="Result{TOk, TErr}" />s.
+        ///     Async overload for <see cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
         /// </summary>
-        /// <typeparam name="TContinuationOk">
-        ///     The <b>Ok</b> type of the <paramref name="continuation" />'s
-        ///     <see cref="Result{TOk, TErr}" />.
-        /// </typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The function to call if <b>self</b> contains <b>Ok</b>.</param>
+        /// <inheritdoc cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
         public static Task<Result<TContinuationOk, TErr>> AndThenAsync<TOk, TErr, TContinuationOk>(
             this Task<Result<TOk, TErr>> self,
             Func<TOk, Result<TContinuationOk, TErr>> continuation)
@@ -347,17 +269,9 @@ namespace Galaxus.Functional
         #region Or
 
         /// <summary>
-        ///     Calls <paramref name="continuation" /> if <b>self</b> contains <b>Err</b>, otherwise returns the <b>Ok</b> value
-        ///     contained in <b>self</b>.
-        ///     This function can be used for control flow based on <see cref="Result{TOk, TErr}" />s.
+        ///     Async overload for <see cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
         /// </summary>
-        /// <typeparam name="TContinuationErr">
-        ///     The <b>Error</b> type of the <paramref name="continuation" />'s
-        ///     <see cref="Result{TOk, TErr}" />.
-        /// </typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The function to call if <b>self</b> contains <b>Err</b>.</param>
+        /// <inheritdoc cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
         public static async Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
             this Task<Result<TOk, TContinuationErr>> self,
             Func<TContinuationErr, Task<Result<TOk, TContinuationErr>>> continuation)
@@ -366,17 +280,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Calls <paramref name="continuation" /> if <b>self</b> contains <b>Err</b>, otherwise returns the <b>Ok</b> value
-        ///     contained in <b>self</b>.
-        ///     This function can be used for control flow based on <see cref="Result{TOk, TErr}" />s.
+        ///     Async overload for <see cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
         /// </summary>
-        /// <typeparam name="TContinuationErr">
-        ///     The <b>Error</b> type of the <paramref name="continuation" />'s
-        ///     <see cref="Result{TOk, TErr}" />.
-        /// </typeparam>
-        /// <typeparam name="TOk"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="continuation">The function to call if <b>self</b> contains <b>Err</b>.</param>
+        /// <inheritdoc cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
         public static Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
             this Task<Result<TOk, TContinuationErr>> self,
             Func<TContinuationErr, Result<TOk, TContinuationErr>> continuation)
@@ -389,60 +295,31 @@ namespace Galaxus.Functional
         #region UnwrapAsync
 
         /// <summary>
-        ///     Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
-        ///     <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap()"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <returns>
-        ///     <b>self</b>
-        /// </returns>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self) =>
-            (await self).Unwrap();
-
+        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap()"/>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self)
+            => (await self).Unwrap();
 
         /// <summary>
-        ///     Unwraps asynchronous <b>self</b> and returns <b>Ok</b>.
-        ///     <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(string)"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="error">
-        ///     A custom error to use as the exception message.
-        ///     This argument is eagerly evaluated; if you are passing the result of a function call,
-        ///     it is recommended to use <see cref="Result{TOk, TErr}.Unwrap(Func{TErr, string})" />, which is lazily evaluated.
-        /// </param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <returns>
-        ///     <b>self</b>
-        /// </returns>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, string error) =>
-            (await self).Unwrap(error);
+        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(string)"/>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, string error)
+            => (await self).Unwrap(error);
 
         /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b>.
-        ///     <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="error">A function that returns a custom error to use as the exception message.</param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <returns></returns>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
-            Func<TErr, string> error) => (await self).Unwrap(error);
+        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TErr, string> error)
+            => (await self).Unwrap(error);
 
         /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b>.
-        ///     <i>Throws if <b>self</b> contains <b>Err</b>!</i>
+        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="error">A function that returns a custom error to use as the exception message.</param>
-        /// <typeparam name="TOk"></typeparam>
-        /// <typeparam name="TErr"></typeparam>
-        /// <returns></returns>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
-            Func<TErr, Task<string>> error)
+        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
+        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TErr, Task<string>> error)
         {
             var res = await self;
             if (res.IsErr)
@@ -457,55 +334,31 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns <paramref name="fallback" />
-        ///     otherwise.
+        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOr"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="fallback">
-        ///     The value to return if <b>self</b> contains <b>Err</b>.
-        ///     This argument is eagerly evaluated; if you are passing the result of a function call,
-        ///     it is recommended to use
-        ///     <see
-        ///         cref="UnwrapOrElseAsync{TOk,TErr}(System.Threading.Tasks.Task{Galaxus.Functional.Result{TOk,TErr}},System.Func{TOk})" />
-        ///     , which is lazily evaluated.
-        /// </param>
-        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, TOk fallback) =>
-            (await self).UnwrapOr(fallback);
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
+        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, TOk fallback)
+            => (await self).UnwrapOr(fallback);
 
         /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns <paramref name="fallback" />
-        ///     otherwise.
+        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOr"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="fallback">
-        ///     The value to return if <b>self</b> contains <b>Err</b>.
-        ///     This argument is eagerly evaluated; if you are passing the result of a function call,
-        ///     it is recommended to use
-        ///     <see
-        ///         cref="UnwrapOrElseAsync{TOk,TErr}(System.Threading.Tasks.Task{Galaxus.Functional.Result{TOk,TErr}},System.Func{TOk})" />
-        ///     , which is lazily evaluated.
-        /// </param>
-        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Task<TOk> fallback) =>
-            (await self).UnwrapOr(await fallback);
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
+        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Task<TOk> fallback)
+            => (await self).UnwrapOr(await fallback);
 
         /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the result of
-        ///     <paramref name="fallback" /> otherwise.
+        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrElse"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="fallback">The function to call if <b>self</b> contains <b>Err</b>.</param>
-        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
-            Func<TOk> fallback) =>
-            (await self).UnwrapOrElse(fallback);
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrElse"/>
+        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TOk> fallback)
+            => (await self).UnwrapOrElse(fallback);
 
         /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the result of
-        ///     <paramref name="fallback" /> otherwise.
+        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrElse"/>
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="fallback">The function to call if <b>self</b> contains <b>Err</b>.</param>
-        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self,
-            Func<Task<TOk>> fallback)
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrElse"/>
+        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<Task<TOk>> fallback)
         {
             var res = await self;
             if (res.IsOk)
@@ -517,11 +370,10 @@ namespace Galaxus.Functional
             return await fallback();
         }
 
-
         /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the default value of
-        ///     <typeparamref name="TOk" /> otherwise.
+        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrDefault"/>
         /// </summary>
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrDefault"/>
         public static async Task<TOk> UnwrapOrDefaultAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self)
             => (await self).UnwrapOrDefault();
 

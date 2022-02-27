@@ -74,10 +74,7 @@ namespace Galaxus.Functional
         /// <summary>
         ///     An overload for <see cref="Match" /> using async functions.
         /// </summary>
-        /// <param name="onOk">The async function to be called on an <b>Ok</b>.</param>
-        /// <param name="onErr">The async function to be called on an <b>Ok</b>.</param>
-        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}" /> type.</typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, Task<TResult>> onErr)
         {
             return await Match(
@@ -88,10 +85,7 @@ namespace Galaxus.Functional
         /// <summary>
         ///     An overload for <see cref="Match" /> using async functions.
         /// </summary>
-        /// <param name="onOk">The async function to be called on an <b>Ok</b>.</param>
-        /// <param name="onErr">The non-async function to be called on an <b>Ok</b>.</param>
-        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}" /> type.</typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, TResult> onErr)
         {
             return await Match(
@@ -102,10 +96,7 @@ namespace Galaxus.Functional
         /// <summary>
         ///     An overload for <see cref="Match" /> using async functions.
         /// </summary>
-        /// <param name="onOk">The non-async function to be called on an <b>Ok</b>.</param>
-        /// <param name="onErr">The async function to be called on an <b>Ok</b>.</param>
-        /// <typeparam name="TResult">The resulting <see cref="Result{TOk,TErr}" /> type.</typeparam>
-        /// <returns></returns>
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, TResult> onOk, Func<TErr, Task<TResult>> onErr)
         {
             return await Match(

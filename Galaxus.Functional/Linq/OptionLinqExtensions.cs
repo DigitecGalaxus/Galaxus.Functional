@@ -50,8 +50,7 @@ namespace Galaxus.Functional.Linq
         ///     <c>predicate</c>; otherwise, the first element in <c>source</c> that passes the test specified by <c>predicate</c>.
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
-        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate)
+        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
             => source
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
@@ -82,8 +81,7 @@ namespace Galaxus.Functional.Linq
         ///     function; otherwise, the last element that passes the test in the predicate function.
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
-        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate)
+        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
             => source
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
@@ -114,11 +112,10 @@ namespace Galaxus.Functional.Linq
         /// <typeparam name="TSource">The type of the elements of <c>source</c>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}" /> to return a single element from.</param>
         /// <param name="predicate">A function to test an element for a condition.</param>
-        /// <returns></returns>
+        /// <returns>The only element matching the <paramref name="predicate"/> or <see cref="None"/>.</returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
         /// <exception cref="InvalidOperationException">More than one element satisfies the condition in <c>source</c>.</exception>
-        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source,
-            Func<TSource, bool> predicate)
+        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
             => source
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
@@ -131,9 +128,7 @@ namespace Galaxus.Functional.Linq
         /// <param name="source">The dictionary in question</param>
         /// <param name="key">The key to check if a value exists</param>
         /// <returns>The value of the dictionary or None</returns>
-        public static Option<TSome> GetValueOrNone<TKey, TSome>(
-            this IEnumerable<KeyValuePair<TKey, TSome>> source,
-            TKey key)
+        public static Option<TSome> GetValueOrNone<TKey, TSome>(this IEnumerable<KeyValuePair<TKey, TSome>> source, TKey key)
         {
             switch (source)
             {
