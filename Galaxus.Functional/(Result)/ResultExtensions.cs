@@ -185,6 +185,7 @@ namespace Galaxus.Functional
         #region Match
 
         /// <summary>
+        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
         /// </summary>
         /// <param name="self"></param>
         /// <param name="onOk"></param>
@@ -202,6 +203,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
+        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
         /// </summary>
         /// <param name="self"></param>
         /// <param name="onOk"></param>
@@ -219,6 +221,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
+        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
         /// </summary>
         /// <param name="self"></param>
         /// <param name="onOk"></param>
@@ -236,6 +239,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
+        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
         /// </summary>
         /// <param name="self"></param>
         /// <param name="onOk"></param>
@@ -253,6 +257,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
+        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
         /// </summary>
         /// <param name="self"></param>
         /// <param name="onOk"></param>
@@ -273,6 +278,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
+        ///     An overload for <see cref="Result{A, B}.Match{C}" /> using async functions.
         /// </summary>
         /// <param name="self"></param>
         /// <param name="onOk"></param>
