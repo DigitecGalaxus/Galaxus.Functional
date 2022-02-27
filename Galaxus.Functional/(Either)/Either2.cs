@@ -76,11 +76,19 @@ namespace Galaxus.Functional
         #region State
 
         /// <summary>
+        ///     The value of the first type that may be contained.
         /// </summary>
+        /// <remarks>
+        ///     When this either <see cref="IsB"/>, this value is <c>default</c>.
+        /// </remarks>
         protected readonly A _a;
 
         /// <summary>
+        ///     The value of the second type that may be contained.
         /// </summary>
+        /// <remarks>
+        ///     When this either <see cref="IsA"/>, this value is <c>default</c>.
+        /// </remarks>
         protected readonly B _b;
 
         /// <summary>

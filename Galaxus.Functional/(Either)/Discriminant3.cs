@@ -11,14 +11,17 @@ namespace Galaxus.Functional
     public enum Discriminant3 : byte
     {
         /// <summary>
+        ///     The first field of an <see cref="Either{A, B, C}"/>
         /// </summary>
         A,
 
         /// <summary>
+        ///     The second field of an <see cref="Either{A, B, C}"/>
         /// </summary>
         B,
 
         /// <summary>
+        ///     The third field of an <see cref="Either{A, B, C}"/>
         /// </summary>
         C
     }
