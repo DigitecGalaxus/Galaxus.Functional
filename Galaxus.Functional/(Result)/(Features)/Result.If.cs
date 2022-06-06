@@ -22,7 +22,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onOk));
                 }
 
-                onOk(obj: _ok);
+                onOk(_ok);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onOk));
                 }
 
-                return onOk(arg: _ok);
+                return onOk(_ok);
             }
 
             return Task.CompletedTask;
@@ -66,7 +66,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onErr));
                 }
 
-                onErr(obj: _err);
+                onErr(_err);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onErr));
                 }
 
-                return onErr(arg: _err);
+                return onErr(_err);
             }
 
             return Task.CompletedTask;

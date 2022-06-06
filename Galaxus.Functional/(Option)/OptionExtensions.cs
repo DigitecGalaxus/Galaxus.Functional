@@ -83,7 +83,7 @@ namespace Galaxus.Functional
         public static IEnumerable<TSelection> SelectSome<T, TSelection>(this IEnumerable<Option<T>> self,
             Func<T, TSelection> selector)
         {
-            return self.SelectSome().Select(selector: selector);
+            return self.SelectSome().Select(selector);
         }
 
         #endregion
@@ -101,7 +101,7 @@ namespace Galaxus.Functional
         /// </returns>
         public static Option<T> Flatten<T>(this Option<Option<T>> option)
         {
-            return option.UnwrapOr(fallback: Option<T>.None);
+            return option.UnwrapOr(Option<T>.None);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Galaxus.Functional
         /// </returns>
         public static Option<T> Flatten<T>(this Option<Option<Option<T>>> option)
         {
-            return option.UnwrapOr(fallback: Option<Option<T>>.None).UnwrapOr(fallback: Option<T>.None);
+            return option.UnwrapOr(Option<Option<T>>.None).UnwrapOr(Option<T>.None);
         }
 
         #endregion
@@ -129,7 +129,7 @@ namespace Galaxus.Functional
         /// </summary>
         public static Option<T> ToOption<T>(this T self)
         {
-            return Option<T>.Some(some: self);
+            return Option<T>.Some(self);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace Galaxus.Functional
         /// <inheritdoc cref="Option{T}.Unwrap(string)"/>
         public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, string error)
         {
-            return (await self).Unwrap(error: error);
+            return (await self).Unwrap(error);
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Galaxus.Functional
         /// <inheritdoc cref="Option{T}.Unwrap(Func{string})"/>
         public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<string> error)
         {
-            return (await self).Unwrap(error: error);
+            return (await self).Unwrap(error);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace Galaxus.Functional
         /// <inheritdoc cref="Option{T}.UnwrapOr"/>
         public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, T fallback)
         {
-            return (await self).UnwrapOr(fallback: fallback);
+            return (await self).UnwrapOr(fallback);
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace Galaxus.Functional
         /// <inheritdoc cref="Option{T}.UnwrapOrElse"/>
         public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<T> fallback)
         {
-            return (await self).UnwrapOrElse(fallback: fallback);
+            return (await self).UnwrapOrElse(fallback);
         }
 
         /// <summary>

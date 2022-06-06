@@ -26,7 +26,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onOk));
                 }
 
-                onOk(obj: _ok);
+                onOk(_ok);
             }
             else
             {
@@ -35,7 +35,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onErr));
                 }
 
-                onErr(obj: _err);
+                onErr(_err);
             }
         }
 
@@ -60,7 +60,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onOk));
                 }
 
-                return onOk(arg: _ok);
+                return onOk(_ok);
             }
 
             if (onErr is null)
@@ -68,7 +68,7 @@ namespace Galaxus.Functional
                 throw new ArgumentNullException(nameof(onErr));
             }
 
-            return onErr(arg: _err);
+            return onErr(_err);
         }
 
         /// <summary>
@@ -78,8 +78,8 @@ namespace Galaxus.Functional
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, Task<TResult>> onErr)
         {
             return await Match(
-                async ok => await onOk(arg: ok),
-                async err => await onErr(arg: err));
+                async ok => await onOk(ok),
+                async err => await onErr(err));
         }
 
         /// <summary>
@@ -89,8 +89,8 @@ namespace Galaxus.Functional
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, TResult> onErr)
         {
             return await Match(
-                async ok => await onOk(arg: ok),
-                err => Task.FromResult(onErr(arg: err)));
+                async ok => await onOk(ok),
+                err => Task.FromResult(onErr(err)));
         }
 
         /// <summary>
@@ -100,8 +100,8 @@ namespace Galaxus.Functional
         public async Task<TResult> MatchAsync<TResult>(Func<TOk, TResult> onOk, Func<TErr, Task<TResult>> onErr)
         {
             return await Match(
-                ok => Task.FromResult(onOk(arg: ok)),
-                async err => await onErr(arg: err));
+                ok => Task.FromResult(onOk(ok)),
+                async err => await onErr(err));
         }
     }
 }

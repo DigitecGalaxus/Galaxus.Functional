@@ -19,7 +19,7 @@ namespace Galaxus.Functional
         /// <param name="ok">The <b>Ok</b> value.</param>
         public static Result<TOk, TErr> FromOk(TOk ok)
         {
-            return new Result<TOk, TErr>(ok: ok);
+            return new Result<TOk, TErr>(ok);
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Galaxus.Functional
         /// <param name="err">The <b>Err</b> value.</param>
         public static Result<TOk, TErr> FromErr(TErr err)
         {
-            return new Result<TOk, TErr>(err: err);
+            return new Result<TOk, TErr>(err);
         }
 
         // Note:
@@ -68,7 +68,7 @@ namespace Galaxus.Functional
         /// <returns>The result.</returns>
         public static implicit operator Result<TOk, TErr>(TOk ok)
         {
-            return new Result<TOk, TErr>(ok: ok);
+            return new Result<TOk, TErr>(ok);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Galaxus.Functional
         /// <returns>The result.</returns>
         public static implicit operator Result<TOk, TErr>(TErr err)
         {
-            return new Result<TOk, TErr>(err: err);
+            return new Result<TOk, TErr>(err);
         }
 
         #endregion
@@ -128,11 +128,11 @@ namespace Galaxus.Functional
                     case IError error:
                         return error.Description;
                     case IEnumerable<IError> errors:
-                        return string.Join("; ", values: errors);
+                        return string.Join("; ", errors);
                     case string str:
                         return str;
                     case IEnumerable<string> strs:
-                        return string.Join("; ", values: strs);
+                        return string.Join("; ", strs);
                     default:
                         return $"Cannot unwrap \"Ok\" when the result is \"Err\": {_err.ToString()}.";
                 }
@@ -152,7 +152,7 @@ namespace Galaxus.Functional
         {
             if (IsErr)
             {
-                throw new AttemptToUnwrapErrWhenResultWasOkException(message: error);
+                throw new AttemptToUnwrapErrWhenResultWasOkException(error);
             }
 
             return _ok;
@@ -172,7 +172,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(error));
                 }
 
-                throw new AttemptToUnwrapErrWhenResultWasOkException(error(arg: _err));
+                throw new AttemptToUnwrapErrWhenResultWasOkException(error(_err));
             }
 
             return _ok;
@@ -231,7 +231,7 @@ namespace Galaxus.Functional
         /// <param name="value">The value to check against.</param>
         public bool Contains(TOk value)
         {
-            return Match(ok => ok.Equals(obj: value), err => false);
+            return Match(ok => ok.Equals(value), err => false);
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace Galaxus.Functional
         /// <param name="value">The value to check against.</param>
         public bool ContainsErr(TErr value)
         {
-            return Match(ok => false, err => err.Equals(obj: value));
+            return Match(ok => false, err => err.Equals(value));
         }
 
         #endregion
@@ -261,17 +261,17 @@ namespace Galaxus.Functional
                 return false;
             }
 
-            if (ReferenceEquals(this, objB: other))
+            if (ReferenceEquals(this, other))
             {
                 return true;
             }
 
             if (IsOk)
             {
-                return other.IsOk && _ok.Equals(obj: other._ok);
+                return other.IsOk && _ok.Equals(other._ok);
             }
 
-            return !other.IsOk && _err.Equals(obj: other._err);
+            return !other.IsOk && _err.Equals(other._err);
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace Galaxus.Functional
                 return rhs is null;
             }
 
-            return lhs.Equals(other: rhs);
+            return lhs.Equals(rhs);
         }
 
         /// <summary>

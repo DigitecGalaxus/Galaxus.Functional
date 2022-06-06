@@ -84,7 +84,7 @@ namespace Galaxus.Functional
         /// <param name="fallback">The value to be used, if option contains none</param>
         public static Either<TSome, TNone> ToEither<TSome, TNone>(this Option<TSome> option, TNone fallback)
         {
-            return option.MapOr<Either<TSome, TNone>>(some => some, fallback: fallback);
+            return option.MapOr<Either<TSome, TNone>>(some => some, fallback);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(map));
                     }
 
-                    return map(arg: some).ToOption();
+                    return map(some).ToOption();
                 },
                 () => Option<TTo>.None
             );
@@ -42,7 +42,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(map));
                     }
 
-                    return map(arg: some);
+                    return map(some);
                 },
                 () => fallback
             );

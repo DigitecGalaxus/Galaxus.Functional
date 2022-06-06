@@ -21,7 +21,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onSome));
                 }
 
-                onSome(obj: _some);
+                onSome(_some);
             }
         }
 

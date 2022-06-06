@@ -11,7 +11,7 @@ namespace Galaxus.Functional
         ///     Create an <see cref="AttemptToUnwrapNoneWhenOptionContainedSomeException" /> object.
         /// </summary>
         /// <param name="message">The message for the exception.</param>
-        public AttemptToUnwrapNoneWhenOptionContainedSomeException(string message) : base(message: message)
+        public AttemptToUnwrapNoneWhenOptionContainedSomeException(string message) : base(message)
         {
         }
     }

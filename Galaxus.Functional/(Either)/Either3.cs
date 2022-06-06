@@ -67,33 +67,33 @@ namespace Galaxus.Functional
         // Usages of implicit operators will only compile if A, B and C are different types.
 
         /// <summary>
-        ///     Implicitly cast a value of type <c>A</c> to an <see cref="Either{A,B,C}" /> containing A.
+        ///     Implicitly cast a value of type <typeparamref name="A"/> to an <see cref="Either{A,B,C}" /> containing A.
         /// </summary>
         /// <param name="value">The value to cast.</param>
         /// <returns>An either containing that value as A.</returns>
         public static implicit operator Either<A, B, C>(A value)
         {
-            return new Either<A, B, C>(a: value);
+            return new Either<A, B, C>(value);
         }
 
         /// <summary>
-        ///     Implicitly cast a value of type <c>B</c> to an <see cref="Either{A,B,C}" /> containing B.
+        ///     Implicitly cast a value of type <typeparamref name="B"/> to an <see cref="Either{A,B,C}" /> containing B.
         /// </summary>
         /// <param name="value">The value to cast.</param>
         /// <returns>An either containing that value as B.</returns>
         public static implicit operator Either<A, B, C>(B value)
         {
-            return new Either<A, B, C>(b: value);
+            return new Either<A, B, C>(value);
         }
 
         /// <summary>
-        ///     Implicitly cast a value of type <c>C</c> to an <see cref="Either{A,B,C}" /> containing C.
+        ///     Implicitly cast a value of type <typeparamref name="C"/> to an <see cref="Either{A,B,C}" /> containing C.
         /// </summary>
         /// <param name="value">The value to cast.</param>
         /// <returns>An either containing that value as C.</returns>
         public static implicit operator Either<A, B, C>(C value)
         {
-            return new Either<A, B, C>(c: value);
+            return new Either<A, B, C>(value);
         }
 
         #endregion
@@ -165,7 +165,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(onA));
                     }
 
-                    onA(obj: _a);
+                    onA(_a);
                     break;
 
                 case Discriminant3.B:
@@ -174,7 +174,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(onB));
                     }
 
-                    onB(obj: _b);
+                    onB(_b);
                     break;
 
                 case Discriminant3.C:
@@ -183,7 +183,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(onC));
                     }
 
-                    onC(obj: _c);
+                    onC(_c);
                     break;
 
                 default:
@@ -209,7 +209,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(onA));
                     }
 
-                    return onA(arg: _a);
+                    return onA(_a);
 
                 case Discriminant3.B:
                     if (onB == null)
@@ -217,7 +217,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(onB));
                     }
 
-                    return onB(arg: _b);
+                    return onB(_b);
 
                 case Discriminant3.C:
                     if (onC == null)
@@ -225,7 +225,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(onC));
                     }
 
-                    return onC(arg: _c);
+                    return onC(_c);
 
                 default:
                     throw new InvalidOperationException(
@@ -251,9 +251,9 @@ namespace Galaxus.Functional
         public async Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, Task<T>> onB, Func<C, Task<T>> onC)
         {
             return await Match(
-                async a => await onA(arg: a),
-                async b => await onB(arg: b),
-                async c => await onC(arg: c));
+                async a => await onA(a),
+                async b => await onB(b),
+                async c => await onC(c));
         }
 
         /// <summary>
@@ -274,9 +274,9 @@ namespace Galaxus.Functional
         public async Task<T> MatchAsync<T>(Func<A, T> onA, Func<B, Task<T>> onB, Func<C, Task<T>> onC)
         {
             return await Match(
-                a => Task.FromResult(onA(arg: a)),
-                async b => await onB(arg: b),
-                async c => await onC(arg: c));
+                a => Task.FromResult(onA(a)),
+                async b => await onB(b),
+                async c => await onC(c));
         }
 
         /// <summary>
@@ -297,9 +297,9 @@ namespace Galaxus.Functional
         public async Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, T> onB, Func<C, Task<T>> onC)
         {
             return await Match(
-                async a => await onA(arg: a),
-                b => Task.FromResult(onB(arg: b)),
-                async c => await onC(arg: c));
+                async a => await onA(a),
+                b => Task.FromResult(onB(b)),
+                async c => await onC(c));
         }
 
         /// <summary>
@@ -320,9 +320,9 @@ namespace Galaxus.Functional
         public async Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, Task<T>> onB, Func<C, T> onC)
         {
             return await Match(
-                async a => await onA(arg: a),
-                async b => await onB(arg: b),
-                c => Task.FromResult(onC(arg: c)));
+                async a => await onA(a),
+                async b => await onB(b),
+                c => Task.FromResult(onC(c)));
         }
 
         /// <summary>
@@ -343,9 +343,9 @@ namespace Galaxus.Functional
         public async Task<T> MatchAsync<T>(Func<A, T> onA, Func<B, T> onB, Func<C, Task<T>> onC)
         {
             return await Match(
-                a => Task.FromResult(onA(arg: a)),
-                b => Task.FromResult(onB(arg: b)),
-                async c => await onC(arg: c));
+                a => Task.FromResult(onA(a)),
+                b => Task.FromResult(onB(b)),
+                async c => await onC(c));
         }
 
         /// <summary>
@@ -366,9 +366,9 @@ namespace Galaxus.Functional
         public async Task<T> MatchAsync<T>(Func<A, T> onA, Func<B, Task<T>> onB, Func<C, T> onC)
         {
             return await Match(
-                a => Task.FromResult(onA(arg: a)),
-                async b => await onB(arg: b),
-                c => Task.FromResult(onC(arg: c)));
+                a => Task.FromResult(onA(a)),
+                async b => await onB(b),
+                c => Task.FromResult(onC(c)));
         }
 
         /// <summary>
@@ -389,9 +389,9 @@ namespace Galaxus.Functional
         public async Task<T> MatchAsync<T>(Func<A, Task<T>> onA, Func<B, T> onB, Func<C, T> onC)
         {
             return await Match(
-                async a => await onA(arg: a),
-                b => Task.FromResult(onB(arg: b)),
-                c => Task.FromResult(onC(arg: c)));
+                async a => await onA(a),
+                b => Task.FromResult(onB(b)),
+                c => Task.FromResult(onC(c)));
         }
 
         #endregion
@@ -412,7 +412,7 @@ namespace Galaxus.Functional
                 return false;
             }
 
-            if (ReferenceEquals(this, objB: other))
+            if (ReferenceEquals(this, other))
             {
                 return true;
             }
@@ -425,11 +425,11 @@ namespace Galaxus.Functional
             switch (Discriminant)
             {
                 case Discriminant3.A:
-                    return _a.Equals(obj: other._a);
+                    return _a.Equals(other._a);
                 case Discriminant3.B:
-                    return _b.Equals(obj: other._b);
+                    return _b.Equals(other._b);
                 case Discriminant3.C:
-                    return _c.Equals(obj: other._c);
+                    return _c.Equals(other._c);
                 default:
                     throw new InvalidOperationException(
                         $"{GetType()} has an invalid discriminant. This is an implementation bug.");
@@ -449,7 +449,7 @@ namespace Galaxus.Functional
                 return rhs is null;
             }
 
-            return lhs.Equals(other: rhs);
+            return lhs.Equals(rhs);
         }
 
         /// <summary>

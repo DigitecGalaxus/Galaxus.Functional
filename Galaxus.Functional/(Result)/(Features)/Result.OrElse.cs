@@ -38,7 +38,7 @@ namespace Galaxus.Functional
                 throw new ArgumentNullException(nameof(continuation));
             }
 
-            return continuation(arg: _err);
+            return continuation(_err);
         }
 
 
@@ -65,7 +65,7 @@ namespace Galaxus.Functional
                 throw new ArgumentNullException(nameof(continuation));
             }
 
-            return continuation(arg: _err);
+            return continuation(_err);
         }
     }
 }

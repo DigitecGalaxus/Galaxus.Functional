@@ -11,7 +11,7 @@ namespace Galaxus.Functional
         ///     Create an <see cref="AttemptToUnwrapErrWhenResultWasOkException" /> object.
         /// </summary>
         /// <param name="message">The message for the exception.</param>
-        public AttemptToUnwrapErrWhenResultWasOkException(string message) : base(message: message)
+        public AttemptToUnwrapErrWhenResultWasOkException(string message) : base(message)
         {
         }
     }

@@ -44,7 +44,7 @@ namespace Galaxus.Functional
         /// <param name="some">The value to use as <b>Some</b>.</param>
         public static Option<T> Some(T some)
         {
-            return new Option<T>(some: some);
+            return new Option<T>(some);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Galaxus.Functional
         /// </param>
         public Result<T, TErr> OkOr<TErr>(TErr err)
         {
-            return IsSome ? Result<T, TErr>.FromOk(ok: _some) : Result<T, TErr>.FromErr(err: err);
+            return IsSome ? Result<T, TErr>.FromOk(_some) : Result<T, TErr>.FromErr(err);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Galaxus.Functional
         {
             if (IsSome)
             {
-                return Result<T, TErr>.FromOk(ok: _some);
+                return Result<T, TErr>.FromOk(_some);
             }
 
             if (fallback is null)
@@ -143,7 +143,7 @@ namespace Galaxus.Functional
         {
             if (IsSome == false)
             {
-                throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(message: error);
+                throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(error);
             }
 
             return _some;
@@ -228,7 +228,7 @@ namespace Galaxus.Functional
             var this_ = this;
 
             return Match(
-                v => filter(arg: v) ? this_ : None,
+                v => filter(v) ? this_ : None,
                 () => None
             );
         }
@@ -239,7 +239,7 @@ namespace Galaxus.Functional
         /// <param name="value">The value to check against.</param>
         public bool Contains(T value)
         {
-            return Match(v => v.Equals(obj: value), () => false);
+            return Match(v => v.Equals(value), () => false);
         }
 
         /// <summary>
@@ -256,14 +256,14 @@ namespace Galaxus.Functional
         /// <inheritdoc />
         public override bool Equals(object other)
         {
-            return other is Option<T> option && Equals(other: option);
+            return other is Option<T> option && Equals(option);
         }
 
         /// <inheritdoc />
         public bool Equals(Option<T> other)
         {
             return IsSome
-                ? other.IsSome && _some.Equals(obj: other._some)
+                ? other.IsSome && _some.Equals(other._some)
                 : other.IsSome == false;
         }
 
@@ -275,7 +275,7 @@ namespace Galaxus.Functional
         /// <returns><c>True</c> if the options are equal, <c>false</c> otherwise.</returns>
         public static bool operator ==(Option<T> a, Option<T> b)
         {
-            return a.Equals(other: b);
+            return a.Equals(b);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace Galaxus.Functional
         /// <returns><c>True</c> if the options are equal, <c>false</c> otherwise.</returns>
         public static bool operator !=(Option<T> a, Option<T> b)
         {
-            return a.Equals(other: b) == false;
+            return a.Equals(b) == false;
         }
 
         /// <inheritdoc />

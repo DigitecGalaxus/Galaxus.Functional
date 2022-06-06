@@ -48,7 +48,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(continuation));
                     }
 
-                    return continuation(arg: ok);
+                    return continuation(ok);
                 },
                 err => err
             );
@@ -62,7 +62,7 @@ namespace Galaxus.Functional
         /// <param name="continuation">The function to call if <b>self</b> is <b>Ok</b>.</param>
         public Result<TOk, TErr> AndThen(Action<TOk> continuation)
         {
-            IfOk(onOk: continuation);
+            IfOk(continuation);
             return this;
         }
 
@@ -80,7 +80,7 @@ namespace Galaxus.Functional
             Func<TOk, Task<Result<TContinuationOk, TErr>>> continuation)
         {
             return Match(
-                onOk: continuation,
+                continuation,
                 err => Task.FromResult(err.ToErr<TContinuationOk, TErr>()));
         }
     }

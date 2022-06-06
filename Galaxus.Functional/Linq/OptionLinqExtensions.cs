@@ -22,9 +22,11 @@ namespace Galaxus.Functional.Linq
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
         public static Option<TSource> ElementAtOrNone<TSource>(this IEnumerable<TSource> source, int index)
-            => source
+        {
+            return source
                 .Select(Option<TSource>.Some)
                 .ElementAtOrDefault(index);
+        }
 
         /// <summary>
         ///     Returns the first element of the sequence that satisfies a condition or <see cref="Option{T}.None" /> if the
@@ -36,7 +38,9 @@ namespace Galaxus.Functional.Linq
         ///     <c><see cref="Option{T}" />.None</c> if <c>source</c> is empty; otherwise, the first element in <c>source</c>.
         /// </returns>
         public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source)
-            => source.FirstOrNone(True);
+        {
+            return source.FirstOrNone(True);
+        }
 
         /// <summary>
         ///     Returns the first element of the sequence that satisfies a condition or <see cref="Option{T}.None" /> if the
@@ -51,10 +55,12 @@ namespace Galaxus.Functional.Linq
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
         public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
-            => source
+        {
+            return source
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
                 .FirstOrDefault();
+        }
 
         /// <summary>
         ///     Returns the last element of a sequence, or <see cref="Option{T}.None" /> if the sequence contains no elements.
@@ -67,7 +73,9 @@ namespace Galaxus.Functional.Linq
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
         public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source)
-            => source.LastOrNone(True);
+        {
+            return source.LastOrNone(True);
+        }
 
         /// <summary>
         ///     Returns the last element of a sequence that satisfies a condition or <see cref="Option{T}.None" /> if no such
@@ -82,10 +90,12 @@ namespace Galaxus.Functional.Linq
         /// </returns>
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
         public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
-            => source
+        {
+            return source
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
                 .LastOrDefault();
+        }
 
         /// <summary>
         ///     Returns the only element of a sequence, or <see cref="Option{T}.None" /> if the sequence is empty; this method
@@ -103,7 +113,9 @@ namespace Galaxus.Functional.Linq
         /// <exception cref="ArgumentNullException"><c>source</c> is <c>null</c>.</exception>
         /// <exception cref="InvalidOperationException">The input sequence contains more than one element.</exception>
         public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
-            => source.SingleOrNone(True);
+        {
+            return source.SingleOrNone(True);
+        }
 
         /// <summary>
         ///     Returns the only element of a sequence that satisfies a specified condition or <see cref="Option{T}.None" /> if no
@@ -116,10 +128,12 @@ namespace Galaxus.Functional.Linq
         /// <exception cref="ArgumentNullException"><c>source</c> or <c>predicate</c> is <c>null</c>.</exception>
         /// <exception cref="InvalidOperationException">More than one element satisfies the condition in <c>source</c>.</exception>
         public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
-            => source
+        {
+            return source
                 .Where(predicate)
                 .Select(Option<TSource>.Some)
                 .SingleOrDefault();
+        }
 
         /// <summary>
         ///     Checks a dictionary if it contains a value for a given key. If so this value is wrapped in an Option.
@@ -145,6 +159,8 @@ namespace Galaxus.Functional.Linq
 
         // This probably should be defined publicly together with False and Identity
         private static bool True<TSource>(TSource _)
-            => true;
+        {
+            return true;
+        }
     }
 }

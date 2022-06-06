@@ -34,13 +34,17 @@ namespace Galaxus.Functional
         ///     Wraps <paramref name="self" /> into a <see cref="Result{TOk, TErr}" /> containing <b>Ok</b>.
         /// </summary>
         public static Result<TOk, TErr> ToOk<TOk, TErr>(this TOk self)
-            => Result<TOk, TErr>.FromOk(self);
+        {
+            return Result<TOk, TErr>.FromOk(self);
+        }
 
         /// <summary>
         ///     Wraps <paramref name="self" /> into a <see cref="Result{TOk, TErr}" /> containing <b>Err</b>.
         /// </summary>
         public static Result<TOk, TErr> ToErr<TOk, TErr>(this TErr self)
-            => Result<TOk, TErr>.FromErr(self);
+        {
+            return Result<TOk, TErr>.FromErr(self);
+        }
 
         #endregion
 
@@ -132,7 +136,9 @@ namespace Galaxus.Functional
         ///     Returns a subset of <paramref name="self" /> which contains all <b>Ok</b> values in <paramref name="self" />.
         /// </summary>
         public static IEnumerable<TOk> SelectOk<TOk, TErr>(this IEnumerable<Result<TOk, TErr>> self)
-            => self.Where(v => v.IsOk).Select(v => v.Unwrap());
+        {
+            return self.Where(v => v.IsOk).Select(v => v.Unwrap());
+        }
 
         /// <summary>
         ///     Returns a subset of <paramref name="self" /> which contains all <b>Ok</b> values in <paramref name="self" />.
@@ -141,13 +147,17 @@ namespace Galaxus.Functional
         public static IEnumerable<TSelection> SelectOk<TOk, TErr, TSelection>(
             this IEnumerable<Result<TOk, TErr>> self,
             Func<TOk, TSelection> selector)
-            => self.SelectOk().Select(selector);
+        {
+            return self.SelectOk().Select(selector);
+        }
 
         /// <summary>
         ///     Returns a subset of <paramref name="self" /> which contains all <b>Err</b> values in <paramref name="self" />.
         /// </summary>
         public static IEnumerable<TErr> SelectErr<TOk, TErr>(this IEnumerable<Result<TOk, TErr>> self)
-            => self.Where(v => v.IsErr).Select(v => v.Err.Unwrap());
+        {
+            return self.Where(v => v.IsErr).Select(v => v.Err.Unwrap());
+        }
 
         /// <summary>
         ///     Returns a subset of <paramref name="self" /> which contains all <b>Err</b> values in <paramref name="self" />.
@@ -156,7 +166,9 @@ namespace Galaxus.Functional
         public static IEnumerable<TSelection> SelectErr<TOk, TErr, TSelection>(
             this IEnumerable<Result<TOk, TErr>> self,
             Func<TErr, TSelection> selector)
-            => self.SelectErr().Select(selector);
+        {
+            return self.SelectErr().Select(selector);
+        }
 
         #endregion
 
@@ -299,21 +311,27 @@ namespace Galaxus.Functional
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.Unwrap()"/>
         public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self)
-            => (await self).Unwrap();
+        {
+            return (await self).Unwrap();
+        }
 
         /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(string)"/>
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(string)"/>
         public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, string error)
-            => (await self).Unwrap(error);
+        {
+            return (await self).Unwrap(error);
+        }
 
         /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
         public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TErr, string> error)
-            => (await self).Unwrap(error);
+        {
+            return (await self).Unwrap(error);
+        }
 
         /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
@@ -325,7 +343,9 @@ namespace Galaxus.Functional
             if (res.IsErr)
             {
                 if (error is null)
+                {
                     throw new ArgumentNullException(nameof(error));
+                }
 
                 throw new AttemptToUnwrapErrWhenResultWasOkException(await error(res.Err.Unwrap()));
             }
@@ -338,21 +358,27 @@ namespace Galaxus.Functional
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
         public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, TOk fallback)
-            => (await self).UnwrapOr(fallback);
+        {
+            return (await self).UnwrapOr(fallback);
+        }
 
         /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOr"/>
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
         public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Task<TOk> fallback)
-            => (await self).UnwrapOr(await fallback);
+        {
+            return (await self).UnwrapOr(await fallback);
+        }
 
         /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrElse"/>
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrElse"/>
         public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TOk> fallback)
-            => (await self).UnwrapOrElse(fallback);
+        {
+            return (await self).UnwrapOrElse(fallback);
+        }
 
         /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrElse"/>
@@ -362,10 +388,14 @@ namespace Galaxus.Functional
         {
             var res = await self;
             if (res.IsOk)
+            {
                 return res.Unwrap();
+            }
 
             if (fallback is null)
+            {
                 throw new ArgumentNullException(nameof(fallback));
+            }
 
             return await fallback();
         }
@@ -375,7 +405,9 @@ namespace Galaxus.Functional
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrDefault"/>
         public static async Task<TOk> UnwrapOrDefaultAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self)
-            => (await self).UnwrapOrDefault();
+        {
+            return (await self).UnwrapOrDefault();
+        }
 
         #endregion
     }

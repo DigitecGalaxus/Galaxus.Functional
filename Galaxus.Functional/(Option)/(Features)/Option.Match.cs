@@ -22,7 +22,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onSome));
                 }
 
-                onSome(obj: _some);
+                onSome(_some);
             }
             else
             {
@@ -53,7 +53,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(onSome));
                 }
 
-                return onSome(arg: _some);
+                return onSome(_some);
             }
 
             if (onNone is null)

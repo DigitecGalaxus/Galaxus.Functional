@@ -31,7 +31,7 @@ namespace Galaxus.Functional
                 throw new ArgumentNullException(nameof(continuation));
             }
 
-            return continuation(arg: _some);
+            return continuation(_some);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Galaxus.Functional
         /// <param name="continuation">The function to call if <b>self</b> contains <b>Some</b>.</param>
         public Option<T> AndThen(Action<T> continuation)
         {
-            IfSome(onSome: continuation);
+            IfSome(continuation);
             return this;
         }
     }

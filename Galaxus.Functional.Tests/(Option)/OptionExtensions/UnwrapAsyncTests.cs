@@ -2,749 +2,748 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace Galaxus.Functional.Tests.OptionExtensions
+namespace Galaxus.Functional.Tests.OptionExtensions;
+
+public class UnwrapAsyncTests
 {
-    public class UnwrapAsyncTests
+    [Test]
+    public async Task UnwrapAsync_WhenOptionIsSome_ThenCorrectValueReturned()
     {
-        [Test]
-        public async Task UnwrapAsync_WhenOptionIsSome_ThenCorrectValueReturned()
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+
+        // act
+        var hello = await some.UnwrapAsync();
+
+        // assert
+        Assert.AreEqual("hello", hello);
+    }
+
+    [Test]
+    public void UnwrapAsync_WhenOptionIsNone_ThenExceptionIsThrown()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        //act
+        async Task Act()
         {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-
-            // act
-            var hello = await some.UnwrapAsync();
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
+            await none.UnwrapAsync();
         }
 
-        [Test]
-        public void UnwrapAsync_WhenOptionIsNone_ThenExceptionIsThrown()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
+        // assert
+        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+    }
 
-            //act
-            async Task Act()
+    [Test]
+    public async Task UnwrapAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapAsync();
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
+        {
+            await failingTask.UnwrapAsync();
+        }
+
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapAsyncWithErrorMessage_WhenOptionIsSome_ThenCorrectValueReturned()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+
+        // act
+        var hello = await some.UnwrapAsync("World");
+
+        // assert
+        Assert.AreEqual("hello", hello);
+    }
+
+    [Test]
+    public void UnwrapAsyncWithErrorMessage_WhenOptionIsNone_ThenExceptionIsThrown()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        // act
+        async Task Act()
+        {
+            await none.UnwrapAsync("World");
+        }
+
+        // assert
+        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapAsyncWithErrorMessage_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapAsync("Arthur Dent");
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapAsyncWithErrorMessage_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
+        {
+            await failingTask.UnwrapAsync("Arthur Dent");
+        }
+
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Test]
+    public void UnwrapAsync_WhenErrorFunctionIsNull_ThenArgumentException()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        // act
+        async Task Act()
+        {
+            await none.UnwrapAsync((Func<string>)null);
+        }
+
+        // assert
+        Assert.ThrowsAsync<ArgumentNullException>(Act);
+    }
+
+    [Test]
+    public void UnwrapAsync_WhenUnwrapOnNoneWithCustomError_ThenExceptionMessageIsCustomErrorMessage()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        // act
+        async Task Act()
+        {
+            try
             {
-                await none.UnwrapAsync();
+                await none.UnwrapAsync("YOLO");
             }
-
-            // assert
-            Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapAsync();
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public void UnwrapAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
-
-            // act
-            async Task Act()
+            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
             {
-                await failingTask.UnwrapAsync();
+                Assert.AreEqual("YOLO", ex.Message);
+                throw;
             }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
-        [Test]
-        public async Task UnwrapAsyncWithErrorMessage_WhenOptionIsSome_ThenCorrectValueReturned()
+        // assert
+        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapAsyncWithErrorFunction_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapAsync(() => "Arthur Dent");
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapAsyncWithErrorFunction_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
         {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-
-            // act
-            var hello = await some.UnwrapAsync("World");
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
+            await failingTask.UnwrapAsync(() => "Arthur Dent");
         }
 
-        [Test]
-        public void UnwrapAsyncWithErrorMessage_WhenOptionIsNone_ThenExceptionIsThrown()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
 
-            // act
-            async Task Act()
+    [Test]
+    public async Task UnwrapAsyncWhitErrorFunction_WhenUnwrapWithCustomInvokableErrorOnSome_ThenNothingIsInvoked()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+        var invoked = false;
+
+        // act
+        var hello = await some.UnwrapAsync(() =>
+        {
+            invoked = true;
+            return "YOLO";
+        });
+
+        // assert
+        Assert.AreEqual("hello", hello);
+        Assert.IsFalse(invoked);
+    }
+
+    [Test]
+    public void UnwrapAsyncWithErrorFunction_WhenUnwrapWithCustomInvokableErrorOnNone_ThenFunctionIsInvoked()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+        var invoked = false;
+
+        // act
+        async Task Act()
+        {
+            try
             {
-                await none.UnwrapAsync("World");
-            }
-
-            // assert
-            Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapAsyncWithErrorMessage_WhenSynchronousContinuation_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapAsync("Arthur Dent");
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public void UnwrapAsyncWithErrorMessage_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
-
-            // act
-            async Task Act()
-            {
-                await failingTask.UnwrapAsync("Arthur Dent");
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
-        }
-
-        [Test]
-        public void UnwrapAsync_WhenErrorFunctionIsNull_ThenArgumentException()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-
-            // act
-            async Task Act()
-            {
-                await none.UnwrapAsync((Func<string>)null);
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentNullException>(code: Act);
-        }
-
-        [Test]
-        public void UnwrapAsync_WhenUnwrapOnNoneWithCustomError_ThenExceptionMessageIsCustomErrorMessage()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-
-            // act
-            async Task Act()
-            {
-                try
+                await none.UnwrapAsync(() =>
                 {
-                    await none.UnwrapAsync("YOLO");
-                }
-                catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+                    invoked = true;
+                    return "YOLO";
+                });
+            }
+            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+            {
+                Assert.AreEqual("YOLO", ex.Message);
+                throw;
+            }
+        }
+
+        // assert
+        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+        Assert.IsTrue(invoked);
+    }
+
+    [Test]
+    public async Task UnwrapAsyncWithErrorFunctionTask_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapAsync(async () => await Task.FromResult("Arthur Dent"));
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapAsyncWithErrorFunctionTask_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // assert
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
+        {
+            await failingTask.UnwrapAsync(async () => await Task.FromResult("Arthur Dent"));
+        }
+
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapAsyncWhitErrorFunctionTask_WhenUnwrapWithCustomInvokableErrorOnSome_ThenNothingIsInvoked()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+        var invoked = false;
+
+        // act
+        var hello = await some.UnwrapAsync(async () =>
+        {
+            invoked = true;
+            return await Task.FromResult("YOLO");
+        });
+
+        // assert
+        Assert.AreEqual("hello", hello);
+        Assert.IsFalse(invoked);
+    }
+
+    [Test]
+    public void UnwrapAsyncWithErrorFunctionTask_WhenUnwrapWithCustomInvokableErrorOnNone_ThenFunctionIsInvoked()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+        var invoked = false;
+
+        // act
+        async Task Act()
+        {
+            try
+            {
+                await none.UnwrapAsync(async () =>
                 {
-                    Assert.AreEqual("YOLO", actual: ex.Message);
-                    throw;
-                }
+                    invoked = true;
+                    return await Task.FromResult("YOLO");
+                });
             }
-
-            // assert
-            Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapAsyncWithErrorFunction_WhenSynchronousContinuation_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapAsync(() => "Arthur Dent");
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public void UnwrapAsyncWithErrorFunction_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
-
-            // act
-            async Task Act()
+            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
             {
-                await failingTask.UnwrapAsync(() => "Arthur Dent");
+                Assert.AreEqual("YOLO", ex.Message);
+                throw;
             }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
         }
 
-        [Test]
-        public async Task UnwrapAsyncWhitErrorFunction_WhenUnwrapWithCustomInvokableErrorOnSome_ThenNothingIsInvoked()
+        // assert
+        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+        Assert.IsTrue(invoked);
+    }
+
+    [Test]
+    public async Task UnwrapOrAsync_WhenSome_ThenResultIsSomeValue()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+
+        // act
+        var hello = await some.UnwrapOrAsync("world");
+
+        // assert
+        Assert.AreEqual("hello", hello);
+    }
+
+    [Test]
+    public async Task UnwrapOrAsync_WhenNone_ThenResultIsParameterValue()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        // act
+        var world = await none.UnwrapOrAsync("world");
+
+        // assert
+        Assert.AreEqual("world", world);
+    }
+
+    [Test]
+    public async Task UnwrapOrAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapOrAsync("Arthur Dent");
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapOrAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
         {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-            var invoked = false;
-
-            // act
-            var hello = await some.UnwrapAsync(() =>
-            {
-                invoked = true;
-                return "YOLO";
-            });
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
-            Assert.IsFalse(condition: invoked);
+            await failingTask.UnwrapOrAsync("Arthur Dent");
         }
 
-        [Test]
-        public void UnwrapAsyncWithErrorFunction_WhenUnwrapWithCustomInvokableErrorOnNone_ThenFunctionIsInvoked()
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapOrAsyncWithTaskParam_WhenSome_ThenResultIsSomeValue()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+
+        // act
+        var hello = await some.UnwrapOrAsync(Task.FromResult("world"));
+
+        // assert
+        Assert.AreEqual("hello", hello);
+    }
+
+    [Test]
+    public async Task UnwrapOrAsyncWithTaskParam_WhenNone_ThenResultIsParameterValue()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        // act
+        var world = await none.UnwrapOrAsync(Task.FromResult("world"));
+
+        // assert
+        Assert.AreEqual("world", world);
+    }
+
+    [Test]
+    public async Task UnwrapOrAsyncWithTaskParam_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapOrAsync(Task.FromResult("Arthur Dent"));
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapOrAsyncWithTaskParam_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
         {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-            var invoked = false;
-
-            // act
-            async Task Act()
-            {
-                try
-                {
-                    await none.UnwrapAsync(() =>
-                    {
-                        invoked = true;
-                        return "YOLO";
-                    });
-                }
-                catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
-                {
-                    Assert.AreEqual("YOLO", actual: ex.Message);
-                    throw;
-                }
-            }
-
-            // assert
-            Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(code: Act);
-            Assert.IsTrue(condition: invoked);
+            await failingTask.UnwrapOrAsync(Task.FromResult("Arthur Dent"));
         }
 
-        [Test]
-        public async Task UnwrapAsyncWithErrorFunctionTask_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsync_WhenSome_ThenResultIsSomeValue()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+
+        // act
+        var hello = await some.UnwrapOrElseAsync(() => "world");
+
+        // assert
+        Assert.AreEqual("hello", hello);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsync_WhenNone_ThenResultIsParameterValue()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        // act
+        var world = await none.UnwrapOrElseAsync(() => "world");
+
+        // assert
+        Assert.AreEqual("world", world);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapOrElseAsync(() => "Arthur Dent");
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapOrElseAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
         {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapAsync(async () => await Task.FromResult("Arthur Dent"));
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
+            await failingTask.UnwrapOrElseAsync(() => "Arthur Dent");
         }
 
-        [Test]
-        public void UnwrapAsyncWithErrorFunctionTask_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsync_WhenUnwrapSomeWithCallBack_ThenNoCallbackInvoked()
+    {
+        // arrange
+        var some = Task.FromResult(Option<string>.Some("hello"));
+        var invoked = false;
+
+        // act
+        var hello = await some.UnwrapOrElseAsync(() =>
         {
-            // assert
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+            invoked = true;
+            return "world";
+        });
 
-            // act
-            async Task Act()
-            {
-                await failingTask.UnwrapAsync(async () => await Task.FromResult("Arthur Dent"));
-            }
+        // assert
+        Assert.AreEqual("hello", hello);
+        Assert.IsFalse(invoked);
+    }
 
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
+    [Test]
+    public async Task UnwrapOrElseAsync_WhenUnwrapNoneWithCallBack_ThenCallbackInvoked()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+        var invoked = false;
+
+        // act
+        var world = await none.UnwrapOrElseAsync(() =>
+        {
+            invoked = true;
+            return "world";
+        });
+
+        // assert
+        Assert.AreEqual("world", world);
+        Assert.IsTrue(invoked);
+    }
+
+
+    [Test]
+    public void UnwrapOrElseAsync_WhenUnwrapNoneWithFunctionIsNull_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        Func<string> nullFunc = null;
+
+        // act
+        // ReSharper disable once ExpressionIsAlwaysNull
+        async Task Act()
+        {
+            await Task.FromResult(Option<string>.None).UnwrapOrElseAsync(nullFunc);
         }
 
-        [Test]
-        public async Task UnwrapAsyncWhitErrorFunctionTask_WhenUnwrapWithCustomInvokableErrorOnSome_ThenNothingIsInvoked()
+        // assert
+        Assert.ThrowsAsync<ArgumentNullException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsyncWithTaskParam_WhenSome_ThenResultIsSomeValue()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+
+        static async Task<string> Continuation()
         {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-            var invoked = false;
-
-            // act
-            var hello = await some.UnwrapAsync(async () =>
-            {
-                invoked = true;
-                return await Task.FromResult("YOLO");
-            });
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
-            Assert.IsFalse(condition: invoked);
+            return await Task.FromResult("world");
         }
 
-        [Test]
-        public void UnwrapAsyncWithErrorFunctionTask_WhenUnwrapWithCustomInvokableErrorOnNone_ThenFunctionIsInvoked()
+        // act
+        var hello = await some.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+
+        // assert
+        Assert.AreEqual("hello", hello);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsyncWithTaskParam_WhenNone_ThenResultIsParameterValue()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        static async Task<string> Continuation()
         {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-            var invoked = false;
-
-            // act
-            async Task Act()
-            {
-                try
-                {
-                    await none.UnwrapAsync(async () =>
-                    {
-                        invoked = true;
-                        return await Task.FromResult("YOLO");
-                    });
-                }
-                catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
-                {
-                    Assert.AreEqual("YOLO", actual: ex.Message);
-                    throw;
-                }
-            }
-
-            // assert
-            Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(code: Act);
-            Assert.IsTrue(condition: invoked);
+            return await Task.FromResult("world");
         }
 
-        [Test]
-        public async Task UnwrapOrAsync_WhenSome_ThenResultIsSomeValue()
+        // act
+        var world = await none.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+
+        // assert
+        Assert.AreEqual("world", world);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsyncWithTaskParam_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        static async Task<string> Continuation()
         {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-
-            // act
-            var hello = await some.UnwrapOrAsync("world");
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
+            return await Task.FromResult("Arthur Dent");
         }
 
-        [Test]
-        public async Task UnwrapOrAsync_WhenNone_ThenResultIsParameterValue()
+        // act
+        await someTask.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void
+        UnwrapOrElseAsyncWithTaskParam_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        static async Task<string> Continuation()
         {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-
-            // act
-            var world = await none.UnwrapOrAsync("world");
-
-            // assert
-            Assert.AreEqual("world", actual: world);
+            return await Task.FromResult("Arthur Dent");
         }
 
-        [Test]
-        public async Task UnwrapOrAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+        // act
+        async Task Act()
         {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapOrAsync("Arthur Dent");
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
+            await Task.FromException<Option<string>>(new ArgumentException())
+                .UnwrapOrElseAsync((Func<Task<string>>)Continuation);
         }
 
-        [Test]
-        public void UnwrapOrAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsyncWithTaskParam_WhenUnwrapSomeWithCallBack_ThenNoCallbackInvoked()
+    {
+        // arrange
+        var some = Task.FromResult(Option<string>.Some("hello"));
+        var invoked = false;
+
+        async Task<string> Continuation()
         {
-            // arrange
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
-
-            // act
-            async Task Act()
-            {
-                await failingTask.UnwrapOrAsync("Arthur Dent");
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapOrAsyncWithTaskParam_WhenSome_ThenResultIsSomeValue()
-        {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-
-            // act
-            var hello = await some.UnwrapOrAsync(Task.FromResult("world"));
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
-        }
-
-        [Test]
-        public async Task UnwrapOrAsyncWithTaskParam_WhenNone_ThenResultIsParameterValue()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-
-            // act
-            var world = await none.UnwrapOrAsync(Task.FromResult("world"));
-
-            // assert
-            Assert.AreEqual("world", actual: world);
-        }
-
-        [Test]
-        public async Task UnwrapOrAsyncWithTaskParam_WhenSynchronousContinuation_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapOrAsync(Task.FromResult("Arthur Dent"));
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public void UnwrapOrAsyncWithTaskParam_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
-
-            // act
-            async Task Act()
-            {
-                await failingTask.UnwrapOrAsync(Task.FromResult("Arthur Dent"));
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapOrElseAsync_WhenSome_ThenResultIsSomeValue()
-        {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-
-            // act
-            var hello = await some.UnwrapOrElseAsync(() => "world");
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
-        }
-
-        [Test]
-        public async Task UnwrapOrElseAsync_WhenNone_ThenResultIsParameterValue()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-
-            // act
-            var world = await none.UnwrapOrElseAsync(() => "world");
-
-            // assert
-            Assert.AreEqual("world", actual: world);
-        }
-
-        [Test]
-        public async Task UnwrapOrElseAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapOrElseAsync(() => "Arthur Dent");
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public void UnwrapOrElseAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
-
-            // act
-            async Task Act()
-            {
-                await failingTask.UnwrapOrElseAsync(() => "Arthur Dent");
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapOrElseAsync_WhenUnwrapSomeWithCallBack_ThenNoCallbackInvoked()
-        {
-            // arrange
-            var some = Task.FromResult(Option<string>.Some("hello"));
-            var invoked = false;
-
-            // act
-            var hello = await some.UnwrapOrElseAsync(() =>
+            return await Task.Run(() =>
             {
                 invoked = true;
                 return "world";
             });
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
-            Assert.IsFalse(condition: invoked);
         }
 
-        [Test]
-        public async Task UnwrapOrElseAsync_WhenUnwrapNoneWithCallBack_ThenCallbackInvoked()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-            var invoked = false;
+        // act
+        var hello = await some.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
 
-            // act
-            var world = await none.UnwrapOrElseAsync(() =>
+        // assert
+        Assert.AreEqual("hello", hello);
+        Assert.IsFalse(invoked);
+    }
+
+    [Test]
+    public async Task UnwrapOrElseAsyncWithTaskParam_WhenUnwrapNoneWithCallBack_ThenCallbackInvoked()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+        var invoked = false;
+
+        async Task<string> Continuation()
+        {
+            return await Task.Run(() =>
             {
                 invoked = true;
                 return "world";
             });
-
-            // assert
-            Assert.AreEqual("world", actual: world);
-            Assert.IsTrue(condition: invoked);
         }
 
+        // act
+        var world = await none.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
 
-        [Test]
-        public void UnwrapOrElseAsync_WhenUnwrapNoneWithFunctionIsNull_ThenArgumentExceptionIsThrown()
+        // assert
+        Assert.AreEqual("world", world);
+        Assert.IsTrue(invoked);
+    }
+
+    [Test]
+    public void UnwrapOrElseAsyncWithTaskParam_WhenUnwrapNoneWithFunctionTaskIsNull_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        Func<Task<string>> nullFunc = null;
+
+        // act
+        // ReSharper disable once ExpressionIsAlwaysNull
+        async Task Act()
         {
-            // arrange
-            Func<string> nullFunc = null;
-
-            // act
-            // ReSharper disable once ExpressionIsAlwaysNull
-            async Task Act()
-            {
-                await Task.FromResult(result: Option<string>.None).UnwrapOrElseAsync(fallback: nullFunc);
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentNullException>(code: Act);
+            await Task.FromResult(Option<string>.None).UnwrapOrElseAsync(nullFunc);
         }
 
-        [Test]
-        public async Task UnwrapOrElseAsyncWithTaskParam_WhenSome_ThenResultIsSomeValue()
+        // assert
+        Assert.ThrowsAsync<ArgumentNullException>(Act);
+    }
+
+    [Test]
+    public async Task UnwrapOrDefaultAsync_WhenSome_ThenResultIsSomeValue()
+    {
+        // arrange
+        var some = Task.FromResult("hello".ToOption());
+
+        // act
+        var hello = await some.UnwrapOrDefaultAsync();
+
+        // assert
+        Assert.AreEqual("hello", hello);
+    }
+
+    [Test]
+    public async Task UnwrapOrDefaultAsync_WhenNone_ThenResultIsDefaultValue()
+    {
+        // arrange
+        var none = Task.FromResult(Option<string>.None);
+
+        // act
+        var defaultString = await none.UnwrapOrDefaultAsync();
+
+        // assert
+        Assert.AreEqual(null, defaultString);
+    }
+
+    [Test]
+    public async Task UnwrapOrDefaultAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult("Ford Prefect".ToOption());
+
+        // act
+        await someTask.UnwrapOrDefaultAsync();
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public async Task UnwrapOrDefaultAsync_WhenSynchronousContinuationForNone_ThenReturnsSuccessTask()
+    {
+        // arrange
+        var someTask = Task.FromResult(Option<string>.None);
+
+        // act
+        await someTask.UnwrapOrDefaultAsync();
+
+        // assert
+        Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
+    }
+
+    [Test]
+    public void UnwrapOrDefaultAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
+    {
+        // arrange
+        var failingTask = Task.FromException<Option<string>>(new ArgumentException());
+
+        // act
+        async Task Act()
         {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-
-            static async Task<string> Continuation()
-            {
-                return await Task.FromResult("world");
-            }
-
-            // act
-            var hello = await some.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
+            await failingTask.UnwrapOrDefaultAsync();
         }
 
-        [Test]
-        public async Task UnwrapOrElseAsyncWithTaskParam_WhenNone_ThenResultIsParameterValue()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-
-            static async Task<string> Continuation()
-            {
-                return await Task.FromResult("world");
-            }
-
-            // act
-            var world = await none.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
-
-            // assert
-            Assert.AreEqual("world", actual: world);
-        }
-
-        [Test]
-        public async Task UnwrapOrElseAsyncWithTaskParam_WhenSynchronousContinuation_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            static async Task<string> Continuation()
-            {
-                return await Task.FromResult("Arthur Dent");
-            }
-
-            // act
-            await someTask.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public void
-            UnwrapOrElseAsyncWithTaskParam_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            static async Task<string> Continuation()
-            {
-                return await Task.FromResult("Arthur Dent");
-            }
-
-            // act
-            async Task Act()
-            {
-                await Task.FromException<Option<string>>(new ArgumentException())
-                    .UnwrapOrElseAsync((Func<Task<string>>)Continuation);
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapOrElseAsyncWithTaskParam_WhenUnwrapSomeWithCallBack_ThenNoCallbackInvoked()
-        {
-            // arrange
-            var some = Task.FromResult(Option<string>.Some("hello"));
-            var invoked = false;
-
-            async Task<string> Continuation()
-            {
-                return await Task.Run(() =>
-                {
-                    invoked = true;
-                    return "world";
-                });
-            }
-
-            // act
-            var hello = await some.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
-            Assert.IsFalse(condition: invoked);
-        }
-
-        [Test]
-        public async Task UnwrapOrElseAsyncWithTaskParam_WhenUnwrapNoneWithCallBack_ThenCallbackInvoked()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-            var invoked = false;
-
-            async Task<string> Continuation()
-            {
-                return await Task.Run(() =>
-                {
-                    invoked = true;
-                    return "world";
-                });
-            }
-
-            // act
-            var world = await none.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
-
-            // assert
-            Assert.AreEqual("world", actual: world);
-            Assert.IsTrue(condition: invoked);
-        }
-
-        [Test]
-        public void UnwrapOrElseAsyncWithTaskParam_WhenUnwrapNoneWithFunctionTaskIsNull_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            Func<Task<string>> nullFunc = null;
-
-            // act
-            // ReSharper disable once ExpressionIsAlwaysNull
-            async Task Act()
-            {
-                await Task.FromResult(result: Option<string>.None).UnwrapOrElseAsync(fallback: nullFunc);
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentNullException>(code: Act);
-        }
-
-        [Test]
-        public async Task UnwrapOrDefaultAsync_WhenSome_ThenResultIsSomeValue()
-        {
-            // arrange
-            var some = Task.FromResult("hello".ToOption());
-
-            // act
-            var hello = await some.UnwrapOrDefaultAsync();
-
-            // assert
-            Assert.AreEqual("hello", actual: hello);
-        }
-
-        [Test]
-        public async Task UnwrapOrDefaultAsync_WhenNone_ThenResultIsDefaultValue()
-        {
-            // arrange
-            var none = Task.FromResult(result: Option<string>.None);
-
-            // act
-            var defaultString = await none.UnwrapOrDefaultAsync();
-
-            // assert
-            Assert.AreEqual(null, actual: defaultString);
-        }
-
-        [Test]
-        public async Task UnwrapOrDefaultAsync_WhenSynchronousContinuation_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult("Ford Prefect".ToOption());
-
-            // act
-            await someTask.UnwrapOrDefaultAsync();
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public async Task UnwrapOrDefaultAsync_WhenSynchronousContinuationForNone_ThenReturnsSuccessTask()
-        {
-            // arrange
-            var someTask = Task.FromResult(result: Option<string>.None);
-
-            // act
-            await someTask.UnwrapOrDefaultAsync();
-
-            // assert
-            Assert.AreEqual(expected: TaskStatus.RanToCompletion, actual: someTask.Status);
-        }
-
-        [Test]
-        public void UnwrapOrDefaultAsync_WhenPreviousTaskThrewArgumentException_ThenArgumentExceptionIsThrown()
-        {
-            // arrange
-            var failingTask = Task.FromException<Option<string>>(new ArgumentException());
-
-            // act
-            async Task Act()
-            {
-                await failingTask.UnwrapOrDefaultAsync();
-            }
-
-            // assert
-            Assert.ThrowsAsync<ArgumentException>(code: Act);
-        }
+        // assert
+        Assert.ThrowsAsync<ArgumentException>(Act);
     }
 }

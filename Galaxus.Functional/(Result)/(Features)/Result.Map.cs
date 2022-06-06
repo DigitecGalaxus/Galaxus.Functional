@@ -22,7 +22,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(map));
                     }
 
-                    return map(arg: ok);
+                    return map(ok);
                 },
                 err => err.ToErr<TOkTo, TErr>()
             );
@@ -35,7 +35,7 @@ namespace Galaxus.Functional
         public Task<Result<TOkTo, TErr>> MapAsync<TOkTo>(Func<TOk, Task<TOkTo>> continuation)
         {
             return MatchAsync(
-                async ok => new Result<TOkTo, TErr>(await continuation(arg: ok)),
+                async ok => new Result<TOkTo, TErr>(await continuation(ok)),
                 err => err.ToErr<TOkTo, TErr>());
         }
 
@@ -57,7 +57,7 @@ namespace Galaxus.Functional
                         throw new ArgumentNullException(nameof(map));
                     }
 
-                    return map(arg: err);
+                    return map(err);
                 }
             );
         }
@@ -71,7 +71,7 @@ namespace Galaxus.Functional
         {
             return MatchAsync(
                 ok => ok.ToOk<TOk, TErrTo>(),
-                async err => new Result<TOk, TErrTo>(await continuation(arg: err)));
+                async err => new Result<TOk, TErrTo>(await continuation(err)));
         }
     }
 }
