@@ -2,8 +2,8 @@
 
 ## Introduction
 
-`Galaxus.Functional` is a package that aims to bring FP-style features to C#. Note though, that this is not true functional programming;
-this package contains some useful abstractions often found in functional languages.
+`Galaxus.Functional` is a package that aims to bring FP-style features to C#. Note though, that this is not true functional programming; this package
+contains some useful abstractions often found in functional languages.
 
 The style is greatly inspired by the way Rust does this. If you have worked with Rust's [std::option](https://doc.rust-lang.org/std/option/index.html)
 or [std::result](https://doc.rust-lang.org/std/result/index.html), you will probably feel right at home.
@@ -14,8 +14,8 @@ There currently are the following abstractions found inside `Galaxus.Functional`
 
 #### Option
 
-A type used to explicitly mark the presence or absence of a value. This is an alternative to checking for `null` and is similar to
-e.g. Haskell's `Maybe` or Java's `Optional`.
+A type used to explicitly mark the presence or absence of a value. This is an alternative to checking for `null` and is similar to e.g.
+Haskell's `Maybe` or Java's `Optional`.
 
 #### Unit
 
@@ -27,8 +27,8 @@ A type that can be one of several variants, sort of like a discriminated union o
 
 #### Result
 
-A type that explicitly propagates success or error to the caller, similar to used explicitly annotated exceptions. It can be seen
-as a specialization of an `Either` with the second variant being an error.
+A type that explicitly propagates success or error to the caller, similar to used explicitly annotated exceptions. It can be seen as a specialization
+of an `Either` with the second variant being an error.
 
 ## Contribute
 

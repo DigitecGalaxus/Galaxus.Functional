@@ -2,30 +2,31 @@
 using System.Linq;
 using NUnit.Framework;
 
-namespace Galaxus.Functional.Tests.Helpers
+namespace Galaxus.Functional.Tests.Helpers;
+
+internal class YieldElementsThenFail<T> : IEnumerable<T>
 {
-    internal class YieldElementsThenFail<T> : IEnumerable<T>
+    private readonly T _elementToYield;
+    private readonly int _numberOfElements;
+
+    public YieldElementsThenFail(T elementToYield, int numberOfElements)
     {
-        private readonly T _elementToYield;
-        private readonly int _numberOfElements;
+        _elementToYield = elementToYield;
+        _numberOfElements = numberOfElements;
+    }
 
-        public YieldElementsThenFail(T elementToYield, int numberOfElements)
+    public IEnumerator<T> GetEnumerator()
+    {
+        foreach (var _ in Enumerable.Range(0, _numberOfElements))
         {
-            _elementToYield = elementToYield;
-            _numberOfElements = numberOfElements;
+            yield return _elementToYield;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            foreach (var _ in Enumerable.Range(0, _numberOfElements))
-            {
-                yield return _elementToYield;
-            }
+        Assert.Fail("Sequence was unexpectedly enumerated.");
+    }
 
-            Assert.Fail("Sequence was unexpectedly enumerated.");
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

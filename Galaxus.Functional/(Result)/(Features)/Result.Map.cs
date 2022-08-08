@@ -6,8 +6,9 @@ namespace Galaxus.Functional
     public sealed partial class Result<TOk, TErr>
     {
         /// <summary>
-        /// Maps a <see cref="Result{TOk, TErr}"/> to <see cref="Result{TOkTo, TErr}"/> by applying a function to a contained <b>Ok</b> value,
-        /// leaving an <b>Err</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Maps a <see cref="Result{TOk, TErr}" /> to <see cref="Result{TOkTo, TErr}" /> by applying a function to a contained
+        ///     <b>Ok</b> value,
+        ///     leaving an <b>Err</b> value untouched. This function can be used to compose the results of two functions.
         /// </summary>
         /// <typeparam name="TOkTo">The type to map <b>Ok</b> to.</typeparam>
         /// <param name="map">The mapping function.</param>
@@ -17,7 +18,9 @@ namespace Galaxus.Functional
                 ok =>
                 {
                     if (map == null)
+                    {
                         throw new ArgumentNullException(nameof(map));
+                    }
 
                     return map(ok);
                 },
@@ -26,11 +29,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Maps a <see cref="Result{TOk, TErr}"/> to <see cref="Result{TOkTo, TErr}"/> by applying a function to a contained <b>Ok</b> value,
-        /// leaving an <b>Err</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Async overload for <see cref="Map{TOkTo}"/>
         /// </summary>
-        /// <typeparam name="TOkTo">The type to map <b>Ok</b> to.</typeparam>
-        /// <param name="continuation">The mapping function.</param>
+        /// <inheritdoc cref="Map{TOkTo}"/>
         public Task<Result<TOkTo, TErr>> MapAsync<TOkTo>(Func<TOk, Task<TOkTo>> continuation)
         {
             return MatchAsync(
@@ -39,8 +40,9 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Maps a <see cref="Result{TOk, TErr}"/> to <see cref="Result{TOk, TErrTo}"/> by applying a function to a contained <b>Err</b> value,
-        /// leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Maps a <see cref="Result{TOk, TErr}" /> to <see cref="Result{TOk, TErrTo}" /> by applying a function to a contained
+        ///     <b>Err</b> value,
+        ///     leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
         /// </summary>
         /// <typeparam name="TErrTo">The type to map "Err" to.</typeparam>
         /// <param name="map">The mapping function.</param>
@@ -51,19 +53,20 @@ namespace Galaxus.Functional
                 err =>
                 {
                     if (map == null)
+                    {
                         throw new ArgumentNullException(nameof(map));
+                    }
 
                     return map(err);
                 }
             );
         }
 
+
         /// <summary>
-        /// Maps a <see cref="Result{TOk, TErr}"/> to <see cref="Result{TOk, TErrTo}"/> by applying a function to a contained <b>Err</b> value,
-        /// leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
+        ///     Async overload for <see cref="MapErr{TErrTo}"/>
         /// </summary>
-        /// <typeparam name="TErrTo">The type to map "Err" to.</typeparam>
-        /// <param name="continuation">The mapping function.</param>
+        /// <inheritdoc cref="MapErr{TErrTo}"/>
         public Task<Result<TOk, TErrTo>> MapErrAsync<TErrTo>(Func<TErr, Task<TErrTo>> continuation)
         {
             return MatchAsync(

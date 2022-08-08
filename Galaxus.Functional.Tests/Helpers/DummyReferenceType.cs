@@ -1,7 +1,5 @@
-namespace Galaxus.Functional.Tests.Helpers
+namespace Galaxus.Functional.Tests.Helpers;
+
+public class DummyReferenceType
 {
-    public class DummyReferenceType
-    {
-        
-    }
 }

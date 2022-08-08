@@ -5,12 +5,12 @@ using System.Linq;
 namespace Galaxus.Functional
 {
     /// <summary>
-    /// Extensions for Either
+    ///     Extensions for Either
     /// </summary>
     public static class EitherExtensions
     {
         /// <summary>
-        /// Select all "A" fields
+        ///     Select all "A" fields
         /// </summary>
         public static IEnumerable<A> SelectA<A, B>(this IEnumerable<Either<A, B>> eithers)
         {
@@ -23,7 +23,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Select all "B" fields
+        ///     Select all "B" fields
         /// </summary>
         public static IEnumerable<B> SelectB<A, B>(this IEnumerable<Either<A, B>> eithers)
         {
@@ -36,7 +36,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Select all "A" fields
+        ///     Select all "A" fields
         /// </summary>
         public static IEnumerable<A> SelectA<A, B, C>(this IEnumerable<Either<A, B, C>> eithers)
         {
@@ -50,7 +50,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Select all "B" fields
+        ///     Select all "B" fields
         /// </summary>
         public static IEnumerable<B> SelectB<A, B, C>(this IEnumerable<Either<A, B, C>> eithers)
         {
@@ -64,7 +64,7 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Select all "C" fields
+        ///     Select all "C" fields
         /// </summary>
         public static IEnumerable<C> SelectC<A, B, C>(this IEnumerable<Either<A, B, C>> eithers)
         {
@@ -78,11 +78,13 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        /// Maps an Option to an Either using the option's value or a fallback
+        ///     Maps an Option to an Either using the option's value or a fallback
         /// </summary>
         /// <param name="option">The Option to be mapped</param>
         /// <param name="fallback">The value to be used, if option contains none</param>
         public static Either<TSome, TNone> ToEither<TSome, TNone>(this Option<TSome> option, TNone fallback)
-            => option.MapOr<Either<TSome, TNone>>(some => some, fallback);
+        {
+            return option.MapOr<Either<TSome, TNone>>(some => some, fallback);
+        }
     }
 }
