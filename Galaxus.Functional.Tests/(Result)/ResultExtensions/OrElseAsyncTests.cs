@@ -22,7 +22,7 @@ public class OrElseAsyncTests
         async Task Act()
         {
             await Task.FromException<Result<string, string>>(new ArgumentException())
-                .OrElseAsync((Func<string, Task<Result<string, string>>>)Continuation);
+                .OrElseAsync(Continuation);
         }
 
         // assert
@@ -48,7 +48,7 @@ public class OrElseAsyncTests
         async Task Act()
         {
             await Task.FromCanceled<Result<string, string>>(cancellationTokenSource.Token)
-                .OrElseAsync((Func<string, Task<Result<string, string>>>)Continuation);
+                .OrElseAsync(Continuation);
         }
 
         // assert
@@ -68,7 +68,7 @@ public class OrElseAsyncTests
         }
 
         var resultTask = Task.FromResult(Result<string, string>.FromErr(initialResult))
-            .OrElseAsync((Func<string, Result<string, string>>)Continuation);
+            .OrElseAsync(Continuation);
 
         // act
         await resultTask;

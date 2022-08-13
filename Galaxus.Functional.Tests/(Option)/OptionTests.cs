@@ -383,7 +383,7 @@ public class OptionTests
         var none = Option<string>.None;
 
         Assert.AreEqual("hello", some.Unwrap());
-        Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() => none.Unwrap());
+        Assert.Throws<TriedToUnwrapNoneException>(() => none.Unwrap());
     }
 
     [Test]
@@ -399,13 +399,13 @@ public class OptionTests
         var none = Option<string>.None;
 
         Assert.AreEqual("hello", some.Unwrap("YOLO"));
-        Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() =>
+        Assert.Throws<TriedToUnwrapNoneException>(() =>
         {
             try
             {
                 none.Unwrap("YOLO");
             }
-            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+            catch (TriedToUnwrapNoneException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -430,7 +430,7 @@ public class OptionTests
         {
             var none = Option<string>.None;
             var invoked = false;
-            Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() =>
+            Assert.Throws<TriedToUnwrapNoneException>(() =>
             {
                 try
                 {
@@ -440,7 +440,7 @@ public class OptionTests
                         return "YOLO";
                     });
                 }
-                catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+                catch (TriedToUnwrapNoneException ex)
                 {
                     Assert.AreEqual("YOLO", ex.Message);
                     throw;

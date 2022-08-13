@@ -341,7 +341,7 @@ public class ResultTests
         var err = 99.ToErr<string, int>();
 
         Assert.AreEqual("hello", ok.Unwrap());
-        Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() => err.Unwrap());
+        Assert.Throws<TriedToUnwrapErrException>(() => err.Unwrap());
     }
 
     [Test]
@@ -351,13 +351,13 @@ public class ResultTests
         var err = 99.ToErr<string, int>();
 
         Assert.AreEqual("hello", ok.Unwrap("YOLO"));
-        Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() =>
+        Assert.Throws<TriedToUnwrapErrException>(() =>
         {
             try
             {
                 err.Unwrap("YOLO");
             }
-            catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+            catch (TriedToUnwrapErrException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -382,7 +382,7 @@ public class ResultTests
         {
             var err = 0.ToErr<string, int>();
             var invoked = false;
-            Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() =>
+            Assert.Throws<TriedToUnwrapErrException>(() =>
             {
                 try
                 {
@@ -392,7 +392,7 @@ public class ResultTests
                         return "YOLO";
                     });
                 }
-                catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+                catch (TriedToUnwrapErrException ex)
                 {
                     Assert.AreEqual("YOLO", ex.Message);
                     throw;

@@ -32,7 +32,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapNoneException>(Act);
     }
 
     [Test]
@@ -90,7 +90,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapNoneException>(Act);
     }
 
     [Test]
@@ -151,7 +151,7 @@ public class UnwrapAsyncTests
             {
                 await none.UnwrapAsync("YOLO");
             }
-            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+            catch (TriedToUnwrapNoneException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -159,7 +159,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapNoneException>(Act);
     }
 
     [Test]
@@ -228,7 +228,7 @@ public class UnwrapAsyncTests
                     return "YOLO";
                 });
             }
-            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+            catch (TriedToUnwrapNoneException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -236,7 +236,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapNoneException>(Act);
         Assert.IsTrue(invoked);
     }
 
@@ -306,7 +306,7 @@ public class UnwrapAsyncTests
                     return await Task.FromResult("YOLO");
                 });
             }
-            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+            catch (TriedToUnwrapNoneException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -314,7 +314,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapNoneWhenOptionContainedSomeException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapNoneException>(Act);
         Assert.IsTrue(invoked);
     }
 
@@ -551,7 +551,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var hello = await some.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var hello = await some.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("hello", hello);
@@ -569,7 +569,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var world = await none.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var world = await none.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("world", world);
@@ -587,7 +587,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        await someTask.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        await someTask.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual(TaskStatus.RanToCompletion, someTask.Status);
@@ -607,7 +607,7 @@ public class UnwrapAsyncTests
         async Task Act()
         {
             await Task.FromException<Option<string>>(new ArgumentException())
-                .UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+                .UnwrapOrElseAsync(Continuation);
         }
 
         // assert
@@ -631,7 +631,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var hello = await some.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var hello = await some.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("hello", hello);
@@ -655,7 +655,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var world = await none.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var world = await none.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("world", world);

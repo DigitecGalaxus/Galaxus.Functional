@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -25,7 +26,7 @@ internal class YieldElementsThenFail<T> : IEnumerable<T>
         Assert.Fail("Sequence was unexpectedly enumerated.");
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
     }

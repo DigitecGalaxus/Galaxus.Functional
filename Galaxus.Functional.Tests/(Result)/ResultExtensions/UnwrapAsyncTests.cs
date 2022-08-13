@@ -32,7 +32,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapErrException>(Act);
     }
 
     [Test]
@@ -90,7 +90,7 @@ public class UnwrapAsyncTests
             {
                 await err.UnwrapAsync("YOLO");
             }
-            catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+            catch (TriedToUnwrapErrException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -98,7 +98,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapErrException>(Act);
     }
 
     [Test]
@@ -138,7 +138,7 @@ public class UnwrapAsyncTests
         var invoked = false;
 
         // act
-        var hello = await ok.UnwrapAsync(err =>
+        var hello = await ok.UnwrapAsync(_ =>
         {
             invoked = true;
             return "YOLO";
@@ -161,13 +161,13 @@ public class UnwrapAsyncTests
         {
             try
             {
-                await err.UnwrapAsync(e =>
+                await err.UnwrapAsync(_ =>
                 {
                     invoked = true;
                     return "YOLO";
                 });
             }
-            catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+            catch (TriedToUnwrapErrException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -175,7 +175,7 @@ public class UnwrapAsyncTests
         }
 
         // assert
-        Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapErrException>(Act);
         Assert.IsTrue(invoked);
     }
 
@@ -186,7 +186,7 @@ public class UnwrapAsyncTests
         var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
 
         // act
-        await okTask.UnwrapAsync(err => "Arthur Dent");
+        await okTask.UnwrapAsync(_ => "Arthur Dent");
 
         // assert
         Assert.AreEqual(TaskStatus.RanToCompletion, okTask.Status);
@@ -201,7 +201,7 @@ public class UnwrapAsyncTests
         // act
         async Task Act()
         {
-            await failingTask.UnwrapAsync(err => "Arthur Dent");
+            await failingTask.UnwrapAsync(_ => "Arthur Dent");
         }
 
         // arrange
@@ -216,7 +216,7 @@ public class UnwrapAsyncTests
         var invoked = false;
 
         // act
-        var hello = await ok.UnwrapAsync(async err =>
+        var hello = await ok.UnwrapAsync(async _ =>
         {
             invoked = true;
             return await Task.FromResult("YOLO");
@@ -239,13 +239,13 @@ public class UnwrapAsyncTests
         {
             try
             {
-                await err.UnwrapAsync(async e =>
+                await err.UnwrapAsync(async _ =>
                 {
                     invoked = true;
                     return await Task.FromResult("YOLO");
                 });
             }
-            catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+            catch (TriedToUnwrapErrException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -253,7 +253,7 @@ public class UnwrapAsyncTests
         }
 
         // arrange
-        Assert.ThrowsAsync<AttemptToUnwrapErrWhenResultWasOkException>(Act);
+        Assert.ThrowsAsync<TriedToUnwrapErrException>(Act);
         Assert.IsTrue(invoked);
     }
 
@@ -264,7 +264,7 @@ public class UnwrapAsyncTests
         var okTask = Task.FromResult("Ford Prefect".ToOk<string, int>());
 
         // act
-        await okTask.UnwrapAsync(async err => await Task.FromResult("Arthur Dent"));
+        await okTask.UnwrapAsync(async _ => await Task.FromResult("Arthur Dent"));
 
         // assert
         Assert.AreEqual(TaskStatus.RanToCompletion, okTask.Status);
@@ -279,7 +279,7 @@ public class UnwrapAsyncTests
         // act
         async Task Act()
         {
-            await failingTask.UnwrapAsync(async err => await Task.FromResult("Arthur Dent"));
+            await failingTask.UnwrapAsync(async _ => await Task.FromResult("Arthur Dent"));
         }
 
         // assert
@@ -519,7 +519,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var hello = await ok.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var hello = await ok.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("hello", hello);
@@ -537,7 +537,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var world = await err.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var world = await err.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("world", world);
@@ -555,7 +555,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        await okTask.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        await okTask.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual(TaskStatus.RanToCompletion, okTask.Status);
@@ -575,7 +575,7 @@ public class UnwrapAsyncTests
         // act
         async Task Act()
         {
-            await failingTask.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+            await failingTask.UnwrapOrElseAsync(Continuation);
         }
 
         // assert
@@ -599,7 +599,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var hello = await ok.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var hello = await ok.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("hello", hello);
@@ -623,7 +623,7 @@ public class UnwrapAsyncTests
         }
 
         // act
-        var world = await err.UnwrapOrElseAsync((Func<Task<string>>)Continuation);
+        var world = await err.UnwrapOrElseAsync(Continuation);
 
         // assert
         Assert.AreEqual("world", world);

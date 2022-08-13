@@ -5,13 +5,13 @@ namespace Galaxus.Functional
     /// <summary>
     ///     Thrown when an attempt was made to unwrap an <see cref="Option{T}" /> containing <see cref="None" />.
     /// </summary>
-    public class AttemptToUnwrapNoneWhenOptionContainedSomeException : Exception
+    public sealed class TriedToUnwrapNoneException : Exception
     {
         /// <summary>
-        ///     Create an <see cref="AttemptToUnwrapNoneWhenOptionContainedSomeException" /> object.
+        ///     Create an <see cref="TriedToUnwrapNoneException" /> object.
         /// </summary>
         /// <param name="message">The message for the exception.</param>
-        public AttemptToUnwrapNoneWhenOptionContainedSomeException(string message) : base(message)
+        public TriedToUnwrapNoneException(string message) : base(message)
         {
         }
     }

@@ -152,7 +152,7 @@ namespace Galaxus.Functional
         {
             if (IsErr)
             {
-                throw new AttemptToUnwrapErrWhenResultWasOkException(error);
+                throw new TriedToUnwrapErrException(error);
             }
 
             return _ok;
@@ -172,7 +172,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(error));
                 }
 
-                throw new AttemptToUnwrapErrWhenResultWasOkException(error(_err));
+                throw new TriedToUnwrapErrException(error(_err));
             }
 
             return _ok;
