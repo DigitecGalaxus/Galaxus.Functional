@@ -51,7 +51,7 @@ public class OptionLinqExtensionsTests
         var composition = sequence.ElementAtOrNone(index);
 
         Assert.IsTrue(composition.IsSome);
-        Assert.Throws<AssertionException>(() => sequence.ToList());
+        Assert.Throws<AssertionException>(() => _ = sequence.ToList());
     }
 
     [Test]
@@ -93,7 +93,7 @@ public class OptionLinqExtensionsTests
         var composition = sequence.FirstOrNone();
 
         Assert.IsTrue(composition.IsSome);
-        Assert.Throws<AssertionException>(() => sequence.ToList());
+        Assert.Throws<AssertionException>(() => _ = sequence.ToList());
     }
 
     [Test]
@@ -169,11 +169,7 @@ public class OptionLinqExtensionsTests
     [Test]
     public void SingleOrNone_EmptyList_ReturnsNone()
     {
-        // ReSharper disable once CollectionNeverUpdated.Local
-        // This is intentional
-        var list4 = new List<int>();
-
-        var none = list4.SingleOrNone();
+        var none = new List<int>().SingleOrNone();
 
         Assert.IsTrue(none.IsNone);
     }
@@ -184,7 +180,7 @@ public class OptionLinqExtensionsTests
         var sequence = new YieldElementsThenFail<string>("Hello world", 2);
 
         Assert.Throws<InvalidOperationException>(() => sequence.SingleOrNone());
-        Assert.Throws<AssertionException>(() => sequence.ToList());
+        Assert.Throws<AssertionException>(() => _ = sequence.ToList());
     }
 
     [Test]
@@ -205,11 +201,8 @@ public class OptionLinqExtensionsTests
     [Test]
     public void GetValueOrNone_WithoutValue_ReturnsNone()
     {
-        // Arrange
-        var bestFriends = new Dictionary<string, string>();
-
         // Act
-        var bestFriendOrNone = bestFriends.GetValueOrNone("The Grinch");
+        var bestFriendOrNone = new Dictionary<string, string>().GetValueOrNone("The Grinch");
 
         // Assert
         Assert.That(bestFriendOrNone, Is.EqualTo(Option<string>.None));
