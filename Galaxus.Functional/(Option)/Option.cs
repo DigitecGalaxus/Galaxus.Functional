@@ -143,7 +143,7 @@ namespace Galaxus.Functional
         {
             if (IsSome == false)
             {
-                throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(error);
+                throw new TriedToUnwrapNoneException(error);
             }
 
             return _some;
@@ -163,7 +163,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(error));
                 }
 
-                throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(error());
+                throw new TriedToUnwrapNoneException(error());
             }
 
             return _some;

@@ -63,14 +63,14 @@ public class OptionTests
 
         {
             var called = false;
-            some.Match(s => called = true, () => Assert.Fail());
+            some.Match(_ => called = true, Assert.Fail);
             Assert.IsTrue(called);
         }
 
         {
             var called = false;
 
-            var number = some.Match(s =>
+            var number = some.Match(_ =>
                 {
                     called = true;
                     return 666;
@@ -87,7 +87,7 @@ public class OptionTests
 
         {
             var called = false;
-            some.IfSome(s => called = true);
+            some.IfSome(_ => called = true);
             Assert.IsTrue(called);
         }
     }
@@ -99,14 +99,14 @@ public class OptionTests
 
         {
             var called = false;
-            none.Match(s => Assert.Fail(), () => called = true);
+            none.Match(_ => Assert.Fail(), () => called = true);
             Assert.IsTrue(called);
         }
 
         {
             var called = false;
 
-            var number = none.Match(s =>
+            var number = none.Match(_ =>
                 {
                     Assert.Fail();
                     throw new InvalidOperationException();
@@ -123,7 +123,7 @@ public class OptionTests
 
         {
             var called = false;
-            none.IfSome(s => called = true);
+            none.IfSome(_ => called = true);
             Assert.IsFalse(called);
         }
     }
@@ -136,7 +136,7 @@ public class OptionTests
         Assert.Throws<ArgumentNullException>(() => { 0.ToOption().IfSome(null); });
 
         // NONE
-        Assert.Throws<ArgumentNullException>(() => { Option<int>.None.Match(v => { }, null); });
+        Assert.Throws<ArgumentNullException>(() => { Option<int>.None.Match(_ => { }, null); });
 
         // SOME and NONE with return value
         Assert.Throws<ArgumentNullException>(() => { _ = 0.ToOption().Match(null, () => 0); });
@@ -383,7 +383,7 @@ public class OptionTests
         var none = Option<string>.None;
 
         Assert.AreEqual("hello", some.Unwrap());
-        Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() => none.Unwrap());
+        Assert.Throws<TriedToUnwrapNoneException>(() => none.Unwrap());
     }
 
     [Test]
@@ -399,13 +399,13 @@ public class OptionTests
         var none = Option<string>.None;
 
         Assert.AreEqual("hello", some.Unwrap("YOLO"));
-        Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() =>
+        Assert.Throws<TriedToUnwrapNoneException>(() =>
         {
             try
             {
                 none.Unwrap("YOLO");
             }
-            catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+            catch (TriedToUnwrapNoneException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -430,7 +430,7 @@ public class OptionTests
         {
             var none = Option<string>.None;
             var invoked = false;
-            Assert.Throws<AttemptToUnwrapNoneWhenOptionContainedSomeException>(() =>
+            Assert.Throws<TriedToUnwrapNoneException>(() =>
             {
                 try
                 {
@@ -440,7 +440,7 @@ public class OptionTests
                         return "YOLO";
                     });
                 }
-                catch (AttemptToUnwrapNoneWhenOptionContainedSomeException ex)
+                catch (TriedToUnwrapNoneException ex)
                 {
                     Assert.AreEqual("YOLO", ex.Message);
                     throw;
@@ -496,7 +496,7 @@ public class OptionTests
     {
         Assert.AreEqual(true.ToString(), true.ToOption().Map(b => b.ToString()).Unwrap());
 
-        Assert.AreEqual(Option<string>.None, Option<string>.None.Map(b => "foobar"));
+        Assert.AreEqual(Option<string>.None, Option<string>.None.Map(_ => "foobar"));
 
         Assert.Throws<ArgumentNullException>(() => "Foobar".ToOption().Map<string>(null));
     }

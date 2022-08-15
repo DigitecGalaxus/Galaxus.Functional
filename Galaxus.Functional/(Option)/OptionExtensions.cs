@@ -186,7 +186,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(error));
                 }
 
-                throw new AttemptToUnwrapNoneWhenOptionContainedSomeException(await error());
+                throw new TriedToUnwrapNoneException(await error());
             }
 
             return res.Unwrap();

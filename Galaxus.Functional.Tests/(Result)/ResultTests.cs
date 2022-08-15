@@ -70,7 +70,7 @@ public class ResultTests
             {
                 called = true;
                 Assert.AreEqual("hello", ok);
-            }, err => Assert.Fail());
+            }, _ => Assert.Fail());
             Assert.IsTrue(called);
         }
 
@@ -82,7 +82,7 @@ public class ResultTests
                 called = true;
                 Assert.AreEqual("hello", ok);
                 return 666;
-            }, err =>
+            }, _ =>
             {
                 Assert.Fail();
                 throw new InvalidOperationException();
@@ -104,7 +104,7 @@ public class ResultTests
 
         {
             var called = false;
-            result.IfErr(err => called = true);
+            result.IfErr(_ => called = true);
             Assert.IsFalse(called);
         }
     }
@@ -116,7 +116,7 @@ public class ResultTests
 
         {
             var called = false;
-            result.Match(ok => Assert.Fail(), err =>
+            result.Match(_ => Assert.Fail(), err =>
             {
                 Assert.AreEqual(99, err);
                 called = true;
@@ -127,7 +127,7 @@ public class ResultTests
         {
             var called = false;
 
-            var number = result.Match(ok =>
+            var number = result.Match(_ =>
                 {
                     Assert.Fail();
                     throw new InvalidOperationException();
@@ -155,7 +155,7 @@ public class ResultTests
 
         {
             var called = false;
-            result.IfOk(ok => called = true);
+            result.IfOk(_ => called = true);
             Assert.IsFalse(called);
         }
     }
@@ -164,15 +164,15 @@ public class ResultTests
     public void ResultMatchWithNullMatchPatternThrows()
     {
         // OK
-        Assert.Throws<ArgumentNullException>(() => { 0.ToOk<int, string>().Match(null, err => { }); });
+        Assert.Throws<ArgumentNullException>(() => { 0.ToOk<int, string>().Match(null, _ => { }); });
         Assert.Throws<ArgumentNullException>(() => { 0.ToOk<int, string>().IfOk(null); });
 
         // ERR
-        Assert.Throws<ArgumentNullException>(() => { "hello".ToErr<int, string>().Match(v => { }, null); });
+        Assert.Throws<ArgumentNullException>(() => { "hello".ToErr<int, string>().Match(_ => { }, null); });
         Assert.Throws<ArgumentNullException>(() => { "hello".ToErr<int, string>().IfErr(null); });
 
         // OK and ERR with return value
-        Assert.Throws<ArgumentNullException>(() => { _ = 0.ToOk<int, string>().Match(null, err => 0); });
+        Assert.Throws<ArgumentNullException>(() => { _ = 0.ToOk<int, string>().Match(null, _ => 0); });
         Assert.Throws<ArgumentNullException>(() => { _ = "hello".ToErr<int, string>().Match(v => v, null); });
     }
 
@@ -267,13 +267,13 @@ public class ResultTests
     {
         const string initialResult = "a";
         const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = s =>
+        Func<string, Task<Result<string, string>>> continuation = _ =>
             Task.FromResult(Result<string, string>.FromErr(continuationResult));
         var result = await Result<string, string>.FromErr(initialResult)
             .OrElseAsync(continuation);
 
         result.Match(
-            ok => Assert.Fail(),
+            _ => Assert.Fail(),
             err => Assert.AreEqual(continuationResult, err));
     }
 
@@ -282,7 +282,7 @@ public class ResultTests
     {
         const string initialResult = "a";
         const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = s =>
+        Func<string, Task<Result<string, string>>> continuation = _ =>
             Task.FromResult(Result<string, string>.FromErr(continuationResult));
 
         var result = await Result<string, string>.FromOk(initialResult)
@@ -290,7 +290,7 @@ public class ResultTests
 
         result.Match(
             ok => Assert.AreEqual(initialResult, ok),
-            err => Assert.Fail());
+            _ => Assert.Fail());
     }
 
     [Test]
@@ -341,7 +341,7 @@ public class ResultTests
         var err = 99.ToErr<string, int>();
 
         Assert.AreEqual("hello", ok.Unwrap());
-        Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() => err.Unwrap());
+        Assert.Throws<TriedToUnwrapErrException>(() => err.Unwrap());
     }
 
     [Test]
@@ -351,13 +351,13 @@ public class ResultTests
         var err = 99.ToErr<string, int>();
 
         Assert.AreEqual("hello", ok.Unwrap("YOLO"));
-        Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() =>
+        Assert.Throws<TriedToUnwrapErrException>(() =>
         {
             try
             {
                 err.Unwrap("YOLO");
             }
-            catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+            catch (TriedToUnwrapErrException ex)
             {
                 Assert.AreEqual("YOLO", ex.Message);
                 throw;
@@ -371,7 +371,7 @@ public class ResultTests
         {
             var ok = "hello".ToOk<string, int>();
             var invoked = false;
-            Assert.AreEqual("hello", ok.Unwrap(err =>
+            Assert.AreEqual("hello", ok.Unwrap(_ =>
             {
                 invoked = true;
                 return "YOLO";
@@ -382,17 +382,17 @@ public class ResultTests
         {
             var err = 0.ToErr<string, int>();
             var invoked = false;
-            Assert.Throws<AttemptToUnwrapErrWhenResultWasOkException>(() =>
+            Assert.Throws<TriedToUnwrapErrException>(() =>
             {
                 try
                 {
-                    err.Unwrap(err_ =>
+                    err.Unwrap(_ =>
                     {
                         invoked = true;
                         return "YOLO";
                     });
                 }
-                catch (AttemptToUnwrapErrWhenResultWasOkException ex)
+                catch (TriedToUnwrapErrException ex)
                 {
                     Assert.AreEqual("YOLO", ex.Message);
                     throw;
@@ -524,25 +524,25 @@ public class ResultTests
         {
             var invoked = false;
             Assert.AreEqual(Result<int, int>.FromOk(9),
-                Result<int, int>.FromOk(3).AndThen(i => invoked = true).AndThen(Square));
+                Result<int, int>.FromOk(3).AndThen(_ => invoked = true).AndThen(Square));
             Assert.IsTrue(invoked);
         }
         {
             var invoked = false;
             Assert.AreEqual(Result<int, int>.FromErr(3),
-                Result<int, int>.FromOk(3).AndThen(i => invoked = true).AndThen(Error));
+                Result<int, int>.FromOk(3).AndThen(_ => invoked = true).AndThen(Error));
             Assert.IsTrue(invoked);
         }
         {
             var invoked = false;
             Assert.AreEqual(Result<int, int>.FromErr(3),
-                Result<int, int>.FromOk(3).AndThen(Error).AndThen(i => invoked = true));
+                Result<int, int>.FromOk(3).AndThen(Error).AndThen(_ => invoked = true));
             Assert.IsFalse(invoked);
         }
         {
             var invoked = false;
             Assert.AreEqual(Result<int, int>.FromErr(5),
-                Result<int, int>.FromErr(5).AndThen(Square).AndThen(i => invoked = true));
+                Result<int, int>.FromErr(5).AndThen(Square).AndThen(_ => invoked = true));
             Assert.IsFalse(invoked);
         }
     }
@@ -579,7 +579,7 @@ public class ResultTests
 
         Result<Unit, int> Nop(Result<string, int> x)
         {
-            return x.Match(ok => Result<Unit, int>.FromOk(Unit.Value), err => err);
+            return x.Match(_ => Result<Unit, int>.FromOk(Unit.Value), err => err);
         }
 
         var nextResult = success.AndThen(s => Nop(s));
@@ -592,7 +592,7 @@ public class ResultTests
     {
         const string initialResult = "a";
         const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = s =>
+        Func<string, Task<Result<string, string>>> continuation = _ =>
             Task.FromResult(Result<string, string>.FromOk(continuationResult));
         var result = await Result<string, string>.FromOk(initialResult)
             .AndThenAsync(continuation);
@@ -604,7 +604,7 @@ public class ResultTests
     {
         const string initialError = "a";
         const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = s =>
+        Func<string, Task<Result<string, string>>> continuation = _ =>
             Task.FromResult(Result<string, string>.FromOk(continuationResult));
         var result = await Result<string, string>.FromErr(initialError)
             .AndThenAsync(continuation);
@@ -616,7 +616,7 @@ public class ResultTests
     {
         const string initialResult = "a";
         const string continuationResult = "b";
-        Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
+        Func<string, Task<string>> continuation = _ => Task.FromResult(continuationResult);
         var result = await Result<string, string>.FromOk(initialResult)
             .MapAsync(continuation);
         Assert.AreEqual(continuationResult, result.Ok.UnwrapOrDefault());
@@ -627,7 +627,7 @@ public class ResultTests
     {
         const string initialError = "a";
         const string continuationResult = "b";
-        Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
+        Func<string, Task<string>> continuation = _ => Task.FromResult(continuationResult);
         var result = await Result<string, string>.FromErr(initialError)
             .MapAsync(continuation);
         Assert.IsTrue(result.IsErr);
@@ -637,7 +637,7 @@ public class ResultTests
     public void MapAsync_ContinuationThrowsException_CorrectExceptionIsPropagated()
     {
         const string initialResult = "a";
-        Func<string, Task<string>> continuation = s => Task.FromException<string>(new ArgumentException());
+        Func<string, Task<string>> continuation = _ => Task.FromException<string>(new ArgumentException());
 
         Assert.ThrowsAsync<ArgumentException>(async () =>
         {
@@ -651,7 +651,7 @@ public class ResultTests
     {
         const string initialError = "a";
         const string continuationResult = "b";
-        Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
+        Func<string, Task<string>> continuation = _ => Task.FromResult(continuationResult);
         var result = await Result<string, string>.FromErr(initialError)
             .MapErrAsync(continuation);
         Assert.AreEqual(continuationResult, result.Err.UnwrapOrDefault());
@@ -662,7 +662,7 @@ public class ResultTests
     {
         const string initialResult = "a";
         const string continuationResult = "b";
-        Func<string, Task<string>> continuation = s => Task.FromResult(continuationResult);
+        Func<string, Task<string>> continuation = _ => Task.FromResult(continuationResult);
         var result = await Result<string, string>.FromOk(initialResult)
             .MapErrAsync(continuation);
         Assert.IsTrue(result.IsOk);
@@ -672,7 +672,7 @@ public class ResultTests
     public void MapErrAsync_ContinuationThrowsException_CorrectExceptionIsPropagated()
     {
         const string initialResult = "a";
-        Func<string, Task<string>> continuation = s => Task.FromException<string>(new ArgumentException());
+        Func<string, Task<string>> continuation = _ => Task.FromException<string>(new ArgumentException());
 
         Assert.ThrowsAsync<ArgumentException>(async () =>
         {
@@ -685,8 +685,8 @@ public class ResultTests
     public void MatchAsync_ContinuationThrowsException_CorrectExceptionIsPropagated()
     {
         const string initialResult = "a";
-        Func<string, Task<string>> continuationOk = s => Task.FromException<string>(new ArgumentException());
-        Func<string, Task<string>> continuationErr = s => Task.FromResult("b");
+        Func<string, Task<string>> continuationOk = _ => Task.FromException<string>(new ArgumentException());
+        Func<string, Task<string>> continuationErr = _ => Task.FromResult("b");
 
         Assert.ThrowsAsync<ArgumentException>(async () =>
         {

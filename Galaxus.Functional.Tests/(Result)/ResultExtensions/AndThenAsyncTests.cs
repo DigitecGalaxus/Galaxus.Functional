@@ -22,7 +22,7 @@ public class AndThenAsyncTests
         async Task Act()
         {
             await Task.FromException<Result<string, string>>(new ArgumentException())
-                .AndThenAsync((Func<string, Task<Result<string, string>>>)Continuation);
+                .AndThenAsync(Continuation);
         }
 
         // assert
@@ -48,7 +48,7 @@ public class AndThenAsyncTests
         async Task Act()
         {
             await Task.FromCanceled<Result<string, string>>(cancellationTokenSource.Token)
-                .AndThenAsync((Func<string, Task<Result<string, string>>>)Continuation);
+                .AndThenAsync(Continuation);
         }
 
         // assert
@@ -68,7 +68,7 @@ public class AndThenAsyncTests
         }
 
         var resultTask = Task.FromResult(Result<string, string>.FromOk(initialResult))
-            .AndThenAsync((Func<string, Result<string, string>>)Continuation);
+            .AndThenAsync(Continuation);
 
         // act
         await resultTask;

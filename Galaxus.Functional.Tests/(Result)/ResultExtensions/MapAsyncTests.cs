@@ -20,7 +20,7 @@ public class MapAsyncTests
         }
 
         var resultTask = Task.FromResult(Result<string, string>.FromOk(initialResult))
-            .MapAsync((Func<string, string>)Continuation);
+            .MapAsync(Continuation);
 
         // act
         await resultTask;
@@ -44,7 +44,7 @@ public class MapAsyncTests
         async Task Act()
         {
             await Task.FromException<Result<string, string>>(new ArgumentException())
-                .MapAsync((Func<string, Task<string>>)Continuation);
+                .MapAsync(Continuation);
         }
 
         // assert
@@ -70,7 +70,7 @@ public class MapAsyncTests
         async Task Act()
         {
             await Task.FromCanceled<Result<string, string>>(cancellationTokenSource.Token)
-                .MapAsync((Func<string, Task<string>>)Continuation);
+                .MapAsync(Continuation);
         }
 
         // assert
@@ -90,7 +90,7 @@ public class MapAsyncTests
         }
 
         var resultTask = Task.FromResult(Result<string, string>.FromErr(initialResult))
-            .MapErrAsync((Func<string, string>)Continuation);
+            .MapErrAsync(Continuation);
 
         // act
         await resultTask;
@@ -114,7 +114,7 @@ public class MapAsyncTests
         async Task Act()
         {
             await Task.FromException<Result<string, string>>(new ArgumentException())
-                .MapErrAsync((Func<string, Task<string>>)Continuation);
+                .MapErrAsync(Continuation);
         }
 
         // assert
@@ -140,7 +140,7 @@ public class MapAsyncTests
         async Task Act()
         {
             await Task.FromCanceled<Result<string, string>>(cancellationTokenSource.Token)
-                .MapErrAsync((Func<string, Task<string>>)Continuation);
+                .MapErrAsync(Continuation);
         }
 
         // assert

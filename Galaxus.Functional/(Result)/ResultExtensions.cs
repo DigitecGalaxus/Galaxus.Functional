@@ -347,7 +347,7 @@ namespace Galaxus.Functional
                     throw new ArgumentNullException(nameof(error));
                 }
 
-                throw new AttemptToUnwrapErrWhenResultWasOkException(await error(res.Err.Unwrap()));
+                throw new TriedToUnwrapErrException(await error(res.Err.Unwrap()));
             }
 
             return res.Unwrap();
