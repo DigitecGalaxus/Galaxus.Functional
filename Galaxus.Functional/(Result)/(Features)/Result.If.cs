@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -45,29 +44,6 @@ namespace Galaxus.Functional
 
                 onErr(_err);
             }
-        }
-
-        /// <summary>
-        ///     Provides access to <b>self</b>'s <b>Err</b> value by calling <paramref name="onErr" /> if <b>self</b> contains
-        ///     <b>Err</b>.
-        /// </summary>
-        /// <param name="onErr">
-        ///     Called when <b>self</b> contains <b>Err</b>. The argument to this function is never the <b>null</b>
-        ///     reference.
-        /// </param>
-        public Task IfErrAsync(Func<TErr, Task> onErr)
-        {
-            if (IsErr)
-            {
-                if (onErr is null)
-                {
-                    throw new ArgumentNullException(nameof(onErr));
-                }
-
-                return onErr(_err);
-            }
-
-            return Task.CompletedTask;
         }
     }
 }

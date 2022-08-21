@@ -22,7 +22,7 @@ internal class AsyncResultExtensionsTest
         {
             var ok = Result<string, string>.FromOk("ok");
             await ok.IfOkAsync(StoreValue);
-            Assert.That(LoadValue(), Is.EqualTo(ok.Unwrap()));
+            Assert.That(_storedValue, Is.EqualTo("ok"));
         }
 
         [Test]
@@ -30,7 +30,7 @@ internal class AsyncResultExtensionsTest
         {
             var err = Result<string, string>.FromErr("err");
             await err.IfOkAsync(StoreValue);
-            Assert.That(LoadValue(), Is.EqualTo(string.Empty));
+            Assert.That(_storedValue, Is.EqualTo(string.Empty));
         }
 
         private Task StoreValue(string value)
@@ -39,10 +39,39 @@ internal class AsyncResultExtensionsTest
 
             return Task.CompletedTask;
         }
+    }
 
-        private string LoadValue()
+    public sealed class IfErrAsyncTest : AsyncResultExtensionsTest
+    {
+        private string _storedValue;
+
+        [SetUp]
+        public void SetUp()
         {
-            return _storedValue;
+            _storedValue = string.Empty;
+        }
+
+        [Test]
+        public async Task ContinuationIsExecuted_WhenResultIsErr()
+        {
+            var err = Result<string, string>.FromErr("err");
+            await err.IfErrAsync(StoreValue);
+            Assert.That(_storedValue, Is.EqualTo("err"));
+        }
+
+        [Test]
+        public async Task ContinuationIsNotExecuted_WhenResultIsOk()
+        {
+            var ok = Result<string, string>.FromOk("ok");
+            await ok.IfErrAsync(StoreValue);
+            Assert.That(_storedValue, Is.EqualTo(string.Empty));
+        }
+
+        private Task StoreValue(string value)
+        {
+            _storedValue = value;
+
+            return Task.CompletedTask;
         }
     }
 }

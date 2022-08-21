@@ -744,39 +744,4 @@ public class ResultTests
         Assert.IsTrue(mappingResult.IsOk);
         Assert.AreEqual("Success", mappingResult.Ok.Unwrap());
     }
-
-    [Test]
-    public async Task IfErrAsync_PreviousResultWasError_ContinuationIsApplied()
-    {
-        const string continuationString = "b";
-
-        var result = string.Empty;
-
-        Func<string, Task> continuation = async s =>
-        {
-            await Task.Delay(1000);
-            result = s;
-        };
-
-        await Result<string, string>.FromErr(continuationString)
-            .IfErrAsync(async s => await continuation(s));
-
-        Assert.That(result, Is.EqualTo(continuationString));
-    }
-
-    [Test]
-    public async Task IfErrAsync_PreviousResultWasSuccess_ContinuationIsNotApplied()
-    {
-        var result = string.Empty;
-
-        Func<string, Task> continuation = async s =>
-        {
-            await Task.Delay(1000);
-            result = s;
-        };
-
-        await Result<string, string>.FromOk("success").IfErrAsync(async s => await continuation(s));
-
-        Assert.That(result, Is.EqualTo(string.Empty));
-    }
 }
