@@ -27,29 +27,6 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Provides access to <b>self</b>'s <b>Ok</b> value by calling <paramref name="onOk" /> if <b>self</b> contains
-        ///     <b>Ok</b>.
-        /// </summary>
-        /// <param name="onOk">
-        ///     Called when <b>self</b> contains <b>Ok</b>. The argument to this function is never the <b>null</b>
-        ///     reference.
-        /// </param>
-        public Task IfOkAsync(Func<TOk, Task> onOk)
-        {
-            if (IsOk)
-            {
-                if (onOk is null)
-                {
-                    throw new ArgumentNullException(nameof(onOk));
-                }
-
-                return onOk(_ok);
-            }
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
         ///     Provides access to <b>self</b>'s <b>Err</b> value by calling <paramref name="onErr" /> if <b>self</b> contains
         ///     <b>Err</b>.
         /// </summary>

@@ -746,41 +746,6 @@ public class ResultTests
     }
 
     [Test]
-    public async Task IfOkAsync_PreviousResultWasSuccess_ContinuationIsApplied()
-    {
-        const string continuationString = "b";
-
-        var result = string.Empty;
-
-        Func<string, Task> continuation = async s =>
-        {
-            await Task.Delay(1000);
-            result = s;
-        };
-
-        await Result<string, string>.FromOk(continuationString)
-            .IfOkAsync(async s => await continuation(s));
-
-        Assert.That(result, Is.EqualTo(continuationString));
-    }
-
-    [Test]
-    public async Task IfOkAsync_PreviousResultWasError_ContinuationIsNotApplied()
-    {
-        var result = string.Empty;
-
-        Func<string, Task> continuation = async s =>
-        {
-            await Task.Delay(1000);
-            result = s;
-        };
-
-        await Result<string, string>.FromErr("err").IfOkAsync(async s => await continuation(s));
-
-        Assert.That(result, Is.EqualTo(string.Empty));
-    }
-
-    [Test]
     public async Task IfErrAsync_PreviousResultWasError_ContinuationIsApplied()
     {
         const string continuationString = "b";
