@@ -82,54 +82,6 @@ namespace Galaxus.Functional
 
         #endregion
 
-        #region Map
-
-        /// <summary>
-        ///     Async overload for <see cref="Map{TOkFrom,TOkTo,TErr}"/>
-        /// </summary>
-        /// <inheritdoc cref="Map{TOkFrom,TOkTo,TErr}"/>
-        public static async Task<Result<TOkTo, TErr>> MapAsync<TOk, TErr, TOkTo>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, Task<TOkTo>> continuation)
-        {
-            return await (await self).MapAsync(continuation);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Map{TOkFrom,TOkTo,TErr}"/>
-        /// </summary>
-        /// <inheritdoc cref="Map{TOkFrom,TOkTo,TErr}"/>
-        public static Task<Result<TOkTo, TErr>> MapAsync<TOk, TErr, TOkTo>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, TOkTo> continuation)
-        {
-            return self.MapAsync(ok => Task.FromResult(continuation(ok)));
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="MapErr{TOk,TErrFrom,TErrTo}"/>
-        /// </summary>
-        /// <inheritdoc cref="MapErr{TOk,TErrFrom,TErrTo}"/>
-        public static async Task<Result<TOk, TErrTo>> MapErrAsync<TOk, TErr, TErrTo>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TErr, Task<TErrTo>> continuation)
-        {
-            return await (await self).MapErrAsync(continuation);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="MapErr{TOk,TErrFrom,TErrTo}"/>
-        /// </summary>
-        /// <inheritdoc cref="MapErr{TOk,TErrFrom,TErrTo}"/>
-        public static Task<Result<TOk, TErrTo>> MapErrAsync<TOk, TErr, TErrTo>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TErr, TErrTo> continuation)
-        {
-            return self.MapErrAsync(err => Task.FromResult(continuation(err)));
-        }
-
-        #endregion
-
         #region Enumerations
 
         /// <summary>

@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Galaxus.Functional.Tests.Async;
 
 [TestFixture]
-internal class AsyncResultExtensionsTest
+internal partial class AsyncResultExtensionsTest
 {
     public sealed class IfOkAsyncTest : AsyncResultExtensionsTest
     {
@@ -111,53 +111,111 @@ internal class AsyncResultExtensionsTest
         }
     }
 
-    private static Result<string, string> CreateOk(string value)
+    public class MapAsyncTest : AsyncResultExtensionsTest
     {
-        return Result<string, string>.FromOk(value);
+        public sealed class ContinuationIsAsync : AndThenAsyncTest
+        {
+            [Test]
+            public async Task ContinuationIsApplied_WhenSelfIsOk()
+            {
+                var continuation = await CreateOk("ok").MapAsync(_ => Task.FromResult("ok2"));
+                AssertOk(continuation, "ok2");
+            }
+
+            [Test]
+            public async Task ContinuationIsNotApplied_WhenSelfIsErr()
+            {
+                var continuation = await CreateErr("err").MapAsync(_ => Task.FromResult("ok2"));
+                AssertErr(continuation, "err");
+            }
+        }
+
+        public sealed class SelfIsInTask : AndThenAsyncTest
+        {
+            [Test]
+            public async Task ContinuationIsApplied_WhenAwaitedSelfIsOk()
+            {
+                var continuation = await CreateOkTask("ok").MapAsync(_ => "ok2");
+                AssertOk(continuation, "ok2");
+            }
+
+            [Test]
+            public async Task ContinuationIsNotApplied_WhenAwaitedSelfIsErr()
+            {
+                var continuation = await CreateErrTask("err").MapAsync(_ => "ok2");
+                AssertErr(continuation, "err");
+            }
+        }
+
+        public sealed class SelfIsInTaskAndContinuationIsAsync : AndThenAsyncTest
+        {
+            [Test]
+            public async Task ContinuationIsApplied_WhenAwaitedSelfIsOk()
+            {
+                var continuation = await CreateOkTask("ok").MapAsync(_ => Task.FromResult("ok2"));
+                AssertOk(continuation, "ok2");
+            }
+
+            [Test]
+            public async Task ContinuationIsNotApplied_WhenAwaitedSelfIsErr()
+            {
+                var continuation = await CreateErrTask("err").MapAsync(_ => Task.FromResult("ok2"));
+                AssertErr(continuation, "err");
+            }
+        }
     }
 
-    private static Task<Result<string, string>> CreateOkTask(string value)
+    public class MapErrAsyncTest : AsyncResultExtensionsTest
     {
-        return Task.FromResult(CreateOk(value));
-    }
+        public sealed class ContinuationIsAsync : AndThenAsyncTest
+        {
+            [Test]
+            public async Task ContinuationIsApplied_WhenSelfIsErr()
+            {
+                var continuation = await CreateErr("err").MapErrAsync(_ => Task.FromResult("err2"));
+                AssertErr(continuation, "err2");
+            }
 
-    private static Result<string, string> CreateErr(string value)
-    {
-        return Result<string, string>.FromErr(value);
-    }
+            [Test]
+            public async Task ContinuationIsNotApplied_WhenSelfIsOk()
+            {
+                var continuation = await CreateOk("ok").MapErrAsync(_ => Task.FromResult("err2"));
+                AssertOk(continuation, "ok");
+            }
+        }
 
-    private static Task<Result<string, string>> CreateErrTask(string value)
-    {
-        return Task.FromResult(CreateErr(value));
-    }
+        public sealed class SelfIsInTask : AndThenAsyncTest
+        {
+            [Test]
+            public async Task ContinuationIsApplied_WhenAwaitedSelfIsErr()
+            {
+                var continuation = await CreateErrTask("err").MapErrAsync(_ => "err2");
+                AssertErr(continuation, "err2");
+            }
 
-    private static Task StoreValueAsync(string value, out string result)
-    {
-        result = value;
+            [Test]
+            public async Task ContinuationIsNotApplied_WhenAwaitedSelfIsOk()
+            {
+                var continuation = await CreateOkTask("ok").MapErrAsync(_ => "err2");
+                AssertOk(continuation, "ok");
+            }
+        }
 
-        return Task.CompletedTask;
-    }
+        public sealed class SelfIsInTaskAndContinuationIsAsync : AndThenAsyncTest
+        {
+            [Test]
+            public async Task ContinuationIsApplied_WhenAwaitedSelfIsErr()
+            {
+                var continuation = await CreateErrTask("err").MapErrAsync(_ => Task.FromResult("err2"));
+                AssertErr(continuation, "err2");
+            }
 
-    private static Result<string, string> StoreValueAndReturnWrapped(string value, out string result)
-    {
-        result = value;
-
-        return Result<string, string>.FromOk(value);
-    }
-
-    private static Task<Result<string, string>> StoreValueAndReturnWrappedAsync(string value, out string result)
-    {
-        var returnValue = StoreValueAndReturnWrapped(value, out result);
-
-        return Task.FromResult(returnValue);
-    }
-
-    private static void AssertOk(Result<string, string> result, string value)
-    {
-        Assert.That(result.Ok, Is.EqualTo(Option<string>.Some(value)));
-    }
-    private static void AssertErr(Result<string, string> result, string value)
-    {
-        Assert.That(result.Err, Is.EqualTo(Option<string>.Some(value)));
+            [Test]
+            public async Task ContinuationIsNotApplied_WhenAwaitedSelfIsOk()
+            {
+                var continuation = await CreateOkTask("ok").MapErrAsync(_ => Task.FromResult("err2"));
+                AssertOk(continuation, "ok");
+            }
+        }
     }
 }
