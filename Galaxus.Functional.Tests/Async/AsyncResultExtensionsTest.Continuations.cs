@@ -4,24 +4,39 @@ namespace Galaxus.Functional.Tests.Async;
 
 internal partial class AsyncResultExtensionsTest
 {
-    private static Task StoreValueAsync(string value, out string result)
+    private void StoreValue(string value)
     {
-        result = value;
+        _storedValue = value;
+    }
+
+    private Task StoreValueAsync(string value)
+    {
+        StoreValue(value);
 
         return Task.CompletedTask;
     }
 
-    private static Result<string, string> StoreValueAndReturnWrapped(string value, out string result)
+    private Result<string, string> StoreValueAndReturnWrapped(string value)
     {
-        result = value;
+        StoreValue(value);
 
         return Result<string, string>.FromOk(value);
     }
 
-    private static Task<Result<string, string>> StoreValueAndReturnWrappedAsync(string value, out string result)
+    private Task<Result<string, string>> StoreValueAndReturnWrappedAsync(string value)
     {
-        var returnValue = StoreValueAndReturnWrapped(value, out result);
+        StoreValue(value);
 
-        return Task.FromResult(returnValue);
+        return Task.FromResult(Result<string, string>.FromOk(value));
+    }
+
+    private static string AppendPeriod(string value)
+    {
+        return value + ".";
+    }
+
+    private static Task<string> AppendPeriodAsync(string value)
+    {
+        return Task.FromResult(AppendPeriod(value));
     }
 }

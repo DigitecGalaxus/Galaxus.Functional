@@ -13,4 +13,14 @@ internal partial class AsyncResultExtensionsTest
     {
         Assert.That(result.Err, Is.EqualTo(Option<string>.Some(value)));
     }
+
+    private void AssertStoredValue(string value)
+    {
+        Assert.That(_storedValue, Is.EqualTo(value));
+    }
+
+    private void AssertNoValueStored()
+    {
+        Assert.That(_storedValue, Is.Null);
+    }
 }
