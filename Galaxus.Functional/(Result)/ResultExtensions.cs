@@ -252,32 +252,6 @@ namespace Galaxus.Functional
 
         #endregion
 
-        #region AndThen
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
-        public static async Task<Result<TContinuationOk, TErr>> AndThenAsync<TOk, TErr, TContinuationOk>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, Task<Result<TContinuationOk, TErr>>> continuation)
-        {
-            return await (await self).AndThenAsync(continuation);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.AndThen{TContinuationOk}"/>
-        public static Task<Result<TContinuationOk, TErr>> AndThenAsync<TOk, TErr, TContinuationOk>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, Result<TContinuationOk, TErr>> continuation)
-        {
-            return self.AndThenAsync(ok => Task.FromResult(continuation(ok)));
-        }
-
-        #endregion
-
         #region Or
 
         /// <summary>

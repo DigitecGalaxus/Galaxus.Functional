@@ -588,30 +588,6 @@ public class ResultTests
     }
 
     [Test]
-    public async Task AndThenAsync_PreviousResultWasSuccess_ContinuationIsApplied()
-    {
-        const string initialResult = "a";
-        const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = _ =>
-            Task.FromResult(Result<string, string>.FromOk(continuationResult));
-        var result = await Result<string, string>.FromOk(initialResult)
-            .AndThenAsync(continuation);
-        Assert.AreEqual(continuationResult, result.Ok.UnwrapOrDefault());
-    }
-
-    [Test]
-    public async Task AndThenAsync_PreviousResultWasError_ContinuationIsNotApplied()
-    {
-        const string initialError = "a";
-        const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = _ =>
-            Task.FromResult(Result<string, string>.FromOk(continuationResult));
-        var result = await Result<string, string>.FromErr(initialError)
-            .AndThenAsync(continuation);
-        Assert.IsTrue(result.IsErr);
-    }
-
-    [Test]
     public async Task MapAsync_PreviousResultWasSuccess_ContinuationIsApplied()
     {
         const string initialResult = "a";
