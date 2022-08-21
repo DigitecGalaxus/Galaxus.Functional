@@ -9,69 +9,71 @@ internal class AsyncResultExtensionsTest
 {
     public sealed class IfOkAsyncTest : AsyncResultExtensionsTest
     {
-        private string _storedValue;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _storedValue = string.Empty;
-        }
-
         [Test]
         public async Task ContinuationIsExecuted_WhenResultIsOk()
         {
+            var storedValue = string.Empty;
+
+            Task StoreValue(string value)
+            {
+                storedValue = value;
+                return Task.CompletedTask;
+            }
+
             var ok = Result<string, string>.FromOk("ok");
             await ok.IfOkAsync(StoreValue);
-            Assert.That(_storedValue, Is.EqualTo("ok"));
+            Assert.That(storedValue, Is.EqualTo("ok"));
         }
 
         [Test]
         public async Task ContinuationIsNotExecuted_WhenResultIsErr()
         {
+            var storedValue = string.Empty;
+
+            Task StoreValue(string value)
+            {
+                storedValue = value;
+                return Task.CompletedTask;
+            }
+
             var err = Result<string, string>.FromErr("err");
             await err.IfOkAsync(StoreValue);
-            Assert.That(_storedValue, Is.EqualTo(string.Empty));
-        }
-
-        private Task StoreValue(string value)
-        {
-            _storedValue = value;
-
-            return Task.CompletedTask;
+            Assert.That(storedValue, Is.EqualTo(string.Empty));
         }
     }
 
     public sealed class IfErrAsyncTest : AsyncResultExtensionsTest
     {
-        private string _storedValue;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _storedValue = string.Empty;
-        }
-
         [Test]
         public async Task ContinuationIsExecuted_WhenResultIsErr()
         {
+            var storedValue = string.Empty;
+
+            Task StoreValue(string value)
+            {
+                storedValue = value;
+                return Task.CompletedTask;
+            }
+
             var err = Result<string, string>.FromErr("err");
             await err.IfErrAsync(StoreValue);
-            Assert.That(_storedValue, Is.EqualTo("err"));
+            Assert.That(storedValue, Is.EqualTo("err"));
         }
 
         [Test]
         public async Task ContinuationIsNotExecuted_WhenResultIsOk()
         {
+            var storedValue = string.Empty;
+
+            Task StoreValue(string value)
+            {
+                storedValue = value;
+                return Task.CompletedTask;
+            }
+
             var ok = Result<string, string>.FromOk("ok");
             await ok.IfErrAsync(StoreValue);
-            Assert.That(_storedValue, Is.EqualTo(string.Empty));
-        }
-
-        private Task StoreValue(string value)
-        {
-            _storedValue = value;
-
-            return Task.CompletedTask;
+            Assert.That(storedValue, Is.EqualTo(string.Empty));
         }
     }
 }
