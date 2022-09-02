@@ -596,7 +596,7 @@ public class ResultTests
             Task.FromResult(Result<string, string>.FromOk(continuationResult));
         var result = await Result<string, string>.FromOk(initialResult)
             .AndThenAsync(continuation);
-        Assert.AreEqual(continuationResult, result.Ok.UnwrapOrDefault());
+        Assert.AreEqual(continuationResult, result.Ok.ToNullable());
     }
 
     [Test]
@@ -619,7 +619,7 @@ public class ResultTests
         Func<string, Task<string>> continuation = _ => Task.FromResult(continuationResult);
         var result = await Result<string, string>.FromOk(initialResult)
             .MapAsync(continuation);
-        Assert.AreEqual(continuationResult, result.Ok.UnwrapOrDefault());
+        Assert.AreEqual(continuationResult, result.Ok.ToNullable());
     }
 
     [Test]
@@ -654,7 +654,7 @@ public class ResultTests
         Func<string, Task<string>> continuation = _ => Task.FromResult(continuationResult);
         var result = await Result<string, string>.FromErr(initialError)
             .MapErrAsync(continuation);
-        Assert.AreEqual(continuationResult, result.Err.UnwrapOrDefault());
+        Assert.AreEqual(continuationResult, result.Err.ToNullable());
     }
 
     [Test]

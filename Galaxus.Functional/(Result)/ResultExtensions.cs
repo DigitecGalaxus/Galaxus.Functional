@@ -400,15 +400,6 @@ namespace Galaxus.Functional
             return await fallback();
         }
 
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrDefault"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrDefault"/>
-        public static async Task<TOk> UnwrapOrDefaultAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self)
-        {
-            return (await self).UnwrapOrDefault();
-        }
-
         #endregion
     }
 }

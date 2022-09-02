@@ -239,15 +239,23 @@ namespace Galaxus.Functional
             return await fallback();
         }
 
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.UnwrapOrDefault"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.UnwrapOrDefault"/>
-        public static async Task<T> UnwrapOrDefaultAsync<T>(this Task<Option<T>> self)
-        {
-            return (await self).UnwrapOrDefault();
-        }
-
         #endregion
+    }
+
+    /// <summary>
+    ///     Additional extensions for the option type, providing some quality of life-shorthands.
+    /// </summary>
+    public static class OptionExtensions2
+    {
+        // this class is required because some extension methods are considered ambiguous if they would be placed in the same class.
+        // such as when only the generic constraints differ.
+
+        /// <summary>
+        ///     Transforms an option of a reference type into a nullable of the same reference type.
+        /// </summary>
+        public static T ToNullable<T>(this Option<T> self) where T : class
+        {
+            return self.Match(obj => obj, () => null);
+        }
     }
 }

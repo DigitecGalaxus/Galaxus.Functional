@@ -203,15 +203,6 @@ namespace Galaxus.Functional
             return fallback();
         }
 
-        /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Some</b> if <b>self</b> contains <b>Some</b>. Returns the default value of
-        ///     <typeparamref name="T" /> otherwise.
-        /// </summary>
-        public T UnwrapOrDefault()
-        {
-            return IsSome ? _some : default;
-        }
-
         #endregion
 
         /// <summary>
