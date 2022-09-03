@@ -177,40 +177,6 @@ public class ResultTests
     }
 
     [Test]
-    public async Task MatchAsync_PreviousResultWasSuccess_ReturnsOk()
-    {
-        const string successString = "success";
-
-        Func<string, Task<string>> continuationOk = async s => await Task.FromResult(s);
-
-        Func<string, Task<string>> continuationErr = async _ => await Task.FromResult("error");
-
-        var result = await Result<string, string>.FromOk(successString)
-            .MatchAsync(
-                async ok => await continuationOk(ok),
-                async err => await continuationErr(err));
-
-        Assert.That(result, Is.EqualTo(successString));
-    }
-
-    [Test]
-    public async Task MatchAsync_PreviousResultWasError_ReturnsError()
-    {
-        const string errorString = "error";
-
-        Func<string, Task<string>> continuationOk = async s => await Task.FromResult(s);
-
-        Func<string, Task<string>> continuationErr = async _ => await Task.FromResult(errorString);
-
-        var result = await Result<string, string>.FromErr("any error message")
-            .MatchAsync(
-                async ok => await continuationOk(ok),
-                async err => await continuationErr(err));
-
-        Assert.That(result, Is.EqualTo(errorString));
-    }
-
-    [Test]
     public void Result_Or()
     {
         {
@@ -554,20 +520,6 @@ public class ResultTests
         var nextResult = success.AndThen(s => Nop(s));
         Assert.IsTrue(nextResult.IsErr);
         Assert.AreEqual(5, nextResult.Err.Unwrap());
-    }
-
-    [Test]
-    public void MatchAsync_ContinuationThrowsException_CorrectExceptionIsPropagated()
-    {
-        const string initialResult = "a";
-        Func<string, Task<string>> continuationOk = _ => Task.FromException<string>(new ArgumentException());
-        Func<string, Task<string>> continuationErr = _ => Task.FromResult("b");
-
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-        {
-            await Result<string, string>.FromOk(initialResult)
-                .MatchAsync(continuationOk, continuationErr);
-        });
     }
 
     [Test]

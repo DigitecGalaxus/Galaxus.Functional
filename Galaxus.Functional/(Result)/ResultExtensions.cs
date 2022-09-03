@@ -127,54 +127,6 @@ namespace Galaxus.Functional
         #region Match
 
         /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
-        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, Task<TResult>> onOk,
-            Func<TErr, Task<TResult>> onErr)
-        {
-            return await (await self).MatchAsync(onOk, onErr);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
-        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, TResult> onOk,
-            Func<TErr, TResult> onErr)
-        {
-            return (await self).Match(onOk, onErr);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
-        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, Task<TResult>> onOk,
-            Func<TErr, TResult> onErr)
-        {
-            return await (await self).MatchAsync(onOk, onErr);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
-        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, TResult> onOk,
-            Func<TErr, Task<TResult>> onErr)
-        {
-            return await (await self).MatchAsync(onOk, onErr);
-        }
-
-        /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>, producing another result.
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.Match"/>

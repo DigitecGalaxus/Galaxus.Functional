@@ -119,5 +119,67 @@ namespace Galaxus.Functional.Async
         {
             return await (await self).OrElseAsync(continuation);
         }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
+        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
+            this Result<TOk, TErr> self,
+            Func<TOk, Task<TResult>> onOk,
+            Func<TErr, Task<TResult>> onErr)
+        {
+            return await self.Match(onOk, onErr);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
+        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
+            this Result<TOk, TErr> self,
+            Func<TOk, TResult> onOk,
+            Func<TErr, Task<TResult>> onErr)
+        {
+            return await self.Match(ok => Task.FromResult(onOk(ok)), onErr);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
+        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
+            this Result<TOk, TErr> self,
+            Func<TOk, Task<TResult>> onOk,
+            Func<TErr, TResult> onErr)
+        {
+            return await self.Match(onOk, err => Task.FromResult(onErr(err)));
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
+        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
+            this Task<Result<TOk, TErr>> self,
+            Func<TOk, Task<TResult>> onOk,
+            Func<TErr, Task<TResult>> onErr)
+        {
+            return await (await self).Match(onOk, onErr);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
+        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
+            this Task<Result<TOk, TErr>> self,
+            Func<TOk, TResult> onOk,
+            Func<TErr, Task<TResult>> onErr)
+        {
+            return await (await self).Match(ok => Task.FromResult(onOk(ok)), onErr);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
+        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
+            this Task<Result<TOk, TErr>> self,
+            Func<TOk, Task<TResult>> onOk,
+            Func<TErr, TResult> onErr)
+        {
+            return await (await self).Match(onOk, err => Task.FromResult(onErr(err)));
+        }
+        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
+        public static async Task<TResult> MatchAsync<TOk, TErr, TResult>(
+            this Task<Result<TOk, TErr>> self,
+            Func<TOk, TResult> onOk,
+            Func<TErr, TResult> onErr)
+        {
+            return (await self).Match(onOk, onErr);
+        }
     }
 }

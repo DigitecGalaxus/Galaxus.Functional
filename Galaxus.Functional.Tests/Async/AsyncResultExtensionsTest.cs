@@ -264,4 +264,126 @@ internal partial class AsyncResultExtensionsTest
             }
         }
     }
+
+    public class MatchAsyncTest : AsyncResultExtensionsTest
+    {
+        public class SelfIsInTask : MatchAsyncTest
+        {
+            [Test]
+            public async Task AppliesOnOk_WhenResultIsOk()
+            {
+                var result = await CreateOkTask("ok").MatchAsync(s => $"{s}.", s => $".{s}");
+                Assert.AreEqual("ok.", result);
+            }
+
+            [Test]
+            public async Task AppliesOnErr_WhenResultIsErr()
+            {
+                var result = await CreateErrTask("err").MatchAsync(s => $"{s}.", s => $".{s}");
+                Assert.AreEqual(".err", result);
+            }
+        }
+
+        public class SelfIsInTaskAndOnOkIsAsync : MatchAsyncTest
+        {
+            [Test]
+            public async Task AppliesOnOk_WhenResultIsOk()
+            {
+                var result = await CreateOkTask("ok").MatchAsync(s => Task.FromResult($"{s}."), s => $".{s}");
+                Assert.AreEqual("ok.", result);
+            }
+
+            [Test]
+            public async Task AppliesOnErr_WhenResultIsErr()
+            {
+                var result = await CreateErrTask("err").MatchAsync(s => Task.FromResult($"{s}."), s => $".{s}");
+                Assert.AreEqual(".err", result);
+            }
+        }
+
+        public class SelfIsInTaskAndOnErrIsAsync : MatchAsyncTest
+        {
+            [Test]
+            public async Task AppliesOnOk_WhenResultIsOk()
+            {
+                var result = await CreateOkTask("ok").MatchAsync(s => $"{s}.", s => Task.FromResult($".{s}"));
+                Assert.AreEqual("ok.", result);
+            }
+
+            [Test]
+            public async Task AppliesOnErr_WhenResultIsErr()
+            {
+                var result = await CreateErrTask("err").MatchAsync(s => $"{s}.", s => Task.FromResult($".{s}"));
+                Assert.AreEqual(".err", result);
+            }
+        }
+
+        public class SelfIsInTaskAndBothContinuationsAreAsync : MatchAsyncTest
+        {
+            [Test]
+            public async Task AppliesOnOk_WhenResultIsOk()
+            {
+                var result = await CreateOkTask("ok").MatchAsync(s => Task.FromResult($"{s}."), s => Task.FromResult($".{s}"));
+                Assert.AreEqual("ok.", result);
+            }
+
+            [Test]
+            public async Task AppliesOnErr_WhenResultIsErr()
+            {
+                var result = await CreateErrTask("err").MatchAsync(s => Task.FromResult($"{s}.("), s => Task.FromResult($".{s}"));
+                Assert.AreEqual(".err", result);
+            }
+        }
+
+        public class OnOkIsAsync : MatchAsyncTest
+        {
+            [Test]
+            public async Task AppliesOnOk_WhenResultIsOk()
+            {
+                var result = await CreateOk("ok").MatchAsync(s => Task.FromResult($"{s}."), s => $".{s}");
+                Assert.AreEqual("ok.", result);
+            }
+
+            [Test]
+            public async Task AppliesOnErr_WhenResultIsErr()
+            {
+                var result = await CreateErr("err").MatchAsync(s => Task.FromResult($"{s}."), s => $".{s}");
+                Assert.AreEqual(".err", result);
+            }
+        }
+
+        public class OnErrIsAsync : MatchAsyncTest
+        {
+            [Test]
+            public async Task AppliesOnOk_WhenResultIsOk()
+            {
+                var result = await CreateOk("ok").MatchAsync(s => $"{s}.", s => Task.FromResult($".{s}"));
+                Assert.AreEqual("ok.", result);
+            }
+
+            [Test]
+            public async Task AppliesOnErr_WhenResultIsErr()
+            {
+                var result = await CreateErr("err").MatchAsync(s => $"{s}.", s => Task.FromResult($".{s}"));
+                Assert.AreEqual(".err", result);
+            }
+        }
+
+        public class BothContinuationsAreAsync : MatchAsyncTest
+        {
+            [Test]
+            public async Task AppliesOnOk_WhenResultIsOk()
+            {
+                var result = await CreateOk("ok").MatchAsync(s => Task.FromResult($"{s}."), s => Task.FromResult($".{s}"));
+                Assert.AreEqual("ok.", result);
+            }
+
+            [Test]
+            public async Task AppliesOnErr_WhenResultIsErr()
+            {
+                var result = await CreateErr("err").MatchAsync(s => Task.FromResult($"{s}."), s => Task.FromResult($".{s}"));
+                Assert.AreEqual(".err", result);
+            }
+        }
+    }
 }
