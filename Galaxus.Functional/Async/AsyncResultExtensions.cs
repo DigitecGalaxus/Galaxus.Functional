@@ -95,5 +95,29 @@ namespace Galaxus.Functional.Async
         {
             return await (await self).MapErrAsync(continuation);
         }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
+        public static Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TErr, TContinuationErr>(
+            this Result<TOk, TErr> self,
+            Func<TErr, Task<Result<TOk, TContinuationErr>>> continuation)
+        {
+            return self.MatchAsync(ok => Result<TOk, TContinuationErr>.FromOk(ok), continuation);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
+        public static async Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
+            this Task<Result<TOk, TContinuationErr>> self,
+            Func<TContinuationErr, Result<TOk, TContinuationErr>> continuation)
+        {
+            return (await self).OrElse(continuation);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
+        public static async Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
+            this Task<Result<TOk, TContinuationErr>> self,
+            Func<TContinuationErr, Task<Result<TOk, TContinuationErr>>> continuation)
+        {
+            return await (await self).OrElseAsync(continuation);
+        }
     }
 }

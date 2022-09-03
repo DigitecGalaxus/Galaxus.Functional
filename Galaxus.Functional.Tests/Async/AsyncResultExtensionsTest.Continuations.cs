@@ -16,14 +16,14 @@ internal partial class AsyncResultExtensionsTest
         return Task.CompletedTask;
     }
 
-    private Result<string, string> StoreValueAndReturnWrapped(string value)
+    private Result<string, string> StoreValueAndReturnOk(string value)
     {
         StoreValue(value);
 
         return Result<string, string>.FromOk(value);
     }
 
-    private Task<Result<string, string>> StoreValueAndReturnWrappedAsync(string value)
+    private Task<Result<string, string>> StoreValueAndReturnOkAsync(string value)
     {
         StoreValue(value);
 
@@ -38,5 +38,15 @@ internal partial class AsyncResultExtensionsTest
     private static Task<string> AppendPeriodAsync(string value)
     {
         return Task.FromResult(AppendPeriod(value));
+    }
+
+    private static Result<string, string> AppendPeriodAndReturnOk(string value)
+    {
+        return Result<string, string>.FromOk(AppendPeriod(value));
+    }
+
+    private static Task<Result<string, string>> AppendPeriodAndReturnOkAsync(string value)
+    {
+        return Task.FromResult(AppendPeriodAndReturnOk(value));
     }
 }

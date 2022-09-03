@@ -263,37 +263,6 @@ public class ResultTests
     }
 
     [Test]
-    public async Task OrElseAsync_PreviousResultWasSuccess_ContinuationIsApplied()
-    {
-        const string initialResult = "a";
-        const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = _ =>
-            Task.FromResult(Result<string, string>.FromErr(continuationResult));
-        var result = await Result<string, string>.FromErr(initialResult)
-            .OrElseAsync(continuation);
-
-        result.Match(
-            _ => Assert.Fail(),
-            err => Assert.AreEqual(continuationResult, err));
-    }
-
-    [Test]
-    public async Task OrElseAsync_PreviousResultWasSuccess_ContinuationIsNotApplied()
-    {
-        const string initialResult = "a";
-        const string continuationResult = "b";
-        Func<string, Task<Result<string, string>>> continuation = _ =>
-            Task.FromResult(Result<string, string>.FromErr(continuationResult));
-
-        var result = await Result<string, string>.FromOk(initialResult)
-            .OrElseAsync(continuation);
-
-        result.Match(
-            ok => Assert.AreEqual(initialResult, ok),
-            _ => Assert.Fail());
-    }
-
-    [Test]
     public void Result_UnwrapOr()
     {
         var ok = "hello".ToOk<string, int>();

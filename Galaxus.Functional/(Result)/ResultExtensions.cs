@@ -204,32 +204,6 @@ namespace Galaxus.Functional
 
         #endregion
 
-        #region Or
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
-        public static async Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
-            this Task<Result<TOk, TContinuationErr>> self,
-            Func<TContinuationErr, Task<Result<TOk, TContinuationErr>>> continuation)
-        {
-            return await (await self).OrElseAsync(continuation);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.OrElse{TContinuationErr}"/>
-        public static Task<Result<TOk, TContinuationErr>> OrElseAsync<TOk, TContinuationErr>(
-            this Task<Result<TOk, TContinuationErr>> self,
-            Func<TContinuationErr, Result<TOk, TContinuationErr>> continuation)
-        {
-            return self.OrElseAsync(err => Task.FromResult(continuation(err)));
-        }
-
-        #endregion
-
         #region UnwrapAsync
 
         /// <summary>
