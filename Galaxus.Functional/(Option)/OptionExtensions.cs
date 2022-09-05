@@ -10,18 +10,6 @@ namespace Galaxus.Functional
     /// </summary>
     public static class OptionExtensions
     {
-        #region C# type system compatibility
-
-        /// <summary>
-        ///     Transforms an option of a value type into a nullable of the same value type.
-        /// </summary>
-        public static T? ToNullable<T>(this Option<T> self) where T : struct
-        {
-            return self.Match(v => v, () => default(T?));
-        }
-
-        #endregion
-
         #region Static Map
 
         /// <summary>
@@ -243,13 +231,25 @@ namespace Galaxus.Functional
     }
 
     /// <summary>
-    ///     Additional extensions for the option type, providing some quality of life-shorthands.
+    ///     Value type extensions for the option type.
     /// </summary>
-    public static class OptionExtensions2
+    public static class ValueTypeOptionExtensions
     {
-        // this class is required because some extension methods are considered ambiguous if they would be placed in the same class.
-        // such as when only the generic constraints differ.
 
+        /// <summary>
+        ///     Transforms an option of a value type into a nullable of the same value type.
+        /// </summary>
+        public static T? ToNullable<T>(this Option<T> self) where T : struct
+        {
+            return self.Match(v => v, () => default(T?));
+        }
+    }
+
+    /// <summary>
+    ///     Reference type extensions for the option type.
+    /// </summary>
+    public static class ReferenceTypeOptionExtensions
+    {
         /// <summary>
         ///     Transforms an option of a reference type into a nullable of the same reference type.
         /// </summary>
