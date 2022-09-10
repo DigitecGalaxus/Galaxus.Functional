@@ -127,53 +127,6 @@ namespace Galaxus.Functional
         #region UnwrapAsync
 
         /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap()"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap()"/>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self)
-        {
-            return (await self).Unwrap();
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(string)"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(string)"/>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, string error)
-        {
-            return (await self).Unwrap(error);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TErr, string> error)
-        {
-            return (await self).Unwrap(error);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Unwrap(Func{TErr, string})"/>
-        public static async Task<TOk> UnwrapAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TErr, Task<string>> error)
-        {
-            var res = await self;
-            if (res.IsErr)
-            {
-                if (error is null)
-                {
-                    throw new ArgumentNullException(nameof(error));
-                }
-
-                throw new TriedToUnwrapErrException(await error(res.Err.Unwrap()));
-            }
-
-            return res.Unwrap();
-        }
-
-        /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOr"/>
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>

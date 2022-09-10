@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Galaxus.Functional.Async;
 
 namespace Galaxus.Functional.Tests.ResultExtensions;
 
