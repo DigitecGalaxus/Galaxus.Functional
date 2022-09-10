@@ -231,7 +231,7 @@ namespace Galaxus.Functional
         /// <param name="value">The value to check against.</param>
         public bool Contains(TOk value)
         {
-            return Match(ok => ok.Equals(value), err => false);
+            return Match(ok => ok.Equals(value), _ => false);
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace Galaxus.Functional
         /// <param name="value">The value to check against.</param>
         public bool ContainsErr(TErr value)
         {
-            return Match(ok => false, err => err.Equals(value));
+            return Match(_ => false, err => err.Equals(value));
         }
 
         #endregion

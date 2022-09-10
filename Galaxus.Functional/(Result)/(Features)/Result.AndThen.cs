@@ -13,7 +13,7 @@ namespace Galaxus.Functional
         public Result<TNewOk, TErr> And<TNewOk>(Result<TNewOk, TErr> result)
         {
             return Match(
-                ok =>
+                _ =>
                 {
                     if (result is null)
                     {
