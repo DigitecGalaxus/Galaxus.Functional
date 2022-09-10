@@ -238,5 +238,30 @@ namespace Galaxus.Functional.Async
                 onOk: ok => ok,
                 onErr: async err => throw new TriedToUnwrapErrException(await error(err)));
         }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
+        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, TOk fallback)
+        {
+            return (await self).UnwrapOr(fallback);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
+        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Task<TOk> fallback)
+        {
+            return (await self).UnwrapOr(await fallback);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrElse"/>
+        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TOk> fallback)
+        {
+            return (await self).UnwrapOrElse(fallback);
+        }
+
+        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrElse"/>
+        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<Task<TOk>> fallback)
+        {
+            fallback ??= () => throw new ArgumentNullException(nameof(fallback));
+            return await self.MatchAsync(onOk: ok => ok, onErr: async _ => await fallback());
+        }
     }
 }

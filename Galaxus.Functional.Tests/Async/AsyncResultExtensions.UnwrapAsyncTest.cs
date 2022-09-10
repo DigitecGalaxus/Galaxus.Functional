@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using NUnit.Framework;
 using Galaxus.Functional.Async;
+using NUnit.Framework;
 using static Galaxus.Functional.Tests.Async.ResultFactory;
 
 namespace Galaxus.Functional.Tests.Async;
@@ -16,6 +16,7 @@ internal class UnwrapAsyncTest
             var value = await CreateOkTask("ok").UnwrapAsync();
             Assert.AreEqual("ok", value);
         }
+
         [Test]
         public async Task ThrowsException_WhenSelfIsErr()
         {
@@ -31,6 +32,7 @@ internal class UnwrapAsyncTest
             var value = await CreateOkTask("ok").UnwrapAsync("it failed");
             Assert.AreEqual("ok", value);
         }
+
         [Test]
         public async Task ThrowsException_WhenSelfIsErr()
         {
@@ -47,6 +49,7 @@ internal class UnwrapAsyncTest
             var value = await CreateOkTask("ok").UnwrapAsync(x => x + " failed");
             Assert.AreEqual("ok", value);
         }
+
         [Test]
         public async Task ThrowsException_WhenSelfIsErr()
         {
@@ -63,6 +66,7 @@ internal class UnwrapAsyncTest
             var value = await CreateOkTask("ok").UnwrapAsync(async x => x + " failed");
             Assert.AreEqual("ok", value);
         }
+
         [Test]
         public async Task ThrowsException_WhenSelfIsErr()
         {

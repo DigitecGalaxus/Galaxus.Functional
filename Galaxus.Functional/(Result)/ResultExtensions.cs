@@ -127,53 +127,6 @@ namespace Galaxus.Functional
         #region UnwrapAsync
 
         /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOr"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
-        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, TOk fallback)
-        {
-            return (await self).UnwrapOr(fallback);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOr"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr"/>
-        public static async Task<TOk> UnwrapOrAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Task<TOk> fallback)
-        {
-            return (await self).UnwrapOr(await fallback);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrElse"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrElse"/>
-        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TOk> fallback)
-        {
-            return (await self).UnwrapOrElse(fallback);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrElse"/>
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrElse"/>
-        public static async Task<TOk> UnwrapOrElseAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<Task<TOk>> fallback)
-        {
-            var res = await self;
-            if (res.IsOk)
-            {
-                return res.Unwrap();
-            }
-
-            if (fallback is null)
-            {
-                throw new ArgumentNullException(nameof(fallback));
-            }
-
-            return await fallback();
-        }
-
-        /// <summary>
         ///     Async overload for <see cref="Result{TOk,TErr}.UnwrapOrDefault"/>
         /// </summary>
         /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOrDefault"/>
