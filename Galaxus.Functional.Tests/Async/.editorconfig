@@ -1,0 +1,4 @@
+[*.cs]
+# Allow 'async' keyword on functions without an 'await' in then
+# This allows supplying Task-returning functions to all extension methods under test way easier and more concise
+dotnet_diagnostic.CS1998.severity = none
