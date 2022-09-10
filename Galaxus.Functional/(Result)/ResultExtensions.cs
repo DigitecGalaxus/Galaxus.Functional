@@ -124,38 +124,6 @@ namespace Galaxus.Functional
 
         #endregion
 
-        #region Match
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>, producing another result.
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
-        public static async Task<Result<TOkResult, TErrResult>> MatchResultAsync<TOk, TErr, TOkResult, TErrResult>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, Task<TOkResult>> onOk,
-            Func<TErr, Task<TErrResult>> onErr)
-        {
-            return await (await self).Match(
-                async ok => Result<TOkResult, TErrResult>.FromOk(await onOk(ok)),
-                async err => Result<TOkResult, TErrResult>.FromErr(await onErr(err)));
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Result{TOk,TErr}.Match"/>, producing another result.
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match"/>
-        public static async Task<Result<TOkResult, TErrResult>> MatchResultAsync<TOk, TErr, TOkResult, TErrResult>(
-            this Task<Result<TOk, TErr>> self,
-            Func<TOk, Task<Result<TOkResult, TErrResult>>> onOk,
-            Func<TErr, TErrResult> onErr)
-        {
-            return await (await self).Match(
-                async ok => await onOk(ok),
-                err => Task.FromResult(Result<TOkResult, TErrResult>.FromErr(onErr(err))));
-        }
-
-        #endregion
-
         #region UnwrapAsync
 
         /// <summary>
