@@ -7,7 +7,7 @@ namespace Galaxus.Functional.Tests.Async.Either;
 [TestFixture]
 internal class Either2MatchAsyncTest
 {
-    public class BothContinuationsAreAsync : Either2MatchAsyncTest
+    public sealed class BothContinuationsAreAsync : Either2MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -24,7 +24,7 @@ internal class Either2MatchAsyncTest
         }
     }
 
-    public class OnAIsAsync : Either2MatchAsyncTest
+    public sealed class OnAIsAsync : Either2MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -41,7 +41,7 @@ internal class Either2MatchAsyncTest
         }
     }
 
-    public class OnBIsAsync : Either2MatchAsyncTest
+    public sealed class OnBIsAsync : Either2MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()

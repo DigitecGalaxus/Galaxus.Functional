@@ -9,7 +9,7 @@ namespace Galaxus.Functional.Tests.Async.Result;
 [TestFixture]
 internal class OrElseAsyncTest
 {
-    public class ContinuationIsAsync : OrElseAsyncTest
+    public sealed class ContinuationIsAsync : OrElseAsyncTest
     {
         [Test]
         public async Task ContinuationIsApplied_WhenSelfIsErr()
@@ -26,7 +26,7 @@ internal class OrElseAsyncTest
         }
     }
 
-    public class SelfIsInTask : OrElseAsyncTest
+    public sealed class SelfIsInTask : OrElseAsyncTest
     {
         [Test]
         public async Task ContinuationIsApplied_WhenSelfIsErr()
@@ -44,7 +44,7 @@ internal class OrElseAsyncTest
         }
     }
 
-    public class SelfIsInTaskAndContinuationIsAsync : OrElseAsyncTest
+    public sealed class SelfIsInTaskAndContinuationIsAsync : OrElseAsyncTest
     {
         [Test]
         public async Task ContinuationIsApplied_WhenSelfIsErr()

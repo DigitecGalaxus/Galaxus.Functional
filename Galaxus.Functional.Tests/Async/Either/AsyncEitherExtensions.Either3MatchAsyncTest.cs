@@ -7,7 +7,7 @@ namespace Galaxus.Functional.Tests.Async.Either;
 [TestFixture]
 internal class Either3MatchAsyncTest
 {
-    public class AllContinuationsAreAsync : Either3MatchAsyncTest
+    public sealed class AllContinuationsAreAsync : Either3MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -31,7 +31,7 @@ internal class Either3MatchAsyncTest
         }
     }
 
-    public class OnAAndOnBAreAsync : Either3MatchAsyncTest
+    public sealed class OnAAndOnBAreAsync : Either3MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -55,7 +55,7 @@ internal class Either3MatchAsyncTest
         }
     }
 
-    public class OnAAndOnCAreAsync : Either3MatchAsyncTest
+    public sealed class OnAAndOnCAreAsync : Either3MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -79,7 +79,7 @@ internal class Either3MatchAsyncTest
         }
     }
 
-    public class OnBAndOnCAreAsync : Either3MatchAsyncTest
+    public sealed class OnBAndOnCAreAsync : Either3MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -103,7 +103,7 @@ internal class Either3MatchAsyncTest
         }
     }
 
-    public class OnAIsAsync : Either3MatchAsyncTest
+    public sealed class OnAIsAsync : Either3MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -127,7 +127,7 @@ internal class Either3MatchAsyncTest
         }
     }
 
-    public class OnBIsAsync : Either3MatchAsyncTest
+    public sealed class OnBIsAsync : Either3MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()
@@ -151,7 +151,7 @@ internal class Either3MatchAsyncTest
         }
     }
 
-    public class OnCIsAsync : Either3MatchAsyncTest
+    public sealed class OnCIsAsync : Either3MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnA_WhenSelfIsA()

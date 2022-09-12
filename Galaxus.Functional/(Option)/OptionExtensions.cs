@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -139,19 +138,6 @@ namespace Galaxus.Functional
         public static Option<T> ToOption<T>(this T? self) where T : struct
         {
             return self?.ToOption() ?? Option<T>.None;
-        }
-
-        #endregion
-
-        #region UnwrapAsync
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.UnwrapOrDefault"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.UnwrapOrDefault"/>
-        public static async Task<T> UnwrapOrDefaultAsync<T>(this Task<Option<T>> self)
-        {
-            return (await self).UnwrapOrDefault();
         }
 
         #endregion

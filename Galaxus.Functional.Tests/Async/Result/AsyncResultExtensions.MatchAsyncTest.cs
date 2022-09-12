@@ -8,7 +8,7 @@ namespace Galaxus.Functional.Tests.Async.Result;
 [TestFixture]
 internal class MatchAsyncTest
 {
-    public class SelfIsInTask : MatchAsyncTest
+    public sealed class SelfIsInTask : MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnOk_WhenResultIsOk()
@@ -25,7 +25,7 @@ internal class MatchAsyncTest
         }
     }
 
-    public class SelfIsInTaskAndOnOkIsAsync : MatchAsyncTest
+    public sealed class SelfIsInTaskAndOnOkIsAsync : MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnOk_WhenResultIsOk()
@@ -42,7 +42,7 @@ internal class MatchAsyncTest
         }
     }
 
-    public class SelfIsInTaskAndOnErrIsAsync : MatchAsyncTest
+    public sealed class SelfIsInTaskAndOnErrIsAsync : MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnOk_WhenResultIsOk()
@@ -59,7 +59,7 @@ internal class MatchAsyncTest
         }
     }
 
-    public class SelfIsInTaskAndBothContinuationsAreAsync : MatchAsyncTest
+    public sealed class SelfIsInTaskAndBothContinuationsAreAsync : MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnOk_WhenResultIsOk()
@@ -76,7 +76,7 @@ internal class MatchAsyncTest
         }
     }
 
-    public class OnOkIsAsync : MatchAsyncTest
+    public sealed class OnOkIsAsync : MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnOk_WhenResultIsOk()
@@ -93,7 +93,7 @@ internal class MatchAsyncTest
         }
     }
 
-    public class OnErrIsAsync : MatchAsyncTest
+    public sealed class OnErrIsAsync : MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnOk_WhenResultIsOk()
@@ -110,7 +110,7 @@ internal class MatchAsyncTest
         }
     }
 
-    public class BothContinuationsAreAsync : MatchAsyncTest
+    public sealed class BothContinuationsAreAsync : MatchAsyncTest
     {
         [Test]
         public async Task AppliesOnOk_WhenResultIsOk()

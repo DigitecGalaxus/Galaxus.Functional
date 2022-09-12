@@ -1,4 +1,4 @@
 [*.cs]
-# Allow 'async' keyword on functions without an 'await' in then
-# This allows supplying Task-returning functions to all extension methods under test way easier and more concise
+# Allow 'async' keyword on functions without an 'await' in them
+# Makes it easier to return a Task from a lambda for the async extension-tests
 dotnet_diagnostic.CS1998.severity = none

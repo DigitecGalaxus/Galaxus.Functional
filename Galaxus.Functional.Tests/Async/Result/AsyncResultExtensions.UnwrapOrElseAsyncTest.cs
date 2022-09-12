@@ -8,7 +8,7 @@ namespace Galaxus.Functional.Tests.Async.Result;
 [TestFixture]
 internal class UnwrapOrElseAsyncTest
 {
-    public class SelfIsInTask : UnwrapOrElseAsyncTest
+    public sealed class SelfIsInTask : UnwrapOrElseAsyncTest
     {
         [Test]
         public async Task ReturnsOkValue_WhenSelfIsOk()
@@ -25,7 +25,7 @@ internal class UnwrapOrElseAsyncTest
         }
     }
 
-    public class SelfAndFallbackAreInTask : UnwrapOrElseAsyncTest
+    public sealed class SelfAndFallbackAreInTask : UnwrapOrElseAsyncTest
     {
         [Test]
         public async Task ReturnsOkValue_WhenSelfIsOk()

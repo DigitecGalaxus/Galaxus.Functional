@@ -8,7 +8,7 @@ namespace Galaxus.Functional.Tests.Async.Result;
 [TestFixture]
 internal class UnwrapAsyncTest
 {
-    public class NoArgument : UnwrapAsyncTest
+    public sealed class NoArgument : UnwrapAsyncTest
     {
         [Test]
         public async Task ReturnsOkValue_WhenSelfIsOk()
@@ -24,7 +24,7 @@ internal class UnwrapAsyncTest
         }
     }
 
-    public class StringArgument : UnwrapAsyncTest
+    public sealed class StringArgument : UnwrapAsyncTest
     {
         [Test]
         public async Task ReturnsOkValue_WhenSelfIsOk()
@@ -41,7 +41,7 @@ internal class UnwrapAsyncTest
         }
     }
 
-    public class FunctionArgument : UnwrapAsyncTest
+    public sealed class FunctionArgument : UnwrapAsyncTest
     {
         [Test]
         public async Task ReturnsOkValue_WhenSelfIsOk()
@@ -58,7 +58,7 @@ internal class UnwrapAsyncTest
         }
     }
 
-    public class AsyncFunctionArgument : UnwrapAsyncTest
+    public sealed class AsyncFunctionArgument : UnwrapAsyncTest
     {
         [Test]
         public async Task ReturnsOkValue_WhenSelfIsOk()
