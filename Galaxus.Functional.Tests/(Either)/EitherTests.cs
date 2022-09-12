@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Galaxus.Functional.Tests;
@@ -87,87 +86,6 @@ public class EitherTests
         Assert.IsFalse(someC.IsA);
         Assert.IsFalse(someC.IsB);
         Assert.IsTrue(someC.IsC);
-    }
-
-    [Test]
-    public async Task Either2MatchAsyncForAReturnsA()
-    {
-        Func<string, Task<string>> continuationA = async s => await Task.FromResult(s);
-        Func<bool, Task<string>> continuationB = async _ => await Task.FromResult("B");
-
-        var someA = new Either<string, bool>("A");
-
-        var result = await someA.MatchAsync(
-            async a => await continuationA(a),
-            async b => await continuationB(b));
-
-        Assert.That(result, Is.EqualTo("A"));
-    }
-
-    [Test]
-    public async Task Either2MatchAsyncForBReturnsB()
-    {
-        Func<bool, Task<string>> continuationA = async _ => await Task.FromResult("A");
-        Func<string, Task<string>> continuationB = async s => await Task.FromResult(s);
-
-        var someB = new Either<bool, string>("B");
-
-        var result = await someB.MatchAsync(
-            async a => await continuationA(a),
-            async b => await continuationB(b));
-
-        Assert.That(result, Is.EqualTo("B"));
-    }
-
-    [Test]
-    public async Task Either3MatchAsyncForAReturnsA()
-    {
-        Func<string, Task<string>> continuationA = async s => await Task.FromResult(s);
-        Func<bool, Task<string>> continuationB = async _ => await Task.FromResult("B");
-        Func<int, Task<string>> continuationC = async _ => await Task.FromResult("C");
-
-        var someA = new Either<string, bool, int>("A");
-
-        var result = await someA.MatchAsync(
-            async a => await continuationA(a),
-            async b => await continuationB(b),
-            async c => await continuationC(c));
-
-        Assert.That(result, Is.EqualTo("A"));
-    }
-
-    [Test]
-    public async Task Either3MatchAsyncForBReturnsB()
-    {
-        Func<bool, Task<string>> continuationA = async _ => await Task.FromResult("A");
-        Func<string, Task<string>> continuationB = async s => await Task.FromResult(s);
-        Func<int, Task<string>> continuationC = async _ => await Task.FromResult("C");
-
-        var someB = new Either<bool, string, int>("B");
-
-        var result = await someB.MatchAsync(
-            async a => await continuationA(a),
-            async b => await continuationB(b),
-            async c => await continuationC(c));
-
-        Assert.That(result, Is.EqualTo("B"));
-    }
-
-    [Test]
-    public async Task Either3MatchAsyncForCReturnsC()
-    {
-        Func<bool, Task<string>> continuationA = async _ => await Task.FromResult("A");
-        Func<int, Task<string>> continuationB = async _ => await Task.FromResult("B");
-        Func<string, Task<string>> continuationC = async s => await Task.FromResult(s);
-
-        var someC = new Either<bool, int, string>("C");
-
-        var result = await someC.MatchAsync(
-            async a => await continuationA(a),
-            async b => await continuationB(b),
-            async c => await continuationC(c));
-
-        Assert.That(result, Is.EqualTo("C"));
     }
 
     [Test]
