@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Galaxus.Functional.Async;
 using NUnit.Framework;
-using static Galaxus.Functional.Tests.Async.ResultFactory;
+using static Galaxus.Functional.Tests.Async.Result.ResultFactory;
 
-namespace Galaxus.Functional.Tests.Async;
+namespace Galaxus.Functional.Tests.Async.Result;
 
 [TestFixture]
 internal class MatchAsyncTest

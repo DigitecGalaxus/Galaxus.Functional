@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Galaxus.Functional.Async;
 using NUnit.Framework;
-using static Galaxus.Functional.Tests.Async.ResultAssert;
-using static Galaxus.Functional.Tests.Async.ResultFactory;
+using static Galaxus.Functional.Tests.Async.Result.ResultAssert;
+using static Galaxus.Functional.Tests.Async.Result.ResultFactory;
 
-namespace Galaxus.Functional.Tests.Async;
+namespace Galaxus.Functional.Tests.Async.Result;
 
 [TestFixture]
 internal class MapAsyncTest
@@ -15,14 +15,14 @@ internal class MapAsyncTest
         public async Task ContinuationIsApplied_WhenSelfIsOk()
         {
             var continuation = await CreateOk("ok").MapAsync(async x => AppendPeriod(x));
-            IsOk(continuation, "ok.");
+            IsOk("ok.", continuation);
         }
 
         [Test]
         public async Task ContinuationIsNotApplied_WhenSelfIsErr()
         {
             var continuation = await CreateErr("err").MapAsync(async x => AppendPeriod(x));
-            IsErr(continuation, "err");
+            IsErr("err", continuation);
         }
     }
 
@@ -32,14 +32,14 @@ internal class MapAsyncTest
         public async Task ContinuationIsApplied_WhenAwaitedSelfIsOk()
         {
             var continuation = await CreateOkTask("ok").MapAsync(AppendPeriod);
-            IsOk(continuation, "ok.");
+            IsOk("ok.", continuation);
         }
 
         [Test]
         public async Task ContinuationIsNotApplied_WhenAwaitedSelfIsErr()
         {
             var continuation = await CreateErrTask("err").MapAsync(AppendPeriod);
-            IsErr(continuation, "err");
+            IsErr("err", continuation);
         }
     }
 
@@ -49,14 +49,14 @@ internal class MapAsyncTest
         public async Task ContinuationIsApplied_WhenAwaitedSelfIsOk()
         {
             var continuation = await CreateOkTask("ok").MapAsync(async x => AppendPeriod(x));
-            IsOk(continuation, "ok.");
+            IsOk("ok.", continuation);
         }
 
         [Test]
         public async Task ContinuationIsNotApplied_WhenAwaitedSelfIsErr()
         {
             var continuation = await CreateErrTask("err").MapAsync(async x => AppendPeriod(x));
-            IsErr(continuation, "err");
+            IsErr("err", continuation);
         }
     }
 

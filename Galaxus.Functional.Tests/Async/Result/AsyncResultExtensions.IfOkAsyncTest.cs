@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Galaxus.Functional.Async;
 using NUnit.Framework;
-using static Galaxus.Functional.Tests.Async.ResultFactory;
+using static Galaxus.Functional.Tests.Async.Result.ResultFactory;
 
-namespace Galaxus.Functional.Tests.Async;
+namespace Galaxus.Functional.Tests.Async.Result;
 
 [TestFixture]
 internal sealed class IfOkAsyncTest
@@ -13,7 +13,7 @@ internal sealed class IfOkAsyncTest
     {
         string capturedValue = null;
         await CreateOk("ok").IfOkAsync(async x => capturedValue = x);
-        Assert.That(capturedValue, Is.EqualTo("ok"));
+        Assert.AreEqual("ok", capturedValue);
     }
 
     [Test]
@@ -21,6 +21,6 @@ internal sealed class IfOkAsyncTest
     {
         string capturedValue = null;
         await CreateErr("err").IfOkAsync(async x => capturedValue = x);
-        Assert.That(capturedValue, Is.Null);
+        Assert.IsNull(capturedValue);
     }
 }
