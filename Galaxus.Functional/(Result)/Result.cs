@@ -212,15 +212,6 @@ namespace Galaxus.Functional
             return fallback();
         }
 
-        /// <summary>
-        ///     Unwraps <b>self</b> and returns <b>Ok</b> if <b>self</b> contains <b>Ok</b>. Returns the default value of
-        ///     <typeparamref name="TOk" /> otherwise.
-        /// </summary>
-        public TOk UnwrapOrDefault()
-        {
-            return IsOk ? _ok : default;
-        }
-
         #endregion
 
         #region Contains
