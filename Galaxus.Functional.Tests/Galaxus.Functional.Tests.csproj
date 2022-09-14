@@ -15,10 +15,4 @@
         <ProjectReference Include="..\Galaxus.Functional\Galaxus.Functional.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <EditorConfigFiles Include="Either\Async\.editorconfig" />
-      <EditorConfigFiles Include="Option\Async\.editorconfig" />
-      <EditorConfigFiles Include="Result\Async\.editorconfig" />
-    </ItemGroup>
-
 </Project>
