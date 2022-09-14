@@ -6,15 +6,26 @@ namespace Galaxus.Functional.Tests.OptionExtensions;
 public class ToNullableTests
 {
     [Test]
-    public void ToNullable_NonNull_ReturnsOriginalValue()
+    public void SomeValueToNullable_ReturnsValue()
     {
-        Assert.AreEqual(true, true.ToOption().ToNullable());
-        Assert.AreEqual(false, false.ToOption().ToNullable());
+        Assert.AreEqual(42, 42.ToOption().ToNullable());
     }
 
     [Test]
-    public void ToNullable_Null_ReturnsDefaultValue()
+    public void NoneValueToNullable_ReturnsNull()
     {
-        Assert.AreEqual(default(bool?), Option<bool>.None.ToNullable());
+        Assert.AreEqual(default(int?), Option<int>.None.ToNullable());
+    }
+
+    [Test]
+    public void SomeReferenceToNullable_ReturnsNotNullReference()
+    {
+        Assert.AreEqual("hello", "hello".ToOption().ToNullable());
+    }
+
+    [Test]
+    public void NoneReferenceToNullable_ReturnsNullReference()
+    {
+        Assert.AreEqual(null, Option<string>.None.ToNullable());
     }
 }
