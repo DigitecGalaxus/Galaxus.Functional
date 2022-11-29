@@ -13,6 +13,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Galaxus.Functional\Galaxus.Functional.csproj"/>
+        <ProjectReference Include="..\Galaxus.Functional.NUnitExtension\Galaxus.Functional.NUnitExtension.csproj"/>
     </ItemGroup>
 
 </Project>
