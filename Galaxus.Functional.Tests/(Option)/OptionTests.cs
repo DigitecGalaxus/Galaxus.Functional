@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Galaxus.Functional.Tests;
@@ -82,6 +83,51 @@ public class OptionTests
                 });
 
             Assert.AreEqual(666, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            some.IfSome(_ => called = true);
+            Assert.IsTrue(called);
+        }
+    }
+
+    [Test]
+    public async Task Option_MatchAsyncSome_Works()
+    {
+        var some = "hello".ToOption();
+
+        {
+            var called = false;
+            await some.MatchAsync(async _ =>
+            {
+                called = true;
+                await Task.CompletedTask;
+            }, async () =>
+            {
+                Assert.Fail();
+                await Task.CompletedTask;
+            });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+
+            var number = await some.MatchAsync(async _ =>
+                {
+                    called = true;
+                    await Task.CompletedTask;
+                    return 42;
+                },
+                () =>
+                {
+                    Assert.Fail();
+                    throw new InvalidOperationException();
+                });
+
+            Assert.AreEqual(42, number);
             Assert.IsTrue(called);
         }
 
