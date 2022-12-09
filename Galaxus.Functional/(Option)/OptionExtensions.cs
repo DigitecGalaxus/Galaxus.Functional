@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -127,104 +126,6 @@ namespace Galaxus.Functional
         public static Option<T> ToOption<T>(this T? self) where T : struct
         {
             return self?.ToOption() ?? Option<T>.None;
-        }
-
-        #endregion
-
-        #region UnwrapAsync
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.Unwrap()"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.Unwrap()"/>
-        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self)
-        {
-            return (await self).Unwrap();
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.Unwrap(string)"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.Unwrap(string)"/>
-        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, string error)
-        {
-            return (await self).Unwrap(error);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.Unwrap(Func{string})"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.Unwrap(Func{string})"/>
-        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<string> error)
-        {
-            return (await self).Unwrap(error);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.Unwrap(string)"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.Unwrap(string)"/>
-        public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self, Func<Task<string>> error)
-        {
-            var res = await self;
-            if (res.IsNone)
-            {
-                if (error is null)
-                {
-                    throw new ArgumentNullException(nameof(error));
-                }
-
-                throw new TriedToUnwrapNoneException(await error());
-            }
-
-            return res.Unwrap();
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.UnwrapOr"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.UnwrapOr"/>
-        public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, T fallback)
-        {
-            return (await self).UnwrapOr(fallback);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.UnwrapOr"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.UnwrapOr"/>
-        public static async Task<T> UnwrapOrAsync<T>(this Task<Option<T>> self, Task<T> fallback)
-        {
-            return (await self).UnwrapOr(await fallback);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.UnwrapOrElse"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.UnwrapOrElse"/>
-        public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<T> fallback)
-        {
-            return (await self).UnwrapOrElse(fallback);
-        }
-
-        /// <summary>
-        ///     Async overload for <see cref="Option{T}.UnwrapOrElse"/>
-        /// </summary>
-        /// <inheritdoc cref="Option{T}.UnwrapOrElse"/>
-        public static async Task<T> UnwrapOrElseAsync<T>(this Task<Option<T>> self, Func<Task<T>> fallback)
-        {
-            var opt = await self;
-            if (opt.IsSome)
-            {
-                return opt.Unwrap();
-            }
-
-            if (fallback is null)
-            {
-                throw new ArgumentNullException(nameof(fallback));
-            }
-
-            return await fallback();
         }
 
         #endregion

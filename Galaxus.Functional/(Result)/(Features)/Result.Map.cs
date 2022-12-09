@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -29,17 +28,6 @@ namespace Galaxus.Functional
         }
 
         /// <summary>
-        ///     Async overload for <see cref="Map{TOkTo}"/>
-        /// </summary>
-        /// <inheritdoc cref="Map{TOkTo}"/>
-        public Task<Result<TOkTo, TErr>> MapAsync<TOkTo>(Func<TOk, Task<TOkTo>> continuation)
-        {
-            return MatchAsync(
-                async ok => new Result<TOkTo, TErr>(await continuation(ok)),
-                err => err.ToErr<TOkTo, TErr>());
-        }
-
-        /// <summary>
         ///     Maps a <see cref="Result{TOk, TErr}" /> to <see cref="Result{TOk, TErrTo}" /> by applying a function to a contained
         ///     <b>Err</b> value,
         ///     leaving an <b>Ok</b> value untouched. This function can be used to compose the results of two functions.
@@ -60,18 +48,6 @@ namespace Galaxus.Functional
                     return map(err);
                 }
             );
-        }
-
-
-        /// <summary>
-        ///     Async overload for <see cref="MapErr{TErrTo}"/>
-        /// </summary>
-        /// <inheritdoc cref="MapErr{TErrTo}"/>
-        public Task<Result<TOk, TErrTo>> MapErrAsync<TErrTo>(Func<TErr, Task<TErrTo>> continuation)
-        {
-            return MatchAsync(
-                ok => ok.ToOk<TOk, TErrTo>(),
-                async err => new Result<TOk, TErrTo>(await continuation(err)));
         }
     }
 }
