@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -14,7 +13,7 @@ namespace Galaxus.Functional
         public Result<TNewOk, TErr> And<TNewOk>(Result<TNewOk, TErr> result)
         {
             return Match(
-                ok =>
+                _ =>
                 {
                     if (result is null)
                     {
@@ -64,24 +63,6 @@ namespace Galaxus.Functional
         {
             IfOk(continuation);
             return this;
-        }
-
-        /// <summary>
-        ///     Calls <paramref name="continuation" /> if <b>self</b> contains <b>Ok</b>, otherwise returns the <b>Err</b> value
-        ///     contained in <b>self</b>.
-        ///     This function can be used for control flow based on <see cref="Result{TOk, TErr}" />s.
-        /// </summary>
-        /// <typeparam name="TContinuationOk">
-        ///     The <b>Ok</b> type of the <paramref name="continuation" />'s
-        ///     <see cref="Result{TOk, TErr}" />.
-        /// </typeparam>
-        /// <param name="continuation">The function to call if <b>self</b> contains <b>Ok</b>.</param>
-        public Task<Result<TContinuationOk, TErr>> AndThenAsync<TContinuationOk>(
-            Func<TOk, Task<Result<TContinuationOk, TErr>>> continuation)
-        {
-            return Match(
-                continuation,
-                err => Task.FromResult(err.ToErr<TContinuationOk, TErr>()));
         }
     }
 }

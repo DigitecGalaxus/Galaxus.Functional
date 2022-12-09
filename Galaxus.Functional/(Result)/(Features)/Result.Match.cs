@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -69,39 +68,6 @@ namespace Galaxus.Functional
             }
 
             return onErr(_err);
-        }
-
-        /// <summary>
-        ///     An overload for <see cref="Match" /> using async functions.
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
-        public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, Task<TResult>> onErr)
-        {
-            return await Match(
-                async ok => await onOk(ok),
-                async err => await onErr(err));
-        }
-
-        /// <summary>
-        ///     An overload for <see cref="Match" /> using async functions.
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
-        public async Task<TResult> MatchAsync<TResult>(Func<TOk, Task<TResult>> onOk, Func<TErr, TResult> onErr)
-        {
-            return await Match(
-                async ok => await onOk(ok),
-                err => Task.FromResult(onErr(err)));
-        }
-
-        /// <summary>
-        ///     An overload for <see cref="Match" /> using async functions.
-        /// </summary>
-        /// <inheritdoc cref="Result{TOk,TErr}.Match{TResult}"/>
-        public async Task<TResult> MatchAsync<TResult>(Func<TOk, TResult> onOk, Func<TErr, Task<TResult>> onErr)
-        {
-            return await Match(
-                ok => Task.FromResult(onOk(ok)),
-                async err => await onErr(err));
         }
     }
 }
