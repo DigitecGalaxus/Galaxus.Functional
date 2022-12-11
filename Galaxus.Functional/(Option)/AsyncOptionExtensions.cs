@@ -102,6 +102,13 @@ public static class AsyncOptionExtensions
     }
 
     /// <inheritdoc cref="Option{T}.Match" />
+    public static async Task MatchAsync<T>(this Task<Option<T>> task, Func<T, Task> onSome, Func<Task> onNone)
+    {
+        var option = await task;
+        await option.MatchAsync(onSome, onNone);
+    }
+
+    /// <inheritdoc cref="Option{T}.Match" />
     public static async Task MatchAsync<T>(this Option<T> self, Action<T> onSome, Func<Task> onNone)
     {
         await self.MatchAsync(async t =>
@@ -112,6 +119,13 @@ public static class AsyncOptionExtensions
     }
 
     /// <inheritdoc cref="Option{T}.Match" />
+    public static async Task MatchAsync<T>(this Task<Option<T>> task, Action<T> onSome, Func<Task> onNone)
+    {
+        var option = await task;
+        await option.MatchAsync(onSome, onNone);
+    }
+
+    /// <inheritdoc cref="Option{T}.Match" />
     public static async Task MatchAsync<T>(this Option<T> self, Func<T, Task> onSome, Action onNone)
     {
         await self.MatchAsync(onSome, async () =>
@@ -119,6 +133,20 @@ public static class AsyncOptionExtensions
             onNone();
             await Task.CompletedTask;
         });
+    }
+
+    /// <inheritdoc cref="Option{T}.Match" />
+    public static async Task MatchAsync<T>(this Task<Option<T>> task, Func<T, Task> onSome, Action onNone)
+    {
+        var option = await task;
+        await option.MatchAsync(onSome, onNone);
+    }
+
+    /// <inheritdoc cref="Option{T}.Match" />
+    public static async Task MatchAsync<T>(this Task<Option<T>> task, Action<T> onSome, Action onNone)
+    {
+        var option = await task;
+        option.Match(onSome, onNone);
     }
 
     /// <inheritdoc cref="Option{T}.Match{U}" />
@@ -143,6 +171,13 @@ public static class AsyncOptionExtensions
     }
 
     /// <inheritdoc cref="Option{T}.Match{U}" />
+    public static async Task<U> MatchAsync<T, U>(this Task<Option<T>> self, Func<T, Task<U>> onSome, Func<Task<U>> onNone)
+    {
+        var option = await self;
+        return await option.MatchAsync(onSome, onNone);
+    }
+
+    /// <inheritdoc cref="Option{T}.Match{U}" />
     public static async Task<U> MatchAsync<T, U>(this Option<T> self, Func<T, U> onSome, Func<Task<U>> onNone)
     {
         return await self.MatchAsync(async t =>
@@ -153,6 +188,13 @@ public static class AsyncOptionExtensions
     }
 
     /// <inheritdoc cref="Option{T}.Match{U}" />
+    public static async Task<U> MatchAsync<T, U>(this Task<Option<T>> self, Func<T, U> onSome, Func<Task<U>> onNone)
+    {
+        var option = await self;
+        return await option.MatchAsync(onSome, onNone);
+    }
+
+    /// <inheritdoc cref="Option{T}.Match{U}" />
     public static async Task<U> MatchAsync<T, U>(this Option<T> self, Func<T, Task<U>> onSome, Func<U> onNone)
     {
         return await self.MatchAsync(onSome, async () =>
@@ -160,5 +202,19 @@ public static class AsyncOptionExtensions
             await Task.CompletedTask;
             return onNone();
         });
+    }
+
+    /// <inheritdoc cref="Option{T}.Match{U}" />
+    public static async Task<U> MatchAsync<T, U>(this Task<Option<T>> self, Func<T, Task<U>> onSome, Func<U> onNone)
+    {
+        var option = await self;
+        return await option.MatchAsync(onSome, onNone);
+    }
+
+    /// <inheritdoc cref="Option{T}.Match{U}" />
+    public static async Task<U> MatchAsync<T, U>(this Task<Option<T>> self, Func<T, U> onSome, Func<U> onNone)
+    {
+        var option = await self;
+        return option.Match(onSome, onNone);
     }
 }
