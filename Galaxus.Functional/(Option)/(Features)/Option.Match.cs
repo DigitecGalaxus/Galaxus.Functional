@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace Galaxus.Functional
 {
@@ -65,6 +64,5 @@ namespace Galaxus.Functional
 
             return onNone();
         }
-
     }
 }
