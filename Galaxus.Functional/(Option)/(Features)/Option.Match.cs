@@ -35,7 +35,6 @@ namespace Galaxus.Functional
             }
         }
 
-
         /// <summary>
         ///     Provides access to <b>self</b>'s content by calling <paramref name="onSome" /> and passing in <b>Some</b>
         ///     or calling <paramref name="onNone" />.
