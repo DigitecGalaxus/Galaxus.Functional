@@ -27,6 +27,26 @@ public class MatchAsyncTest
 
         {
             var called = false;
+            await some.MatchAsync(_ =>
+            {
+                called = true;
+            }, async () => { await Task.CompletedTask; });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            await some.MatchAsync(async _ =>
+                {
+                    called = true;
+                    await Task.CompletedTask;
+                },
+                () => { });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
 
             var number = await some.MatchAsync(async _ =>
                 {

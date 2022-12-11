@@ -101,24 +101,90 @@ public static class AsyncOptionExtensions
         }
     }
 
-    /// <inheritdoc cref="Option{T}.Match{U}" />
-    public static async Task<U> MatchAsync<T, U>(this Option<T> self, Func<T, Task<U>> onSomeAsync, Func<Task<U>> onNoneAsync)
+    /// <inheritdoc cref="Option{T}.Match" />
+    public static async Task MatchAsync<T>(this Option<T> self, Action<T> onSome, Func<Task> onNone)
     {
         if (self.IsSome)
         {
-            if (onSomeAsync is null)
+            if (onSome is null)
             {
-                throw new ArgumentNullException(nameof(onSomeAsync));
+                throw new ArgumentNullException(nameof(onSome));
             }
 
-            return await onSomeAsync(self.Unwrap());
+            onSome(self.Unwrap());
         }
-
-        if (onNoneAsync is null)
+        else
         {
-            throw new ArgumentNullException(nameof(onNoneAsync));
+            if (onNone is null)
+            {
+                throw new ArgumentNullException(nameof(onNone));
+            }
+
+            await onNone();
+        }
+    }
+
+    /// <inheritdoc cref="Option{T}.Match" />
+    public static async Task MatchAsync<T>(this Option<T> self, Func<T, Task> onSome, Action onNone)
+    {
+        if (self.IsSome)
+        {
+            if (onSome is null)
+            {
+                throw new ArgumentNullException(nameof(onSome));
+            }
+
+            await onSome(self.Unwrap());
+        }
+        else
+        {
+            if (onNone is null)
+            {
+                throw new ArgumentNullException(nameof(onNone));
+            }
+
+            onNone();
+        }
+    }
+
+    /// <inheritdoc cref="Option{T}.Match{U}" />
+    public static async Task<U> MatchAsync<T, U>(this Option<T> self, Func<T, Task<U>> onSome, Func<Task<U>> onNone)
+    {
+        if (self.IsSome)
+        {
+            if (onSome is null)
+            {
+                throw new ArgumentNullException(nameof(onSome));
+            }
+
+            return await onSome(self.Unwrap());
         }
 
-        return await onNoneAsync();
+        if (onNone is null)
+        {
+            throw new ArgumentNullException(nameof(onNone));
+        }
+
+        return await onNone();
     }
+
+    // public static async Task<U> MatchAsync<T, U>(this Option<T> self, Func<T, U> onSome, Func<Task<U>> onNone)
+    // {
+    //     if (self.IsSome)
+    //     {
+    //         if (onSome is null)
+    //         {
+    //             throw new ArgumentNullException(nameof(onSome));
+    //         }
+    //
+    //         return onSome(self.Unwrap());
+    //     }
+    //
+    //     if (onNone is null)
+    //     {
+    //         throw new ArgumentNullException(nameof(onNone));
+    //     }
+    //
+    //     return await onNone();
+    // }
 }
