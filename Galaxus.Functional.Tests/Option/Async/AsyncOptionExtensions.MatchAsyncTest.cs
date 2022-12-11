@@ -47,7 +47,6 @@ public class MatchAsyncTest
 
         {
             var called = false;
-
             var number = await some.MatchAsync(async _ =>
                 {
                     called = true;
@@ -68,6 +67,20 @@ public class MatchAsyncTest
                     return 42;
                 },
                 () => Task.FromResult(-1));
+
+            Assert.AreEqual(42, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await some.MatchAsync(async _ =>
+                {
+                    called = true;
+                    await Task.CompletedTask;
+                    return 42;
+                },
+                () => -1);
 
             Assert.AreEqual(42, number);
             Assert.IsTrue(called);
@@ -94,8 +107,7 @@ public class MatchAsyncTest
 
         {
             var called = false;
-
-            var number = await none.MatchAsync(async _ => throw new InvalidOperationException(),
+            var number = await none.MatchAsync(async _ => Task.FromResult(-1),
                 async () =>
                 {
                     called = true;
@@ -116,7 +128,7 @@ public class MatchAsyncTest
         Assert.ThrowsAsync<ArgumentNullException>(async () => { await Option<int>.None.MatchAsync(async _ => { await Task.CompletedTask; }, null); });
 
         Assert.ThrowsAsync<ArgumentNullException>(async () => {_ = await 0.ToOption().MatchAsync((Func<int, Task<int>>)null, () => Task.FromResult(0)); });
-        Assert.ThrowsAsync<ArgumentNullException>(async () => { _ = await Option<int>.None.MatchAsync<int, int>(Task.FromResult, null); });
+        Assert.ThrowsAsync<ArgumentNullException>(async () => { _ = await Option<int>.None.MatchAsync(Task.FromResult, (Func<Task<int>>)null); });
     }
 
 }

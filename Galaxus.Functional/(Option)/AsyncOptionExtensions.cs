@@ -151,4 +151,14 @@ public static class AsyncOptionExtensions
             return onSome(t);
         }, onNone);
     }
+
+    /// <inheritdoc cref="Option{T}.Match{U}" />
+    public static async Task<U> MatchAsync<T, U>(this Option<T> self, Func<T, Task<U>> onSome, Func<U> onNone)
+    {
+        return await self.MatchAsync(onSome, async () =>
+        {
+            await Task.CompletedTask;
+            return onNone();
+        });
+    }
 }
