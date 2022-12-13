@@ -7,7 +7,7 @@ namespace Galaxus.Functional.Tests.Option.Async;
 [TestFixture]
 public class MatchAsyncTest
 {
-  [Test]
+    [Test]
     public async Task Option_MatchAsyncSome_Works()
     {
         var some = "hello".ToOption();
@@ -224,14 +224,135 @@ public class MatchAsyncTest
     }
 
     [Test]
+    public async Task TaskOption_MatchAsyncNone_Works()
+    {
+        var noneTask = OptionFactory.CreateNoneTask();
+
+        {
+            var called = false;
+            await noneTask.MatchAsync(async _ =>
+            {
+                await Task.CompletedTask;
+            }, async () =>
+            {
+                called = true;
+                await Task.CompletedTask;
+            });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            await noneTask.MatchAsync(_ =>
+            {
+            }, async () =>
+            {
+                called = true;
+                await Task.CompletedTask;
+            });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            await noneTask.MatchAsync(async _ =>
+                {
+                    await Task.CompletedTask;
+                },
+                () =>
+                {
+                    called = true;
+                });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            await noneTask.MatchAsync(_ =>
+                {
+                },
+                () =>
+                {
+                    called = true;
+                });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await noneTask.MatchAsync(async _ =>
+                {
+                    await Task.CompletedTask;
+                    return 42;
+                },
+                () =>
+                {
+                    called = true;
+                    return Task.FromResult(-1);
+                });
+
+            Assert.AreEqual(-1, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await noneTask.MatchAsync(_ => 42,
+                () =>
+                {
+                    called = true;
+                    return Task.FromResult(-1);
+                });
+
+            Assert.AreEqual(-1, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await noneTask.MatchAsync(async _ =>
+                {
+                    await Task.CompletedTask;
+                    return 42;
+                },
+                () =>
+                {
+                    called = true;
+                    return -1;
+                });
+
+            Assert.AreEqual(-1, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await noneTask.MatchAsync(_ => 42,
+                () =>
+                {
+                    called = true;
+                    return -1;
+                });
+
+            Assert.AreEqual(-1, number);
+            Assert.IsTrue(called);
+        }
+    }
+
+    [Test]
     public void Option_MatchAsyncThrowsIfMatchArmIsNull()
     {
-        Assert.ThrowsAsync<ArgumentNullException>(async () => { await OptionFactory.CreateSome(0).MatchAsync(null, async () => { await Task.CompletedTask; }); });
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        {
+            await OptionFactory.CreateSome(0).MatchAsync(null, async () => { await Task.CompletedTask; });
+        });
 
         Assert.ThrowsAsync<ArgumentNullException>(async () => { await Option<int>.None.MatchAsync(async _ => { await Task.CompletedTask; }, null); });
 
-        Assert.ThrowsAsync<ArgumentNullException>(async () => {_ = await OptionFactory.CreateSome(0).MatchAsync((Func<int, Task<int>>)null, () => Task.FromResult(0)); });
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        {
+            _ = await OptionFactory.CreateSome(0).MatchAsync((Func<int, Task<int>>)null, () => Task.FromResult(0));
+        });
         Assert.ThrowsAsync<ArgumentNullException>(async () => { _ = await Option<int>.None.MatchAsync(Task.FromResult, (Func<Task<int>>)null); });
     }
-
 }
