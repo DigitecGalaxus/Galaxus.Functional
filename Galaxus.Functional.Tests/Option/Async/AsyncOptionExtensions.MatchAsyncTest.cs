@@ -123,11 +123,11 @@ public class MatchAsyncTest
     [Test]
     public void Option_MatchAsyncThrowsIfMatchArmIsNull()
     {
-        Assert.ThrowsAsync<ArgumentNullException>(async () => { await 0.ToOption().MatchAsync(null, async () => { await Task.CompletedTask; }); });
+        Assert.ThrowsAsync<ArgumentNullException>(async () => { await OptionFactory.CreateSome(0).MatchAsync(null, async () => { await Task.CompletedTask; }); });
 
         Assert.ThrowsAsync<ArgumentNullException>(async () => { await Option<int>.None.MatchAsync(async _ => { await Task.CompletedTask; }, null); });
 
-        Assert.ThrowsAsync<ArgumentNullException>(async () => {_ = await 0.ToOption().MatchAsync((Func<int, Task<int>>)null, () => Task.FromResult(0)); });
+        Assert.ThrowsAsync<ArgumentNullException>(async () => {_ = await OptionFactory.CreateSome(0).MatchAsync((Func<int, Task<int>>)null, () => Task.FromResult(0)); });
         Assert.ThrowsAsync<ArgumentNullException>(async () => { _ = await Option<int>.None.MatchAsync(Task.FromResult, (Func<Task<int>>)null); });
     }
 
