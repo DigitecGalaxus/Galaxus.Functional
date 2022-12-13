@@ -2,8 +2,11 @@ namespace Galaxus.Functional.NUnitExtension;
 
 public class Is : NUnit.Framework.Is
 {
-    public static NoneConstraint OptionOfNone => new NoneConstraint();
+    public static NoneConstraint None => new();
 
-    public static SomeConstraint OptionOfSome => new SomeConstraint();
-    public static ResultConstraint Result => new ResultConstraint();
+    public static SomeConstraint Some => new();
+
+    public static ResultInStateConstraint Ok => new(true);
+
+    public static ResultInStateConstraint Err => new(false);
 }

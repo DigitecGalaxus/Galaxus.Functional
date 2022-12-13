@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using NUnit.Framework.Internal;
 
 namespace Galaxus.Functional.NUnitExtension.Test
 {
@@ -7,96 +8,137 @@ namespace Galaxus.Functional.NUnitExtension.Test
     public class OptionConstraintTest
     {
         private readonly Option<int> _some = 3.ToOption();
+        private readonly Option<string> _someString = "Hello World".ToOption();
         private readonly Option<int> _none = Option<int>.None;
 
-        private const string Description = nameof(ConstraintResult.Description);
-        private const string Status = nameof(ConstraintResult.Status);
-        private const string ActualValue = nameof(ConstraintResult.ActualValue);
+        #region Is.None
 
         [Test]
-        public void OptionNone_Works()
+        public void IsNone_OnNone_Succeeds() => Assert.That(_none, Is.None);
+
+        [Test]
+        public void IsNone_OnSome_Fails() => Assert.That(Resolve(Is.None).ApplyTo(_some).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+        [Test]
+        public void IsNone_OnSome_HasMeaningFullDescription()
+            => Assert.That(Resolve(Is.None).ApplyTo(_some).Description, Is.EqualTo("an option of none"));
+
+        [Test]
+        public void IsNone_OnSome_ActualValueIsTypeOfActualValue()
         {
-            Assert.Multiple(
-                () =>
-                {
-                    Assert.That(Resolve(Is.OptionOfNone).ApplyTo(_none).Status, Is.EqualTo(ConstraintStatus.Success));
-
-                    Assert.That(
-                        Resolve(Is.OptionOfNone).ApplyTo(_some),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                            .And.Property(Description).EqualTo("option of none")
-                            .And.Property(ActualValue).EqualTo(_some.Unwrap()));
-
-                    Assert.That(
-                        Resolve(Is.OptionOfNone).ApplyTo("string"),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                            .And.Property(Description).EqualTo("an object of type Option")
-                            .And.Property(ActualValue).EqualTo(typeof(string)));
-                });
+            var butWas = GetButWas(Resolve(Is.None).ApplyTo(_some));
+            Assert.That(butWas, Is.EqualTo("3"));
         }
 
         [Test]
-        public void OptionSome_Works()
+        public void IsNone_OnDifferentType_Fails() => Assert.That(Resolve(Is.None).ApplyTo(_some).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+        [Test]
+        public void IsNone_OnDifferentType_HasMeaningFullDescription()
+            => Assert.That(Resolve(Is.None).ApplyTo(_some).Description, Is.EqualTo("an option of none"));
+
+        [Test]
+        public void IsNone_OnDifferentType_ActualValueIsTypeOfActualValue()
         {
-            Assert.Multiple(
-                () =>
-                {
-                    Assert.That(
-                        Resolve(Is.OptionOfSome).ApplyTo(_none),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                            .And.Property(Description).EqualTo("an option containing some value")
-                            .And.Property(ActualValue).EqualTo(Option<int>.None));
+            var butWas = GetButWas(Resolve(Is.None).ApplyTo("string"));
+            Assert.That(butWas, Is.EqualTo($"<{typeof(string)}>"));
+        }
 
-                    Assert.That(Resolve(Is.OptionOfSome).ApplyTo(_some).Status, Is.EqualTo(ConstraintStatus.Success));
+        #endregion
 
-                    Assert.That(
-                        Resolve(Is.OptionOfSome).ApplyTo("string"),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                            .And.Property(Description).EqualTo("an object of type Option")
-                            .And.Property(ActualValue).EqualTo(typeof(string)));
-                });
+        #region Is.Some
+
+        [Test]
+        public void IsSome_OnSome_Succeeds() => Assert.That(_some, Is.Some);
+
+        [Test]
+        public void IsSome_OnNone_Fails() => Assert.That(Resolve(Is.Some).ApplyTo(_none).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+        [Test]
+        public void IsSome_OnNone_HasMeaningFullDescription() => Assert.That(
+            Resolve(Is.Some).ApplyTo(_none).Description,
+            Is.EqualTo("an option containing some value"));
+
+        [Test]
+        public void IsSome_OnNone_ActualValueIsTypeOfActualValue()
+        {
+            var butWas = GetButWas(Resolve(Is.Some).ApplyTo(_none));
+            Assert.That(butWas, Is.EqualTo("None"));
         }
 
         [Test]
-        public void OptionSome_ChainableToFurtherExpressions()
+        public void IsSome_OnDifferentType_Fails() => Assert.That(Resolve(Is.Some).ApplyTo(_none).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+        [Test]
+        public void IsSome_OnDifferentType_HasMeaningFullDescription()
+            => Assert.That(Resolve(Is.Some).ApplyTo(_none).Description, Is.EqualTo("an option containing some value"));
+
+        [Test]
+        public void IsSome_OnDifferentType_ActualValueIsTypeOfActualValue()
         {
-            Assert.Multiple(
-                () =>
-                {
-                    Assert.That(
-                        Resolve(Is.OptionOfSome.WithValue.EqualTo(2)).ApplyTo(_none),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                            .And.Property(Description)
-                            .EqualTo("an option containing some value and it's value was expected: 2"));
-
-                    Assert.That(
-                        Resolve(Is.OptionOfSome.WithValue.EqualTo(2)).ApplyTo("string"),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                            .And.Property(Description)
-                            .EqualTo("an object of type Option and it's value was expected: 2"));
-
-                    Assert.That(
-                        Resolve(Is.OptionOfSome.WithValue.EqualTo(_some.Unwrap())).ApplyTo(_some).Status,
-                        Is.EqualTo(ConstraintStatus.Success));
-
-                    var expectationWhenDifferentToActualValue = _some.Unwrap() + 1;
-                    Assert.That(
-                        Resolve(Is.OptionOfSome.WithValue.EqualTo(expectationWhenDifferentToActualValue))
-                            .ApplyTo(_some),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                            .And.Property(ActualValue).EqualTo(_some)
-                            .And.Property(Description).EqualTo(
-                                "an option containing some value and it's value was expected: "
-                                + expectationWhenDifferentToActualValue));
-
-                    Assert.That(
-                        Resolve(Is.OptionOfSome.WithValue.GreaterThan(0)).ApplyTo(_some),
-                        Has.Property(Status).EqualTo(ConstraintStatus.Success)
-                            .And.Property(Description).EqualTo(
-                                "an option containing some value and it's value was expected: greater than 0"));
-                });
+            var butWas = GetButWas(Resolve(Is.Some).ApplyTo(3));
+            Assert.That(butWas, Is.EqualTo($"<{typeof(int)}>"));
         }
+
+        #endregion
+
+        #region Is.Some.WithValue
+
+        [Test]
+        public void IsSomeWithValue_WithMatchingValue_Succeeds() => Assert.That(_some, Is.Some.WithValue.EqualTo(3));
+
+        [Test]
+        public void IsSomeWithValue_OnNone_Fails()
+            => Assert.That(Resolve(Is.Some.WithValue.EqualTo(3)).ApplyTo(_none).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+        [Test]
+        public void IsSomeWithValue_OnNone_HasMeaningFullDescription()
+            => Assert.That(
+                Resolve(Is.Some.WithValue.EqualTo(3)).ApplyTo(_none).Description,
+                Is.EqualTo("an option containing some value and it's value to be 3"));
+
+        [Test]
+        public void IsSomeWithValue_OnNone_ActualValueIsTypeOfActualValue()
+        {
+            var butWas = GetButWas(Resolve(Is.Some.WithValue.EqualTo(3)).ApplyTo(_none));
+            Assert.That(butWas, Is.EqualTo("None"));
+        }
+
+        [Test]
+        public void IsSomeWithValue_OnDifferentType_Fails()
+            => Assert.That(Resolve(Is.Some.WithValue.EqualTo(3)).ApplyTo(_none).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+        [Test]
+        public void IsSomeWithValue_OnDifferentType_HasMeaningFullDescription()
+            => Assert.That(
+                Resolve(Is.Some.WithValue.GreaterThan(2)).ApplyTo(_none).Description,
+                Is.EqualTo("an option containing some value and it's value to be greater than 2"));
+
+        [Test]
+        public void IsSomeWithValue_OnDifferentType_ActualValueIsTypeOfActualValue()
+        {
+            var butWas = GetButWas(Resolve(Is.Some.WithValue.GreaterThan(2)).ApplyTo(true));
+            Assert.That(butWas, Is.EqualTo($"<{typeof(bool)}>"));
+        }
+
+#pragma warning disable NUnit2041 // Incompatible types for comparison constraint
+        [Test]
+        public void IsSomeWithValue_IsAndChainable() => Assert.That(_some, Is.Some.WithValue.GreaterThan(2).And.LessThan(4));
+#pragma warning restore NUnit2041
+
+        [Test]
+        public void IsSomeWithValue_IsStringConstraintChainable()
+            => Assert.That(_someString, Is.Some.WithValue.StartWith("hello").IgnoreCase.And.EndsWith("World").And.Length.GreaterThan(5));
+
+        #endregion
 
         private static IConstraint Resolve(IResolveConstraint expression) => expression.Resolve();
+
+        private static string GetButWas(ConstraintResult result)
+        {
+            var writer = new TextMessageWriter();
+            result.WriteActualValueTo(writer);
+            return writer.ToString();
+        }
     }
 }

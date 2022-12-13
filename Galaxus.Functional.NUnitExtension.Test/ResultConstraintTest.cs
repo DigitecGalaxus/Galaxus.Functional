@@ -9,219 +9,210 @@ public class ResultConstraintTest
 {
     private readonly Result<long, string> _okResult = 42L;
     private readonly Result<long, string> _errResult = "Failed";
-    private readonly Result<string, string> _okOnSameTypeResult = "ok".ToOk<string, string>();
 
     private record TestClass(int A, long B);
 
     private readonly Result<TestClass, string> _complexResult = new TestClass(1, 3).ToOk<TestClass, string>();
-    private const string Description = nameof(ConstraintResult.Description);
-    private const string Status = nameof(ConstraintResult.Status);
-    private const string ActualValue = nameof(ConstraintResult.ActualValue);
+
+
+    #region Is.OK
 
     [Test]
-    public void IsResult_Works()
+    public void IsOk_ForOkResult_Succeeds() => Assert.That(Resolve(Is.Ok).ApplyTo(_okResult).Status, Is.EqualTo(ConstraintStatus.Success));
+
+    #region Type
+
+    [Test]
+    public void IsOk_OnOtherType_Fails() => Assert.That(Resolve(Is.Ok).ApplyTo("string").Status, Is.EqualTo(ConstraintStatus.Failure));
+
+    [Test]
+    public void IsOk_OnOtherType_HasMeaningFullDescription()
+        => Assert.That(Resolve(Is.Ok).ApplyTo("string").Description, Is.EqualTo("an object of type Result"));
+
+    [Test]
+    public void IsOk_OnOtherType_ActualValueIsTypeOfActualValue()
     {
-        Assert.Multiple(
-            () =>
-            {
-                Assert.That(
-                    Resolve(Is.Result).ApplyTo(_okResult),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Success)
-                        .And.Property(Description).EqualTo("an object of type Result"));
+        var butWas = GetButWas(Resolve(Is.Ok).ApplyTo("string"));
+        Assert.That(butWas, Is.EqualTo($"<{typeof(string)}>"));
+    }
 
-                Assert.That(Resolve(Is.Result).ApplyTo(_errResult).Status, Is.EqualTo(ConstraintStatus.Success));
+    #endregion
 
-                Assert.That(
-                    Resolve(Is.Result).ApplyTo("string"),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                        .And.Property(ActualValue).EqualTo(typeof(string)));
-            });
+    #region State
+
+    [Test]
+    public void IsOk_ForErrResult_Fails() => Assert.That(Resolve(Is.Ok).ApplyTo(_errResult).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+    [Test]
+    public void IsOk_ForErrResult_HasMeaningFullDescription()
+        => Assert.That(Resolve(Is.Ok).ApplyTo(_errResult).Description, Is.EqualTo("a result in state Ok"));
+
+    [Test]
+    public void IsOk_ForErrResult_ActualValueIsReadable()
+    {
+        var butWas = GetButWas(Resolve(Is.Ok).ApplyTo(_errResult));
+        Assert.That(butWas, Is.EqualTo($"<Err: Failed>"));
+    }
+
+    #endregion
+
+    #region WithValue
+
+    [Test]
+    public void IsOkWithValue_ForMatchingValue_Succeeds()
+        => Assert.That(Resolve(Is.Ok.WithValue.EqualTo(42)).ApplyTo(_okResult).Status, Is.EqualTo(ConstraintStatus.Success));
+
+    [Test]
+    public void IsOkWithValue_WithoutMatch_Fails()
+        => Assert.That(Resolve(Is.Ok.WithValue.EqualTo(43)).ApplyTo(_okResult).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+    [Test]
+    public void IsOkWithValue_WithoutMatch_HasMeaningFullDescription()
+        => Assert.That(
+            Resolve(Is.Ok.WithValue.EqualTo(43)).ApplyTo(_okResult).Description,
+            Is.EqualTo("a result in state Ok and it's value was expected to be 43"));
+
+    [Test]
+    public void IsOkWithValue_WithoutMatch_HasReadableActualValue()
+    {
+        var butWas = GetButWas(Is.Ok.WithValue.EqualTo(43).ApplyTo(_okResult));
+        Assert.That(butWas, Is.EqualTo("<Ok: 42>"));
     }
 
     [Test]
-    public void IsResult_InStateOk_FailsForNonResultTypes()
-    {
-        Assert.Multiple(
-            () =>
-            {
-                var butWas = GetButWas(Resolve(Is.Result.InState.Ok).ApplyTo("string"));
-                Assert.That(
-                    Resolve(Is.Result.InState.Ok).ApplyTo("string"),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                        .And.Property(Description).EqualTo("an object of type Result and result in state Ok"));
-                Assert.That(butWas, Is.EqualTo($"<{typeof(string)}>"));
-            });
-    }
+    public void IsOkWithValue_IsChainableWithAnds()
+        => Assert.That(Resolve(Is.Ok.WithValue.GreaterThan(40).And.LessThan(44)).ApplyTo(_okResult).Status, Is.EqualTo(ConstraintStatus.Success));
 
     [Test]
-    public void IsResult_InStateOk_FailsForErrResult()
-    {
-        Assert.Multiple(
-            () =>
-            {
-                var butWas = GetButWas(Resolve(Is.Result.InState.Ok).ApplyTo(_errResult));
-                Assert.That(
-                    Resolve(Is.Result.InState.Ok).ApplyTo(_errResult),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                        .And.Property(ActualValue).EqualTo(_errResult)
-                        .And.Property(Description).EqualTo("an object of type Result and result in state Ok"));
-                Assert.That(butWas, Is.EqualTo($"<{_errResult}>"));
-            });
-    }
+    public void IsOkWithValue_ChainedAnd_HasMeaningfulDescription()
+        => Assert.That(
+            Resolve(Is.Ok.WithValue.GreaterThan(42).And.LessThan(44)).ApplyTo(_okResult).Description,
+            Is.EqualTo("a result in state Ok and it's value was expected to be greater than 42 and less than 44"));
 
     [Test]
-    public void IsResult_InStateOk_SucceedsForOkResult()
-    {
-        Assert.That(
-            Resolve(Is.Result.InState.Ok).ApplyTo(_okResult).Status,
+    public void IsOkWithValue_AllowsComplexValueExpression()
+        => Assert.That(
+            Resolve(Is.Ok.WithValue.Property("A").EqualTo(1).And.Property("B").EqualTo(3)).ApplyTo(_complexResult).Status,
             Is.EqualTo(ConstraintStatus.Success));
-    }
 
+    #endregion
 
-    [Test]
-    public void IsResult_InStateErr_FailsForNonResultTypes()
-    {
-        Assert.Multiple(
-            () =>
-            {
-                var butWas = GetButWas(Resolve(Is.Result.InState.Err).ApplyTo("string"));
-                Assert.That(
-                    Resolve(Is.Result.InState.Err).ApplyTo("string"),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                        .And.Property(Description).EqualTo("an object of type Result and result in state Err"));
-                Assert.That(butWas, Is.EqualTo($"<{typeof(string)}>"));
-            });
-    }
+    #endregion
+
+    #region Is.Err
 
     [Test]
-    public void IsResult_InStateErr_FailsForOkResult()
-    {
-        Assert.Multiple(
-            () =>
-            {
-                var butWas = GetButWas(Resolve(Is.Result.InState.Err).ApplyTo(_okResult));
-                Assert.That(
-                    Resolve(Is.Result.InState.Err).ApplyTo(_okResult),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                        .And.Property(ActualValue).EqualTo(_okResult)
-                        .And.Property(Description).EqualTo("an object of type Result and result in state Err"));
-                Assert.That(butWas, Is.EqualTo($"<{_okResult}>"));
-            });
-    }
+    public void IsErr_ForErrResult_Succeeds() => Assert.That(Resolve(Is.Err).ApplyTo(_errResult).Status, Is.EqualTo(ConstraintStatus.Success));
+
+    #region Type
 
     [Test]
-    public void IsResult_InStateErr_SucceedsForErrResult()
-    {
-        Assert.That(
-            Resolve(Is.Result.InState.Err).ApplyTo(_errResult).Status,
-            Is.EqualTo(ConstraintStatus.Success));
-    }
-
+    public void IsErr_OnOtherType_Fails() => Assert.That(Resolve(Is.Err).ApplyTo(3).Status, Is.EqualTo(ConstraintStatus.Failure));
 
     [Test]
-    public void IsResult_WithValue_SucceedsIfValueMatches()
-    {
-        Assert.Multiple(
-            () =>
-            {
-                Assert.That(
-                    Resolve(Is.Result.WithValue.EqualTo(_errResult.Err.Unwrap())).ApplyTo(_errResult).Status,
-                    Is.EqualTo(ConstraintStatus.Success));
-                Assert.That(
-                    Resolve(Is.Result.WithValue.EqualTo(_okResult.Ok.Unwrap())).ApplyTo(_okResult).Status,
-                    Is.EqualTo(ConstraintStatus.Success));
-                Assert.That(
-                    Resolve(Is.Result.WithValue.EqualTo("ok")).ApplyTo(_okOnSameTypeResult).Status,
-                    Is.EqualTo(ConstraintStatus.Success));
-            });
-    }
+    public void IsErr_OnOtherType_HasMeaningFullDescription()
+        => Assert.That(Resolve(Is.Err).ApplyTo(3).Description, Is.EqualTo("an object of type Result"));
 
     [Test]
-    public void IsResult_WithValue_FailsForNonResultType()
+    public void IsErr_OnOtherType_ActualValueIsTypeOfActualValue()
     {
-        Assert.Multiple(
-            () =>
-            {
-                var butWas = GetButWas(Resolve(Is.Result.WithValue.EqualTo("string")).ApplyTo("string"));
-                Assert.That(
-                    Resolve(Is.Result.WithValue.EqualTo("string")).ApplyTo("string"),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                        .And.Property(Description)
-                        .EqualTo("an object of type Result and it's value was expected to be \"string\"")
-                        .And.Property(ActualValue).EqualTo("string"));
-                Assert.That(butWas, Is.EqualTo($"<{typeof(string)}>"));
-            });
+        var butWas = GetButWas(Resolve(Is.Err).ApplyTo(3));
+        Assert.That(butWas, Is.EqualTo($"<{typeof(int)}>"));
+    }
+
+    #endregion
+
+    #region State
+
+    [Test]
+    public void IsErr_ForOkResult_Fails() => Assert.That(Resolve(Is.Err).ApplyTo(_okResult).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+    [Test]
+    public void IsErr_ForOkResult_HasMeaningFullDescription()
+        => Assert.That(Resolve(Is.Err).ApplyTo(_okResult).Description, Is.EqualTo("a result in state Err"));
+
+    [Test]
+    public void IsErr_ForOkResult_ActualValueIsReadable()
+    {
+        var butWas = GetButWas(Resolve(Is.Err).ApplyTo(_okResult));
+        Assert.That(butWas, Is.EqualTo($"<Ok: 42>"));
+    }
+
+    #endregion
+
+    #region With_Value
+
+    [Test]
+    public void IsErrWithValue_ForMatchingValue_Succeeds()
+        => Assert.That(Resolve(Is.Err.WithValue.EqualTo("Failed")).ApplyTo(_errResult).Status, Is.EqualTo(ConstraintStatus.Success));
+
+    [Test]
+    public void IsErrWithValue_WithoutMatch_Fails()
+        => Assert.That(Resolve(Is.Err.WithValue.EqualTo(43)).ApplyTo(_errResult).Status, Is.EqualTo(ConstraintStatus.Failure));
+
+    [Test]
+    public void IsErrWithValue_WithoutMatch_HasMeaningFullDescription()
+        => Assert.That(
+            Resolve(Is.Err.WithValue.EqualTo("fail")).ApplyTo(_errResult).Description,
+            Is.EqualTo("a result in state Err and it's value was expected to be \"fail\""));
+
+    [Test]
+    public void IsErrWithValue_WithoutMatch_HasReadableActualValue()
+    {
+        var butWas = GetButWas(Is.Err.WithValue.EqualTo(43).ApplyTo(_errResult));
+        Assert.That(butWas, Is.EqualTo("<Err: Failed>"));
     }
 
     [Test]
-    public void IsResult_WithValue_FailsIfValueDoesNotMatch()
-    {
-        Assert.Multiple(
-            () =>
-            {
-                Assert.That(
-                    Resolve(Is.Result.WithValue.EqualTo(42L)).ApplyTo(_errResult),
-                    Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                        .And.Property(Description)
-                        .EqualTo("an object of type Result and it's value was expected to be 42")
-                        .And.Property(ActualValue).EqualTo(_errResult));
-            });
-    }
+    public void IsErrWithValue_IsChainableWithAnds()
+        => Assert.That(Resolve(Is.Err.WithValue.StartsWith("F").And.EndsWith("d")).ApplyTo(_errResult).Status, Is.EqualTo(ConstraintStatus.Success));
 
     [Test]
-    public void IsResult_InState_WithValue_SucceedsIfAllMatch()
-    {
-        Assert.Multiple(
-            () =>
-            {
-                Assert.That(
-                    Resolve(Is.Result.InState.Ok.WithValue.EqualTo(_okResult.Ok.Unwrap()))
-                        .ApplyTo(_okResult).Status,
-                    Is.EqualTo(ConstraintStatus.Success));
-                Assert.That(
-                    Resolve(Is.Result.InState.Err.WithValue.EqualTo(_errResult.Err.Unwrap()))
-                        .ApplyTo(_errResult).Status,
-                    Is.EqualTo(ConstraintStatus.Success));
-            });
-    }
+    public void IsErrWithValue_ChainedAnd_HasMeaningfulDescription()
+        => Assert.That(
+            Resolve(Is.Err.WithValue.StartsWith("f").And.EndsWith("D").IgnoreCase).ApplyTo(_errResult).Description,
+            Is.EqualTo(
+                "a result in state Err and it's value was expected to be String starting with \"f\" and String ending with \"D\", ignoring case"));
+
+    #endregion
+
+    #endregion
+
+    #region Examples as used in tests
 
     [Test]
-    public void IsResult_InState_WithValue_FailsForNonResultType()
-    {
-        Assert.That(
-            Resolve(Is.Result.InState.Ok.WithValue.EqualTo("string")).ApplyTo("string"),
-            Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                .And.Property(Description).EqualTo(
-                    "an object of type Result and result in state Ok and it's value was expected to be \"string\""));
-    }
+    public void IsOk_ActuallyWorks() => Assert.That(_okResult, Is.Ok);
 
     [Test]
-    public void IsResult_InState_WithValue_FailsForResultInDifferentState()
-    {
-        Assert.That(
-            Resolve(Is.Result.InState.Err.WithValue.EqualTo(_okResult.Ok.Unwrap())).ApplyTo(_okResult),
-            Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                .And.Property(Description).EqualTo(
-                    $"an object of type Result and result in state Err and it's value was expected to be {_okResult.Ok.Unwrap()}"));
-    }
+    public void IsErr_ActuallyWorks() => Assert.That(_errResult, Is.Err);
 
     [Test]
-    public void IsResult_InState_WithValue_FailsForResultValueNoteMatching()
-    {
-        Assert.That(
-            Resolve(Is.Result.InState.Ok.WithValue.EqualTo('c')).ApplyTo(_okResult),
-            Has.Property(Status).EqualTo(ConstraintStatus.Failure)
-                .And.Property(Description).EqualTo(
-                    "an object of type Result and result in state Ok and it's value was expected to be 'c'"));
-    }
+    public void IsOk_WithValue_ActuallyWorks() => Assert.That(_okResult, Is.Ok.WithValue.EqualTo(42));
 
     [Test]
-    public void IsResult_InState_WithValue_AllowsComplexValueExpression()
-    {
-        Assert.That(
-            Resolve(Is.Result.InState.Ok.WithValue.Property("A").EqualTo(1).And.Property("B").EqualTo(3)).ApplyTo(_complexResult),
-            Has.Property(Status).EqualTo(ConstraintStatus.Success));
-    }
+    public void IsErr_WithValue_ActuallyWorks() => Assert.That(_errResult, Is.Err.WithValue.EqualTo("Failed"));
+
+
+    [Test]
+    public void IsOkWithValue_WithComplexValueExpression_ActuallyWorks()
+        => Assert.That(_complexResult, Is.Ok.WithValue.Property("A").EqualTo(1).And.Property("B").EqualTo(3));
+
+    [Test]
+    public void IsErrWithValue_FurtherChained_ActuallyWorks()
+        => Assert.That(_errResult, Is.Err.WithValue.EqualTo("failed").IgnoreCase);
+
+    [Test]
+    public void IsErrWithValue_AndChained_ActuallyWorks()
+        => Assert.That(_errResult, Is.Err.WithValue.StartWith("F").And.EndWith("d"));
+
+
+    [Test]
+#pragma warning disable NUnit2041 // Incompatible types for comparison constraint
+    public void IsOkWithValue_IsChainableWithAnds_ActuallyWorks()
+        => Assert.That(_okResult, Is.Ok.WithValue.GreaterThan(40).And.LessThan(44));
+#pragma warning restore NUnit2041
+
+    #endregion
 
     private static IConstraint Resolve(IResolveConstraint expression) => expression.Resolve();
 

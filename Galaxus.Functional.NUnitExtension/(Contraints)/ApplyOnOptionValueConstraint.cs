@@ -5,7 +5,7 @@ namespace Galaxus.Functional.NUnitExtension;
 public class ApplyOnOptionValueConstraint : OptionConstraint
 {
     private readonly IConstraint _onValueConstraint;
-    public override string Description => "it's value was expected: " + _onValueConstraint.Description;
+    public override string Description => "it's value to be " + _onValueConstraint.Description;
 
     public ApplyOnOptionValueConstraint(IConstraint constraint)
     {
