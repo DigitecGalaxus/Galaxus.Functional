@@ -88,6 +88,109 @@ public class MatchAsyncTest
     }
 
     [Test]
+    public async Task TaskOption_MatchAsyncSome_Works()
+    {
+        var someOptionTask = OptionFactory.CreateSomeTask("hello");
+
+        {
+            var called = false;
+            await someOptionTask.MatchAsync(async _ =>
+            {
+                called = true;
+                await Task.CompletedTask;
+            }, async () =>
+            {
+                await Task.CompletedTask;
+            });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            await someOptionTask.MatchAsync(_ =>
+            {
+                called = true;
+            }, async () => { await Task.CompletedTask; });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            await someOptionTask.MatchAsync(async _ =>
+                {
+                    called = true;
+                    await Task.CompletedTask;
+                },
+                () => { });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            await someOptionTask.MatchAsync(_ =>
+                {
+                    called = true;
+                },
+                () => { });
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await someOptionTask.MatchAsync(async _ =>
+                {
+                    called = true;
+                    await Task.CompletedTask;
+                    return 42;
+                },
+                () => Task.FromResult(-1));
+
+            Assert.AreEqual(42, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await someOptionTask.MatchAsync(_ =>
+                {
+                    called = true;
+                    return 42;
+                },
+                () => Task.FromResult(-1));
+
+            Assert.AreEqual(42, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await someOptionTask.MatchAsync(async _ =>
+                {
+                    called = true;
+                    await Task.CompletedTask;
+                    return 42;
+                },
+                () => -1);
+
+            Assert.AreEqual(42, number);
+            Assert.IsTrue(called);
+        }
+
+        {
+            var called = false;
+            var number = await someOptionTask.MatchAsync(_ =>
+                {
+                    called = true;
+                    return 42;
+                },
+                () => -1);
+
+            Assert.AreEqual(42, number);
+            Assert.IsTrue(called);
+        }
+    }
+
+    [Test]
     public async Task Option_MatchAsyncNone_Works()
     {
         var none = Option<string>.None;
