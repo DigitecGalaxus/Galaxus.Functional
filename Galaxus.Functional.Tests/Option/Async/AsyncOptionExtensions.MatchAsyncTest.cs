@@ -107,7 +107,7 @@ public class MatchAsyncTest
 
         {
             var called = false;
-            var number = await none.MatchAsync(async _ => Task.FromResult(-1),
+            var number = await none.MatchAsync(async _ => await Task.FromResult(-1),
                 async () =>
                 {
                     called = true;
