@@ -8,7 +8,6 @@ ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 	README.md = README.md
 	LICENSE = LICENSE
-	Galaxus.Functional.nuspec = Galaxus.Functional.nuspec
 	.editorconfig = .editorconfig
 EndProjectSection
 EndProject
