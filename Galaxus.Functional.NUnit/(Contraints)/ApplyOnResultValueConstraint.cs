@@ -1,6 +1,6 @@
 using NUnit.Framework.Constraints;
 
-namespace Galaxus.Functional.NUnitExtension;
+namespace Galaxus.Functional.NUnit;
 
 public class ApplyOnResultValueConstraint : Constraint
 {

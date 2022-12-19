@@ -1,6 +1,8 @@
-namespace Galaxus.Functional.NUnitExtension;
+using OriginalIs = NUnit.Framework.Is;
 
-public class Is : NUnit.Framework.Is
+namespace Galaxus.Functional.NUnit;
+
+public class Is : OriginalIs
 {
     public static NoneConstraint None => new();
 

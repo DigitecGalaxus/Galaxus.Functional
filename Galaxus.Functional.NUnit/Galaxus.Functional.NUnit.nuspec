@@ -20,8 +20,8 @@
         <file src="../LICENSE" target="LICENSE"/>
         <file src="../README.md" target="README.md"/>
         <file src="../logo.png" target="logo.png"/>
-        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnitExtension.dll" target="lib/netstandard2.0"/>
-        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnitExtension.pdb" target="lib/netstandard2.0"/>
-        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnitExtension.xml" target="lib/netstandard2.0"/>
+        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnit.dll" target="lib/netstandard2.0"/>
+        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnit.pdb" target="lib/netstandard2.0"/>
+        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnit.xml" target="lib/netstandard2.0"/>
     </files>
 </package>

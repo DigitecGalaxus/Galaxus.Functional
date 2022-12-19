@@ -2,7 +2,7 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using NUnit.Framework.Internal;
 
-namespace Galaxus.Functional.NUnitExtension.Test;
+namespace Galaxus.Functional.NUnit.Test;
 
 [TestFixture]
 public class OptionConstraintTest
