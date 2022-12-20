@@ -2,15 +2,25 @@ using NUnit.Framework.Constraints;
 
 namespace Galaxus.Functional.NUnit;
 
+/// <summary>
+/// A aonstraint that checks if an actual value is of type <see cref="Result{TOk,TErr}"/> and is in a specified State
+/// </summary>
 public class ResultInStateConstraint : Constraint
 {
     private readonly bool _isInOkState;
 
+    /// <summary>
+    /// Constructor specifying the state which state the actual value should represent
+    /// </summary>
+    /// <param name="isInOkState"><c>true</c> for <b>OK</b>-Results, <c>false</c> for <b>ERR</b>-Results</param>
     public ResultInStateConstraint(bool isInOkState)
     {
         _isInOkState = isInOkState;
     }
 
+    /// <summary>
+    /// Applies further chained constraints on the result's value
+    /// </summary>
     public ConstraintExpression WithValue
     {
         get
@@ -27,6 +37,7 @@ public class ResultInStateConstraint : Constraint
         }
     }
 
+    /// <inheritdoc />
     public override ConstraintResult ApplyTo<TActual>(TActual actual)
     {
         var actualType = actual.GetType();

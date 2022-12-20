@@ -2,10 +2,14 @@ using NUnit.Framework.Constraints;
 
 namespace Galaxus.Functional.NUnit;
 
+/// <summary>
+/// A wrapper constraint to apply an other constraint on a result's value
+/// </summary>
 public class ApplyOnResultValueConstraint : Constraint
 {
     private readonly IConstraint _onValueConstraint;
 
+    /// <inheritdoc />
     public override ConstraintResult ApplyTo<TActual>(TActual actual)
     {
         var actualType = actual.GetType();
@@ -26,8 +30,13 @@ public class ApplyOnResultValueConstraint : Constraint
         throw new ArgumentException($"The actual value must be a Result. The value passed was of type {typeof(TActual)}", nameof(actual));
     }
 
+    /// <inheritdoc />
     public override string Description => "it's value was expected to be " + _onValueConstraint.Description;
 
+    /// <summary>
+    /// Constructs this constraint with a constraint applied on the result's value
+    /// </summary>
+    /// <param name="constraint">the constraint applied on the result's value</param>
     public ApplyOnResultValueConstraint(IConstraint constraint)
     {
         _onValueConstraint = constraint;

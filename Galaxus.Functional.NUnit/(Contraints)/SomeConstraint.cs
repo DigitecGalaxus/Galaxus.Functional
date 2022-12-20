@@ -2,8 +2,15 @@ using NUnit.Framework.Constraints;
 
 namespace Galaxus.Functional.NUnit;
 
+/// <summary>
+/// A constraint that checks that the actual value is of type <see cref="Option{T}"/> and wraps <b>Some</b> value.
+/// Can be chained with <c>WithValue</c> which applies further chained constraints on the option's value
+/// </summary>
 public class SomeConstraint : OptionConstraint
 {
+    /// <summary>
+    /// Applies further chained constraints on the options value
+    /// </summary>
     public ConstraintExpression WithValue
     {
         get
@@ -20,6 +27,7 @@ public class SomeConstraint : OptionConstraint
         }
     }
 
+    /// <inheritdoc />
     protected override ConstraintResult Matches(IOption option)
     {
         Description = "an option containing some value";
