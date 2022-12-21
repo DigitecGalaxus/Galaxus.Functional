@@ -13,7 +13,9 @@
         <projectUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</projectUrl>
         <repository type="git" url="https://github.com/DigitecGalaxus/Galaxus.Functional.git" branch="master"/>
         <dependencies>
-            <group targetFramework="netstandard2.0"/>
+            <group targetFramework="netstandard2.0">
+                <dependency id="Galaxus.Functional" version="$version$"/>
+            </group>
         </dependencies>
     </metadata>
     <files>
