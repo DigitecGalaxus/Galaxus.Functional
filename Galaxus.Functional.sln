@@ -8,13 +8,16 @@ ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 	README.md = README.md
 	LICENSE = LICENSE
-	Galaxus.Functional.nuspec = Galaxus.Functional.nuspec
 	.editorconfig = .editorconfig
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaxus.Functional", "Galaxus.Functional\Galaxus.Functional.csproj", "{5CD53145-49E8-4391-8EBE-BB2A2172097C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaxus.Functional.Tests", "Galaxus.Functional.Tests\Galaxus.Functional.Tests.csproj", "{96F94712-D031-427A-9E9E-39645A051BE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaxus.Functional.NUnit", "Galaxus.Functional.NUnit\Galaxus.Functional.NUnit.csproj", "{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaxus.Functional.NUnit.Test", "Galaxus.Functional.NUnit.Test\Galaxus.Functional.NUnit.Test.csproj", "{26AC75EB-403C-47F7-858E-32EC22C32A8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,5 +56,29 @@ Global
 		{96F94712-D031-427A-9E9E-39645A051BE4}.Release|x64.Build.0 = Release|Any CPU
 		{96F94712-D031-427A-9E9E-39645A051BE4}.Release|x86.ActiveCfg = Release|Any CPU
 		{96F94712-D031-427A-9E9E-39645A051BE4}.Release|x86.Build.0 = Release|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Debug|x64.Build.0 = Debug|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Debug|x86.Build.0 = Debug|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Release|x64.ActiveCfg = Release|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Release|x64.Build.0 = Release|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Release|x86.ActiveCfg = Release|Any CPU
+		{8B1AADAE-ECB4-445F-83C6-0A6BC317C104}.Release|x86.Build.0 = Release|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Debug|x64.Build.0 = Debug|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Debug|x86.Build.0 = Debug|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Release|x64.ActiveCfg = Release|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Release|x64.Build.0 = Release|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Release|x86.ActiveCfg = Release|Any CPU
+		{26AC75EB-403C-47F7-858E-32EC22C32A8C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

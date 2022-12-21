@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<package>
+    <metadata>
+        <id>Galaxus.Functional.NUnit</id>
+        <version>0.0.0</version> <!-- must be passed via commandline / CI -->
+        <authors>Raphael Imahorn</authors>
+        <owners>DigitecGalaxus</owners>
+        <license type="expression">MIT</license>
+        <copyright>2018-2023 Digitec Galaxus AG</copyright>
+        <tags>functional option result test nunit digitec galaxus digitecgalaxus</tags>
+        <icon>logo.png</icon>
+        <description>A package providing NUnit testability on Galaxus.Functional types.</description>
+        <projectUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</projectUrl>
+        <repository type="git" url="https://github.com/DigitecGalaxus/Galaxus.Functional.git" branch="master"/>
+        <dependencies>
+            <group targetFramework="netstandard2.0">
+                <dependency id="Galaxus.Functional" version="$version$"/>
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="../LICENSE" target="LICENSE"/>
+        <file src="../README.md" target="README.md"/>
+        <file src="../logo.png" target="logo.png"/>
+        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnit.dll" target="lib/netstandard2.0"/>
+        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnit.pdb" target="lib/netstandard2.0"/>
+        <file src="bin/Release/netstandard2.0/Galaxus.Functional.NUnit.xml" target="lib/netstandard2.0"/>
+    </files>
+</package>
