@@ -46,44 +46,32 @@ public class MatchAsyncTest
         }
 
         {
-            var called = false;
             var number = await some.MatchAsync(async _ =>
                 {
-                    called = true;
                     await Task.CompletedTask;
                     return 42;
                 },
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
-            var number = await some.MatchAsync(_ =>
-                {
-                    called = true;
-                    return 42;
-                },
+            var number = await some.MatchAsync(_ => 42,
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await some.MatchAsync(async _ =>
                 {
-                    called = true;
                     await Task.CompletedTask;
                     return 42;
                 },
                 () => -1);
 
             Assert.AreEqual(42, number);
-            Assert.IsTrue(called);
         }
     }
 
@@ -136,57 +124,39 @@ public class MatchAsyncTest
         }
 
         {
-            var called = false;
             var number = await someOptionTask.MatchAsync(async _ =>
                 {
-                    called = true;
                     await Task.CompletedTask;
                     return 42;
                 },
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
-            var number = await someOptionTask.MatchAsync(_ =>
-                {
-                    called = true;
-                    return 42;
-                },
+            var number = await someOptionTask.MatchAsync(_ => 42,
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await someOptionTask.MatchAsync(async _ =>
                 {
-                    called = true;
                     await Task.CompletedTask;
                     return 42;
                 },
                 () => -1);
 
             Assert.AreEqual(42, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
-            var number = await someOptionTask.MatchAsync(_ =>
-                {
-                    called = true;
-                    return 42;
-                },
+            var number = await someOptionTask.MatchAsync(_ => 42,
                 () => -1);
 
             Assert.AreEqual(42, number);
-            Assert.IsTrue(called);
         }
     }
 
@@ -247,67 +217,43 @@ public class MatchAsyncTest
         }
 
         {
-            var called = false;
             var number = await none.MatchAsync(async _ =>
                 {
                     await Task.CompletedTask;
                     return 42;
                 },
-                () =>
-                {
-                    called = true;
-                    return Task.FromResult(-1);
-                });
+                () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await none.MatchAsync(_ => 42,
-                () =>
-                {
-                    called = true;
-                    return Task.FromResult(-1);
-                });
+                () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await none.MatchAsync(async _ =>
                 {
                     await Task.CompletedTask;
                     return 42;
                 },
-                () =>
-                {
-                    called = true;
-                    return -1;
-                });
+                () => -1);
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await none.MatchAsync(async _ =>
                 {
                     await Task.CompletedTask;
                     return 42;
                 },
-                () =>
-                {
-                    called = true;
-                    return -1;
-                });
+                () => -1);
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
     }
 
@@ -367,63 +313,39 @@ public class MatchAsyncTest
         }
 
         {
-            var called = false;
             var number = await noneTask.MatchAsync(async _ =>
                 {
                     await Task.CompletedTask;
                     return 42;
                 },
-                () =>
-                {
-                    called = true;
-                    return Task.FromResult(-1);
-                });
+                () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await noneTask.MatchAsync(_ => 42,
-                () =>
-                {
-                    called = true;
-                    return Task.FromResult(-1);
-                });
+                () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await noneTask.MatchAsync(async _ =>
                 {
                     await Task.CompletedTask;
                     return 42;
                 },
-                () =>
-                {
-                    called = true;
-                    return -1;
-                });
+                () => -1);
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
 
         {
-            var called = false;
             var number = await noneTask.MatchAsync(_ => 42,
-                () =>
-                {
-                    called = true;
-                    return -1;
-                });
+                () => -1);
 
             Assert.AreEqual(-1, number);
-            Assert.IsTrue(called);
         }
     }
 
