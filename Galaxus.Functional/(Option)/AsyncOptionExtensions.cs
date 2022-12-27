@@ -81,24 +81,7 @@ public static class AsyncOptionExtensions
     /// <inheritdoc cref="Option{T}.Match" />
     public static async Task MatchAsync<T>(this Option<T> self, Func<T, Task> onSome, Func<Task> onNone)
     {
-        if (self.IsSome)
-        {
-            if (onSome is null)
-            {
-                throw new ArgumentNullException(nameof(onSome));
-            }
-
-            await onSome(self.Unwrap());
-        }
-        else
-        {
-            if (onNone is null)
-            {
-                throw new ArgumentNullException(nameof(onNone));
-            }
-
-            await onNone();
-        }
+        await self.Match(onSome, onNone);
     }
 
     /// <inheritdoc cref="Option{T}.Match" />
