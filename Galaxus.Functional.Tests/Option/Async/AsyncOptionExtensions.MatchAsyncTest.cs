@@ -7,15 +7,18 @@ namespace Galaxus.Functional.Tests.Option.Async;
 [TestFixture]
 internal class MatchAsyncTest
 {
+    private readonly Option<string> _some = OptionFactory.CreateSome("hello");
+    private readonly Option<string> _none = Option<string>.None;
+    private readonly Task<Option<string>> _someOptionTask = OptionFactory.CreateSomeTask("hello");
+    private readonly Task<Option<string>> _noneTask = OptionFactory.CreateNoneTask();
+
     public sealed class VoidReturnOnSomeTest : MatchAsyncTest
     {
-        private readonly Option<string> some = OptionFactory.CreateSome("hello");
-
         [Test]
         public async Task BothContinuationsAreAsync_Works()
         {
             var called = false;
-            await some.MatchAsync(_ =>
+            await _some.MatchAsync(_ =>
             {
                 called = true;
                 return Task.CompletedTask;
@@ -27,7 +30,7 @@ internal class MatchAsyncTest
         public async Task OnNoneIsAsync_Works()
         {
             var called = false;
-            await some.MatchAsync(_ =>
+            await _some.MatchAsync(_ =>
             {
                 called = true;
             }, () => Task.CompletedTask);
@@ -38,7 +41,7 @@ internal class MatchAsyncTest
         public async Task OnSomeIsAsync_Works()
         {
             var called = false;
-            await some.MatchAsync(_ =>
+            await _some.MatchAsync(_ =>
                 {
                     called = true;
                     return Task.CompletedTask;
@@ -50,12 +53,10 @@ internal class MatchAsyncTest
 
     public sealed class ValueReturnOnSomeTest : MatchAsyncTest
     {
-        private readonly Option<string> some = OptionFactory.CreateSome("hello");
-
         [Test]
         public async Task BothContinuationsAreAsync_Works()
         {
-            var number = await some.MatchAsync(_ => Task.FromResult(42),
+            var number = await _some.MatchAsync(_ => Task.FromResult(42),
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
@@ -64,7 +65,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnNoneIsAsync_Works()
         {
-            var number = await some.MatchAsync(_ => 42,
+            var number = await _some.MatchAsync(_ => 42,
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
@@ -73,7 +74,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnSomeIsAsync_Works()
         {
-            var number = await some.MatchAsync(_ => Task.FromResult(42),
+            var number = await _some.MatchAsync(_ => Task.FromResult(42),
                 () => -1);
 
             Assert.AreEqual(42, number);
@@ -82,13 +83,11 @@ internal class MatchAsyncTest
 
     public sealed class TaskOptionVoidReturnOnSomeTest : MatchAsyncTest
     {
-        private readonly Task<Option<string>> someOptionTask = OptionFactory.CreateSomeTask("hello");
-
         [Test]
         public async Task BothContinuationsAreAsync_Works()
         {
             var called = false;
-            await someOptionTask.MatchAsync(_ =>
+            await _someOptionTask.MatchAsync(_ =>
             {
                 called = true;
                 return Task.CompletedTask;
@@ -100,7 +99,7 @@ internal class MatchAsyncTest
         public async Task OnNoneIsAsync_Works()
         {
             var called = false;
-            await someOptionTask.MatchAsync(_ =>
+            await _someOptionTask.MatchAsync(_ =>
             {
                 called = true;
             }, () => Task.CompletedTask);
@@ -111,7 +110,7 @@ internal class MatchAsyncTest
         public async Task OnSomeIsAsync_Works()
         {
             var called = false;
-            await someOptionTask.MatchAsync(_ =>
+            await _someOptionTask.MatchAsync(_ =>
                 {
                     called = true;
                     return Task.CompletedTask;
@@ -124,7 +123,7 @@ internal class MatchAsyncTest
         public async Task NeitherContinuationIsAsync_Works()
         {
             var called = false;
-            await someOptionTask.MatchAsync(_ =>
+            await _someOptionTask.MatchAsync(_ =>
                 {
                     called = true;
                 },
@@ -135,12 +134,10 @@ internal class MatchAsyncTest
 
     public sealed class TaskOptionValueReturnOnSomeTest : MatchAsyncTest
     {
-        private readonly Task<Option<string>> someOptionTask = OptionFactory.CreateSomeTask("hello");
-
         [Test]
         public async Task BothContinuationsAreAsync_Works()
         {
-            var number = await someOptionTask.MatchAsync(_ => Task.FromResult(42),
+            var number = await _someOptionTask.MatchAsync(_ => Task.FromResult(42),
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
@@ -149,7 +146,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnNoneIsAsync_Works()
         {
-            var number = await someOptionTask.MatchAsync(_ => 42,
+            var number = await _someOptionTask.MatchAsync(_ => 42,
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(42, number);
@@ -158,7 +155,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnSomeIsAsync_Works()
         {
-            var number = await someOptionTask.MatchAsync(_ => Task.FromResult(42),
+            var number = await _someOptionTask.MatchAsync(_ => Task.FromResult(42),
                 () => -1);
 
             Assert.AreEqual(42, number);
@@ -167,7 +164,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task NeitherContinuationIsAsync_Works()
         {
-            var number = await someOptionTask.MatchAsync(_ => 42,
+            var number = await _someOptionTask.MatchAsync(_ => 42,
                 () => -1);
 
             Assert.AreEqual(42, number);
@@ -176,13 +173,11 @@ internal class MatchAsyncTest
 
     public sealed class VoidReturnOnNoneTest : MatchAsyncTest
     {
-        private readonly Option<string> none = Option<string>.None;
-
         [Test]
         public async Task OnSomeIsAsync_Works()
         {
             var called = false;
-            await none.MatchAsync(_ => Task.CompletedTask, () =>
+            await _none.MatchAsync(_ => Task.CompletedTask, () =>
             {
                 called = true;
                 return Task.CompletedTask;
@@ -194,7 +189,7 @@ internal class MatchAsyncTest
         public async Task OnNoneIsAsync_Works()
         {
             var called = false;
-            await none.MatchAsync(_ =>
+            await _none.MatchAsync(_ =>
             {
             }, () =>
             {
@@ -208,7 +203,7 @@ internal class MatchAsyncTest
         public async Task BothContinuationsAreAsync_Works()
         {
             var called = false;
-            await none.MatchAsync(_ => Task.CompletedTask,
+            await _none.MatchAsync(_ => Task.CompletedTask,
                 () =>
                 {
                     called = true;
@@ -219,12 +214,10 @@ internal class MatchAsyncTest
 
     public sealed class ValueReturnOnNoneTest : MatchAsyncTest
     {
-        private readonly Option<string> none = Option<string>.None;
-
         [Test]
         public async Task BothContinuationsAreAsync_Works()
         {
-            var number = await none.MatchAsync(_ => Task.FromResult(42),
+            var number = await _none.MatchAsync(_ => Task.FromResult(42),
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
@@ -233,7 +226,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnNoneIsAsync_Works()
         {
-            var number = await none.MatchAsync(_ => 42,
+            var number = await _none.MatchAsync(_ => 42,
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
@@ -242,7 +235,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnSomeIsAsync_Works()
         {
-            var number = await none.MatchAsync(_ => Task.FromResult(42),
+            var number = await _none.MatchAsync(_ => Task.FromResult(42),
                 () => -1);
 
             Assert.AreEqual(-1, number);
@@ -251,13 +244,11 @@ internal class MatchAsyncTest
 
     public class TaskOptionVoidReturnOnNoneTest : MatchAsyncTest
     {
-        private readonly Task<Option<string>> noneTask = OptionFactory.CreateNoneTask();
-
         [Test]
         public async Task BothContinuationsAreAsync_Works()
         {
             var called = false;
-            await noneTask.MatchAsync(_ => Task.CompletedTask, () =>
+            await _noneTask.MatchAsync(_ => Task.CompletedTask, () =>
             {
                 called = true;
                 return Task.CompletedTask;
@@ -269,7 +260,7 @@ internal class MatchAsyncTest
         public async Task OnNoneIsAsync_Works()
         {
             var called = false;
-            await noneTask.MatchAsync(_ =>
+            await _noneTask.MatchAsync(_ =>
             {
             }, () =>
             {
@@ -283,7 +274,7 @@ internal class MatchAsyncTest
         public async Task OnSomeIsAsync_Works()
         {
             var called = false;
-            await noneTask.MatchAsync(_ => Task.CompletedTask,
+            await _noneTask.MatchAsync(_ => Task.CompletedTask,
                 () =>
                 {
                     called = true;
@@ -295,7 +286,7 @@ internal class MatchAsyncTest
         public async Task NeitherContinuationIsAsync_Works()
         {
             var called = false;
-            await noneTask.MatchAsync(_ =>
+            await _noneTask.MatchAsync(_ =>
                 {
                 },
                 () =>
@@ -308,12 +299,10 @@ internal class MatchAsyncTest
 
     public class TaskOptionValueReturnOnNoneTest : MatchAsyncTest
     {
-        private readonly Task<Option<string>> noneTask = OptionFactory.CreateNoneTask();
-
         [Test]
         public async Task BothContinuationsAreAsync_Works()
         {
-            var number = await noneTask.MatchAsync(_ => Task.FromResult(42),
+            var number = await _noneTask.MatchAsync(_ => Task.FromResult(42),
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
@@ -322,7 +311,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnNoneIsAsync_Works()
         {
-            var number = await noneTask.MatchAsync(_ => 42,
+            var number = await _noneTask.MatchAsync(_ => 42,
                 () => Task.FromResult(-1));
 
             Assert.AreEqual(-1, number);
@@ -331,7 +320,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task OnSomeIsAsync_Works()
         {
-            var number = await noneTask.MatchAsync(_ => Task.FromResult(42),
+            var number = await _noneTask.MatchAsync(_ => Task.FromResult(42),
                 () => -1);
 
             Assert.AreEqual(-1, number);
@@ -340,7 +329,7 @@ internal class MatchAsyncTest
         [Test]
         public async Task NeitherContinuationIsAsync_Works()
         {
-            var number = await noneTask.MatchAsync(_ => 42,
+            var number = await _noneTask.MatchAsync(_ => 42,
                 () => -1);
 
             Assert.AreEqual(-1, number);
