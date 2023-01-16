@@ -13,4 +13,9 @@ internal static class OptionFactory
     {
         return Task.FromResult(Option<string>.None);
     }
+
+    public static Option<T> CreateSome<T>(T value)
+    {
+        return Option<T>.Some(value);
+    }
 }
