@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project>
+    <PropertyGroup Label="build options">
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <WarningsAsErrors>true</WarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Label="pack options">
+        <IsPackable>true</IsPackable>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>embedded</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Label="ci Build" Condition=" $(CI_BUILD) == 'true' ">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <PropertyGroup Label="package properties">
+        <PackageId>$(AssemblyName)</PackageId>
+        <PackageVersion>0.0.0</PackageVersion> <!-- Will be passed to the build -->
+
+        <Owners>DigitecGalaxus</Owners>
+        <Copyright>2018-2023 Digitec Galaxus AG</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</PackageProjectUrl>
+    </PropertyGroup>
+
+    <ItemGroup Label="source link">
+        <PackageReference Include="Microsoft.SourceLink.GitLab" Version="1.1.1" PrivateAssets="All"/>
+    </ItemGroup>
+
+    <ItemGroup Label="included files">
+        <None Include="$(MSBuildThisFileDirectory)/logo.png" Pack="true" PackagePath="/"/>
+        <None Include="$(MSBuildThisFileDirectory)/README.md" Pack="true" PackagePath="/"/>
+        <None Include="$(MSBuildThisFileDirectory)/LICENSE" Pack="true" PackagePath="/"/>
+    </ItemGroup>
+</Project>

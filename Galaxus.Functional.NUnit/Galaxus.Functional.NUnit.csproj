@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="../Common.props" />
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Tags>functional option result test nunit digitec galaxus digitecgalaxus</Tags>
+        <Description>A package providing NUnit testability on Galaxus.Functional types.</Description>
+        <Authors>Raphael Imahorn</Authors>
     </PropertyGroup>
 
     <ItemGroup>

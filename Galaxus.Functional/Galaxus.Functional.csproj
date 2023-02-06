@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="../Common.props" />
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
-        <WarningsAsErrors/>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Tags>functional option either result digitec galaxus digitecgalaxus</Tags>
+        <Description>A package bringing popular functional abstractions (e.g. Option or Either) to C#.</Description>
+        <Authors>Noël Widmer, Philipp Kiener</Authors>
     </PropertyGroup>
 
 </Project>
