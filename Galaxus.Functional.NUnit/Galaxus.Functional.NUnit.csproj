@@ -4,7 +4,7 @@
     <PropertyGroup>
         <Authors>Raphael Imahorn</Authors>
         <Description>A package providing NUnit testability on Galaxus.Functional types.</Description>
-        <Tags>functional option result test nunit digitec galaxus digitecgalaxus</Tags>
+        <PackageTags>functional option result test nunit digitec galaxus digitecgalaxus</PackageTags>
     </PropertyGroup>
     
     <PropertyGroup>

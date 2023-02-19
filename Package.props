@@ -43,7 +43,7 @@
 
     <Target Name="CheckProperties" BeforeTargets="Pack">
         <Error Condition="'$(Description)' == ''" Text="Description must be defined" />
-        <Error Condition="'$(Tags)' == ''" Text="Tags must be defined" />
+        <Error Condition="'$(PackageTags)' == ''" Text="PackageTags must be defined" />
         <Error Condition="'$(PackageVersion)' == '0.0.0'" Text="PackageVersion must be given" />
     </Target>
 </Project>
