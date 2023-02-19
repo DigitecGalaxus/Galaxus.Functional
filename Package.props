@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project>
+    <PropertyGroup Label="build options">
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <WarningsAsErrors>true</WarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Label="pack options">
+        <IsPackable>true</IsPackable>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>embedded</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Label="ci Build" Condition="'$(CI_BUILD)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <PropertyGroup Label="package options">
+        <PackageId>$(AssemblyName)</PackageId>
+        <PackageVersion>0.0.0</PackageVersion> <!-- Will be passed to the build -->
+        <Authors>Digitec Galaxus AG</Authors>
+        <Copyright>2018-2023 Digitec Galaxus AG</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup Label="source link">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    </ItemGroup>
+
+    <ItemGroup Label="included files">
+        <None Include="$(MSBuildThisFileDirectory)/logo.png" Pack="true" PackagePath="/"/>
+        <None Include="$(MSBuildThisFileDirectory)/README.md" Pack="true" PackagePath="/"/>
+        <None Include="$(MSBuildThisFileDirectory)/LICENSE" Pack="true" PackagePath="/"/>
+    </ItemGroup>
+
+    <Target Name="CheckProperties" BeforeTargets="Pack">
+        <Error Condition="'$(Description)' == ''" Text="Description must be defined" />
+        <Error Condition="'$(Tags)' == ''" Text="Tags must be defined" />
+        <Error Condition="'$(PackageVersion)' == '0.0.0'" Text="PackageVersion must be given" />
+    </Target>
+</Project>
