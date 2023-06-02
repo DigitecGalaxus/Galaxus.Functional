@@ -452,12 +452,12 @@ public class OptionTests
     }
 
     [Test]
-    public void Option_EqualsSameType()
+    public void Option_EqualsSameStaticType()
     {
         var one = 1.ToOption();
         var oneClone = 1.ToOption();
         var two = 2.ToOption();
-        var none = new Option<int>();
+        var none = Option<int>.None;
 
         Assert.AreEqual(one, oneClone);
         Assert.AreEqual(oneClone, one);
@@ -470,17 +470,27 @@ public class OptionTests
     }
 
     [Test]
-    public void Option_EqualsOtherType()
+    public void Option_EqualsOtherStaticTypeButSameRuntimeType()
     {
         var one = 1.ToOption();
         var oneAsObject = 1.ToOption<object>();
-        var none = new Option<object>();
+        var none = Option<object>.None;
 
-        Assert.AreNotEqual(one, oneAsObject);
-        Assert.AreNotEqual(oneAsObject, one);
+        Assert.AreEqual(one, oneAsObject);
+        Assert.AreEqual(oneAsObject, one);
 
         Assert.AreNotEqual(none, one);
         Assert.AreNotEqual(one, none);
+    }
+
+    [Test]
+    public void Option_EqualsOtherStaticTypeAndOtherRuntimeType()
+    {
+        var one = 1.ToOption();
+        var text = "1".ToOption();
+
+        Assert.AreNotEqual(one, text);
+        Assert.AreNotEqual(text, one);
     }
 
     [Test]

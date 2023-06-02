@@ -70,14 +70,10 @@ namespace Galaxus.Functional
 
         private readonly T _some;
 
-        /// <summary>
-        ///     True if the option contains "Some".
-        /// </summary>
+        /// <inheritdoc />
         public bool IsSome { get; }
 
-        /// <summary>
-        ///     True if the option contains "None".
-        /// </summary>
+        /// <inheritdoc />
         public bool IsNone
             => IsSome == false;
 
@@ -255,7 +251,7 @@ namespace Galaxus.Functional
         /// </summary>
         object IOption.ToObject()
         {
-            return IsSome ? _some : default(object);
+            return IsSome ? _some : null;
         }
 
         #region Equals, GetHashCode & ToString
@@ -263,7 +259,17 @@ namespace Galaxus.Functional
         /// <inheritdoc />
         public override bool Equals(object other)
         {
-            return other is Option<T> option && Equals(option);
+            if (other is IOption otherOption)
+            {
+                if (IsSome && otherOption.IsSome)
+                {
+                    return _some.Equals(otherOption.ToObject());
+                }
+
+                return IsNone && otherOption.IsNone;
+            }
+
+            return false;
         }
 
         /// <inheritdoc />
