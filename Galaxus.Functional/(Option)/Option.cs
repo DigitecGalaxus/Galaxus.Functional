@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Galaxus.Functional
 {
@@ -13,7 +15,7 @@ namespace Galaxus.Functional
     ///     5) Optional function arguments,
     ///     6) Nullable References.
     /// </summary>
-    public readonly partial struct Option<T> : IOption, IEquatable<Option<T>>
+    public readonly partial struct Option<T> : IOption, IEnumerable<T>, IEquatable<Option<T>>
     {
         #region Instance Initializer
 
@@ -231,6 +233,20 @@ namespace Galaxus.Functional
         public bool Contains(T value)
         {
             return Match(v => v.Equals(value), () => false);
+        }
+
+        /// <inheritdoc />
+        public IEnumerator<T> GetEnumerator()
+        {
+            if (IsSome)
+            {
+                yield return _some;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         /// <summary>

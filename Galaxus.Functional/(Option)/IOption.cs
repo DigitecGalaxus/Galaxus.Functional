@@ -1,9 +1,11 @@
+using System.Collections;
+
 namespace Galaxus.Functional
 {
     /// <summary>
     ///     General interface for objects that represent an optional value.
     /// </summary>
-    public interface IOption
+    public interface IOption : IEnumerable
     {
         /// <summary>
         ///     Returns <b>Some</b> as an <see cref="object" /> if <b>self</b> contains <b>Some</b>.
