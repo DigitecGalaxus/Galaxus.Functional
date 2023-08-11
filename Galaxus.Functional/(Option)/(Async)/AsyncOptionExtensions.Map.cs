@@ -9,7 +9,7 @@ namespace Galaxus.Functional;
 public static class AsyncOptionExtensions_Map
 {
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
-    public static Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, TTo> map, Func<TTo> fallback)
+    public static async Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, TTo> map, Func<TTo> fallback)
     {
         throw new NotImplementedException();
     }
@@ -22,6 +22,12 @@ public static class AsyncOptionExtensions_Map
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
     public static Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, TTo> map, Func<Task<TTo>> fallback)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
+    public static Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, Task<TTo>> map, Func<Task<TTo>> fallback)
     {
         throw new NotImplementedException();
     }
