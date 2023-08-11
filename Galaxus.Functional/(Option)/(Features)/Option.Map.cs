@@ -47,5 +47,16 @@ namespace Galaxus.Functional
                 () => fallback
             );
         }
+
+        /// <summary>
+        ///     Applies a function to the contained <b>Some</b> value (if any), otherwise calls <paramref name="fallback" /> and returns the result.
+        /// </summary>
+        /// <typeparam name="TTo">The type to map to.</typeparam>
+        /// <param name="fallback">The function to call if <b>self</b> contains <b>None</b>.</param>
+        /// <param name="map">The mapping function.</param>
+        public TTo MapOrElse<TTo>(Func<T, TTo> map, Func<TTo> fallback)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
