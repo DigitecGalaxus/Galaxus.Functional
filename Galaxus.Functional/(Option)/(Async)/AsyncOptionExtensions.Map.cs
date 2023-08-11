@@ -28,9 +28,10 @@ public static class AsyncOptionExtensions_Map
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
-    public static Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, Task<TTo>> map, Func<Task<TTo>> fallback)
+    public static async Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, Task<TTo>> map, Func<Task<TTo>> fallback)
     {
-        throw new NotImplementedException();
+        var option = await self;
+        return await option.MapOrElseAsync(map, fallback);
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
