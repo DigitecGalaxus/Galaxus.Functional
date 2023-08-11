@@ -56,7 +56,26 @@ namespace Galaxus.Functional
         /// <param name="map">The mapping function.</param>
         public TTo MapOrElse<TTo>(Func<T, TTo> map, Func<TTo> fallback)
         {
-            throw new NotImplementedException();
+            return Match(
+                some =>
+                {
+                    if (map == null)
+                    {
+                        throw new ArgumentNullException(nameof(map));
+                    }
+
+                    return map(some);
+                },
+                () =>
+                {
+                    if (fallback == null)
+                    {
+                        throw new ArgumentNullException(nameof(fallback));
+                    }
+
+                    return fallback();
+                }
+            );
         }
     }
 }
