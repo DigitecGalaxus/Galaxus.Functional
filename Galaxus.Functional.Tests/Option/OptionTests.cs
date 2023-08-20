@@ -367,6 +367,41 @@ public class OptionTests
     }
 
     [Test]
+    public void Option_MapOrElse()
+    {
+        var some = "hello".ToOption();
+        var none = Option<string>.None;
+
+        {
+            var invoked = false;
+
+            Assert.AreEqual(5.ToOption(), some.MapOrElse(
+                s => s.Length.ToOption(),
+                () =>
+                {
+                    invoked = true;
+                    return 2.ToOption();
+                }));
+
+            Assert.IsFalse(invoked);
+        }
+
+        {
+            var invoked = false;
+
+            Assert.AreEqual(42.ToOption(), none.MapOrElse(
+                s => s.Length.ToOption(),
+                () =>
+                {
+                    invoked = true;
+                    return 42.ToOption();
+                }));
+
+            Assert.IsTrue(invoked);
+        }
+    }
+
+    [Test]
     public void Option_ToObject()
     {
         var some = (IOption)"hello".ToOption();

@@ -6,7 +6,7 @@ namespace Galaxus.Functional;
 /// <summary>
 ///     Extensions to common operations for <see cref="Option{T}" /> using async methods or <see cref="Task" />s.
 /// </summary>
-public static class AsyncOptionExtensions
+public static partial class AsyncOptionExtensions
 {
     /// <inheritdoc cref="Option{T}.Unwrap()" />
     public static async Task<T> UnwrapAsync<T>(this Task<Option<T>> self)
