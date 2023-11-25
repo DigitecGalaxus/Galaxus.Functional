@@ -50,8 +50,9 @@ public static class AsyncResultExtensions
         Func<TOk, Task<TOkTo>> continuation)
     {
         return await self.Match(
-            async ok => (await continuation(ok).ConfigureAwait(false)).ToOk<TOkTo, TErr>(),
-            err => Task.FromResult(err.ToErr<TOkTo, TErr>())).ConfigureAwait(false);
+                async ok => (await continuation(ok).ConfigureAwait(false)).ToOk<TOkTo, TErr>(),
+                err => Task.FromResult(err.ToErr<TOkTo, TErr>()))
+            .ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Result{TOk,TErr}.Map{TOkTo}" />
@@ -76,8 +77,9 @@ public static class AsyncResultExtensions
         Func<TErr, Task<TErrTo>> continuation)
     {
         return await self.Match(
-            ok => Task.FromResult(ok.ToOk<TOk, TErrTo>()),
-            async err => (await continuation(err).ConfigureAwait(false)).ToErr<TOk, TErrTo>()).ConfigureAwait(false);
+                ok => Task.FromResult(ok.ToOk<TOk, TErrTo>()),
+                async err => (await continuation(err).ConfigureAwait(false)).ToErr<TOk, TErrTo>())
+            .ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Result{TOk,TErr}.Map{TOkTo}" />
@@ -206,8 +208,9 @@ public static class AsyncResultExtensions
     {
         error ??= _ => throw new ArgumentNullException(nameof(error));
         return await self.MatchAsync(
-            ok => ok,
-            async err => throw new TriedToUnwrapErrException(await error(err))).ConfigureAwait(false);
+                ok => ok,
+                async err => throw new TriedToUnwrapErrException(await error(err)))
+            .ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Result{TOk,TErr}.UnwrapOr" />

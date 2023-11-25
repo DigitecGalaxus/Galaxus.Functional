@@ -37,7 +37,7 @@ public static partial class AsyncOptionExtensions
                 throw new ArgumentNullException(nameof(error));
             }
 
-            throw new TriedToUnwrapNoneException(await error());
+            throw new TriedToUnwrapNoneException(await error().ConfigureAwait(false));
         }
 
         return option.Unwrap();
@@ -95,10 +95,11 @@ public static partial class AsyncOptionExtensions
     public static async Task MatchAsync<T>(this Option<T> self, Action<T> onSome, Func<Task> onNone)
     {
         await self.MatchAsync(t =>
-        {
-            onSome(t);
-            return Task.CompletedTask;
-        }, onNone).ConfigureAwait(false);
+            {
+                onSome(t);
+                return Task.CompletedTask;
+            }, onNone)
+            .ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Option{T}.Match" />
@@ -111,11 +112,12 @@ public static partial class AsyncOptionExtensions
     /// <inheritdoc cref="Option{T}.Match" />
     public static async Task MatchAsync<T>(this Option<T> self, Func<T, Task> onSome, Action onNone)
     {
-        await self.MatchAsync(onSome, async () =>
-        {
-            onNone();
-            await Task.CompletedTask;
-        }).ConfigureAwait(false);
+        await self.MatchAsync(onSome, () =>
+            {
+                onNone();
+                return Task.CompletedTask;
+            })
+            .ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Option{T}.Match" />
