@@ -11,29 +11,29 @@ public static partial class AsyncOptionExtensions
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
     public static async Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, TTo> map, Func<TTo> fallback)
     {
-        var option = await self;
+        var option = await self.ConfigureAwait(false);
         return option.MapOrElse(map, fallback);
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
     public static async Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, Task<TTo>> map, Func<TTo> fallback)
     {
-        var option = await self;
-        return await option.MapOrElseAsync(map, fallback);
+        var option = await self.ConfigureAwait(false);
+        return await option.MapOrElseAsync(map, fallback).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
     public static async Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, TTo> map, Func<Task<TTo>> fallback)
     {
-        var option = await self;
-        return await option.MapOrElseAsync(map, fallback);
+        var option = await self.ConfigureAwait(false);
+        return await option.MapOrElseAsync(map, fallback).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
     public static async Task<TTo> MapOrElseAsync<T, TTo>(this Task<Option<T>> self, Func<T, Task<TTo>> map, Func<Task<TTo>> fallback)
     {
-        var option = await self;
-        return await option.MapOrElseAsync(map, fallback);
+        var option = await self.ConfigureAwait(false);
+        return await option.MapOrElseAsync(map, fallback).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
@@ -49,7 +49,7 @@ public static partial class AsyncOptionExtensions
                 }
 
                 return Task.FromResult(fallback());
-            });
+            }).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
@@ -65,12 +65,12 @@ public static partial class AsyncOptionExtensions
 
                 return Task.FromResult(map(t));
             },
-            fallback);
+            fallback).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Option{T}.MapOrElse{TTo}" />
     public static async Task<TTo> MapOrElseAsync<T, TTo>(this Option<T> self, Func<T, Task<TTo>> map, Func<Task<TTo>> fallback)
     {
-        return await self.MapOrElse(map, fallback);
+        return await self.MapOrElse(map, fallback).ConfigureAwait(false);
     }
 }
