@@ -73,4 +73,8 @@ public static partial class AsyncOptionExtensions
     {
         return await self.MapOrElse(map, fallback).ConfigureAwait(false);
     }
+
+    /// <inheritdoc cref="Option{T}.Map{TTo}"/>
+    public static Task<Option<TTo>> MapAsync<T, TTo>(this Option<T> self, Func<T, Task<Option<TTo>>> map)
+        => self.MapOrElseAsync(map, () => Option<TTo>.None);
 }
