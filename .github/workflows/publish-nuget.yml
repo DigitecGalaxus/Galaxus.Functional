@@ -1,0 +1,26 @@
+name: Publish DG.Functional NuGet Package
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build-and-publish:
+    name: Build and Publish NuGet
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0
+    - name: Install Dependencies
+      run: dotnet restore
+    - name: Build and Pack NuGet Package
+      run: dotnet pack --configuration Release --output ./artifacts ./Galaxus.Functional
+    - name: Publish to NuGet
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push ./artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
