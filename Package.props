@@ -22,7 +22,7 @@
         <PackageId>$(AssemblyName)</PackageId>
         <PackageVersion>0.0.0</PackageVersion> <!-- Will be passed to the build -->
         <Authors>Digitec Galaxus AG</Authors>
-        <Copyright>2018-2023 Digitec Galaxus AG</Copyright>
+        <Copyright>2018-2024 Digitec Galaxus AG</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</PackageProjectUrl>
         <RepositoryUrl>https://github.com/DigitecGalaxus/Galaxus.Functional</RepositoryUrl>
