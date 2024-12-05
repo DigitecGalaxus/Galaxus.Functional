@@ -1,4 +1,4 @@
-name: Publish DG.Functional NuGet Package
+name: Publish NuGet Packages
 
 on:
   push:
@@ -15,11 +15,24 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0
+        dotnet-version: 9.0
+    - name: Extract Version from Tag
+      run: echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - name: Install Dependencies
       run: dotnet restore
-    - name: Build and Pack NuGet Package
-      run: dotnet pack --configuration Release --output ./artifacts ./Galaxus.Functional
+    - name: Build Solution
+      run: |
+        dotnet build --configuration Release \
+          -p:CI_BUILD=true \
+          -p:Version=${{env.VERSION}} \
+          -p:AssemblyVersion=${{env.VERSION}} \
+          -p:FileVersion=${{env.VERSION}}
+    - name: Pack NuGet Packages
+      run: |
+        dotnet pack --configuration Release \
+          -p:CI_BUILD=true \
+          -p:PackageVersion=${{env.VERSION}} \
+          --output ./artifacts
     - name: Publish to NuGet
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
