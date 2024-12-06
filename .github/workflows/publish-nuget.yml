@@ -1,0 +1,42 @@
+name: Publish NuGet Packages
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
+
+jobs:
+  build-and-publish:
+    name: Build and Publish NuGet
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0
+    - name: Extract Version from Tag
+      run: echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
+    - name: Install Dependencies
+      run: dotnet restore
+    - name: Build Solution
+      run: |
+        dotnet build --configuration Release \
+          --no-restore \
+          -p:CI_BUILD=true \
+          -p:Version=${{env.VERSION}} \
+          -p:PackageVersion=${{env.VERSION}} \
+    - name: Pack NuGet Packages
+      run: |
+        dotnet pack --configuration Release \
+          --no-build \
+          -p:CI_BUILD=true \
+          -p:Version=${{env.VERSION}} \
+          -p:PackageVersion=${{env.VERSION}} \
+          --output ./artifacts
+    - name: Publish to NuGet
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push ./artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
