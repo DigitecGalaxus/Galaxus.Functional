@@ -25,11 +25,7 @@ public static partial class AsyncOptionExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<T>(this Option<T> self, Func<T, Task<Task>> onSome, Func<Task<Task>> onNone)
     {
         return MatchAsync<T, Task>(self, onSome, onNone);
@@ -38,11 +34,7 @@ public static partial class AsyncOptionExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<T>(this Option<T> self, Func<T, Task<Task>> onSome, Func<Task> onNone)
     {
         return MatchAsync<T, Task>(self, onSome, onNone);
@@ -51,11 +43,7 @@ public static partial class AsyncOptionExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<T>(this Option<T> self, Func<T, Task> onSome, Func<Task<Task>> onNone)
     {
         return MatchAsync<T, Task>(self, onSome, onNone);
@@ -64,11 +52,7 @@ public static partial class AsyncOptionExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<T>(this Task<Option<T>> self, Func<T, Task<Task>> onSome, Func<Task<Task>> onNone)
     {
         return MatchAsync<T, Task>(self, onSome, onNone);
@@ -77,11 +61,7 @@ public static partial class AsyncOptionExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<T>(this Task<Option<T>> self, Func<T, Task<Task>> onSome, Func<Task> onNone)
     {
         return MatchAsync<T, Task>(self, onSome, onNone);
@@ -90,11 +70,7 @@ public static partial class AsyncOptionExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<T>(this Task<Option<T>> self, Func<T, Task> onSome, Func<Task<Task>> onNone)
     {
         return MatchAsync<T, Task>(self, onSome, onNone);

@@ -25,11 +25,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B>(this Either<A, B> self, Func<A, Task<Task>> onA, Func<B, Task<Task>> onB)
     {
         return MatchAsync<A, B, Task>(self, onA, onB);
@@ -38,11 +34,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B>(this Either<A, B> self, Func<A, Task<Task>> onA, Func<B, Task> onB)
     {
         return MatchAsync<A, B, Task>(self, onA, onB);
@@ -51,11 +43,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B>(this Either<A, B> self, Func<A, Task> onA, Func<B, Task<Task>> onB)
     {
         return MatchAsync<A, B, Task>(self, onA, onB);
@@ -64,11 +52,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B, C>(this Either<A, B, C> self, Func<A, Task<Task>> onA, Func<B, Task<Task>> onB, Func<C, Task<Task>> onC)
     {
         return MatchAsync<A, B, C, Task>(self, onA, onB, onC);
@@ -77,11 +61,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B, C>(this Either<A, B, C> self, Func<A, Task<Task>> onA, Func<B, Task<Task>> onB, Func<C, Task> onC)
     {
         return MatchAsync<A, B, C, Task>(self, onA, onB, onC);
@@ -90,11 +70,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B, C>(this Either<A, B, C> self, Func<A, Task<Task>> onA, Func<B, Task> onB, Func<C, Task<Task>> onC)
     {
         return MatchAsync<A, B, C, Task>(self, onA, onB, onC);
@@ -103,11 +79,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B, C>(this Either<A, B, C> self, Func<A, Task<Task>> onA, Func<B, Task> onB, Func<C, Task> onC)
     {
         return MatchAsync<A, B, C, Task>(self, onA, onB, onC);
@@ -116,11 +88,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B, C>(this Either<A, B, C> self, Func<A, Task> onA, Func<B, Task<Task>> onB, Func<C, Task<Task>> onC)
     {
         return MatchAsync<A, B, C, Task>(self, onA, onB, onC);
@@ -129,11 +97,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B, C>(this Either<A, B, C> self, Func<A, Task> onA, Func<B, Task<Task>> onB, Func<C, Task> onC)
     {
         return MatchAsync<A, B, C, Task>(self, onA, onB, onC);
@@ -142,11 +106,7 @@ public static partial class AsyncEitherExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
-#if NET5_0_OR_GREATER
     [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
-#else
-    [Obsolete(NestedTaskMessage)]
-#endif
     public static Task<Task> MatchAsync<A, B, C>(this Either<A, B, C> self, Func<A, Task> onA, Func<B, Task> onB, Func<C, Task<Task>> onC)
     {
         return MatchAsync<A, B, C, Task>(self, onA, onB, onC);

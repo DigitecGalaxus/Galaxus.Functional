@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 9.0
+        dotnet-version: 10.0
     - name: Extract Version from Tag
       run: echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
     - name: Install Dependencies

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Project>
     <PropertyGroup Label="build options">
-        <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -30,10 +30,6 @@
         <PackageIcon>logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
-
-    <ItemGroup Label="source link">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
-    </ItemGroup>
 
     <ItemGroup Label="included files">
         <None Include="$(MSBuildThisFileDirectory)/logo.png" Pack="true" PackagePath="/"/>

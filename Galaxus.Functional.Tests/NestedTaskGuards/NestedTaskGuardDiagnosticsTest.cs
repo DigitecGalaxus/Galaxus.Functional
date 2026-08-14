@@ -141,6 +141,5 @@ internal class NestedTaskGuardDiagnosticsTest
         MetadataReference.CreateFromFile(typeof(Option<>).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
         MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System.Runtime.dll")),
-        MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "netstandard.dll")),
     ];
 }
