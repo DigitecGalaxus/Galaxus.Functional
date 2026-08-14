@@ -11,7 +11,7 @@ namespace Galaxus.Functional.Tests.NestedTaskGuards;
 [TestFixture]
 internal class NestedTaskGuardDiagnosticsTest
 {
-    private const string ObsoleteDiagnosticId = "CS0618";
+    private const string ObsoleteDiagnosticId = "GF0001";
 
     // Cases returning nested Tasks where the guards should get bound and cause warnings
     private static IEnumerable<TestCaseData> NestedTestcases()

@@ -20,10 +20,16 @@ public static partial class AsyncResultExtensions
         + "inner Task runs unobserved and its exceptions are swallowed. Await the work inside each callback instead "
         + "of returning a Task from it; a callback that only throws needs an explicit delegate type.";
 
+    private const string NestedTaskDiagnosticId = "GF0001";
+
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
+#else
     [Obsolete(NestedTaskMessage)]
+#endif
     public static Task<Task> MatchAsync<TOk, TErr>(this Result<TOk, TErr> self, Func<TOk, Task<Task>> onOk, Func<TErr, Task<Task>> onErr)
     {
         return MatchAsync<TOk, TErr, Task>(self, onOk, onErr);
@@ -32,7 +38,11 @@ public static partial class AsyncResultExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
+#else
     [Obsolete(NestedTaskMessage)]
+#endif
     public static Task<Task> MatchAsync<TOk, TErr>(this Result<TOk, TErr> self, Func<TOk, Task<Task>> onOk, Func<TErr, Task> onErr)
     {
         return MatchAsync<TOk, TErr, Task>(self, onOk, onErr);
@@ -41,7 +51,11 @@ public static partial class AsyncResultExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
+#else
     [Obsolete(NestedTaskMessage)]
+#endif
     public static Task<Task> MatchAsync<TOk, TErr>(this Result<TOk, TErr> self, Func<TOk, Task> onOk, Func<TErr, Task<Task>> onErr)
     {
         return MatchAsync<TOk, TErr, Task>(self, onOk, onErr);
@@ -50,7 +64,11 @@ public static partial class AsyncResultExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
+#else
     [Obsolete(NestedTaskMessage)]
+#endif
     public static Task<Task> MatchAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TOk, Task<Task>> onOk, Func<TErr, Task<Task>> onErr)
     {
         return MatchAsync<TOk, TErr, Task>(self, onOk, onErr);
@@ -59,7 +77,11 @@ public static partial class AsyncResultExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
+#else
     [Obsolete(NestedTaskMessage)]
+#endif
     public static Task<Task> MatchAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TOk, Task<Task>> onOk, Func<TErr, Task> onErr)
     {
         return MatchAsync<TOk, TErr, Task>(self, onOk, onErr);
@@ -68,7 +90,11 @@ public static partial class AsyncResultExtensions
     /// <summary>
     ///     Do not use. Awaiting this overload leaves an inner <see cref="Task" /> unawaited; see the obsolete message.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [Obsolete(NestedTaskMessage, DiagnosticId = NestedTaskDiagnosticId)]
+#else
     [Obsolete(NestedTaskMessage)]
+#endif
     public static Task<Task> MatchAsync<TOk, TErr>(this Task<Result<TOk, TErr>> self, Func<TOk, Task> onOk, Func<TErr, Task<Task>> onErr)
     {
         return MatchAsync<TOk, TErr, Task>(self, onOk, onErr);
