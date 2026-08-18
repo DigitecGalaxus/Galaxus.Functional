@@ -339,12 +339,16 @@ internal class MatchAsyncTest
     [Test]
     public void Option_MatchAsyncThrowsIfMatchArmIsNull()
     {
+        // A null callback converts to any delegate type, so these calls bind the obsolete overloads that guard
+        // against a nested Task. Passing null is the point of this test, so the warning is suppressed here.
+#pragma warning disable GF0001
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
             await OptionFactory.CreateSome(0).MatchAsync(null, () => Task.CompletedTask);
         });
 
         Assert.ThrowsAsync<ArgumentNullException>(async () => { await Option<int>.None.MatchAsync(_ => Task.CompletedTask, null); });
+#pragma warning restore GF0001
 
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
