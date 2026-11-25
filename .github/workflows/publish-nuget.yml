@@ -10,6 +10,9 @@ jobs:
   build-and-publish:
     name: Build and Publish NuGet
     runs-on: ubuntu-latest
+    permissions:
+        contents: read
+        id-token: write
     steps:
     - name: Checkout Code
       uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
@@ -36,7 +39,12 @@ jobs:
           -p:Version=${{env.VERSION}} \
           -p:PackageVersion=${{env.VERSION}} \
           --output ./artifacts
+
+    - name: Setup NuGet token
+      uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     - name: Publish to NuGet
-      env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      run: dotnet nuget push ./artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
+      run: dotnet nuget push ./artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
